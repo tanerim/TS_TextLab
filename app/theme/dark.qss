@@ -1,0 +1,217 @@
+QMainWindow, QWidget {{
+    background: {background};
+    color: {text};
+    font-size: 13px;
+    letter-spacing: 0;
+}}
+
+#AppHeader {{
+    background: {surface};
+    border-bottom: 1px solid {border};
+}}
+
+#TitleLabel {{
+    font-size: 20px;
+    font-weight: 700;
+    color: {text};
+}}
+
+#SubtitleLabel, #MetaLabel, #StatusLabel, #HintLabel {{
+    color: {muted};
+}}
+
+#SectionTitle {{
+    color: {muted};
+    font-size: 12px;
+    font-weight: 700;
+}}
+
+#LocalBadge {{
+    color: {success};
+    background: {surface_alt};
+    border: 1px solid {border};
+    border-radius: 8px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 600;
+}}
+
+#Panel {{
+    background: {panel};
+    border: 1px solid {border};
+    border-radius: 8px;
+}}
+
+#InputEditor {{
+    background: {surface};
+    border: 1px solid {border};
+    border-radius: 8px;
+    padding: 10px;
+    selection-background-color: {selected};
+    selection-color: {selected_text};
+    font-size: 14px;
+    line-height: 1.35;
+}}
+
+#InputEditor:focus, QComboBox:focus, QLineEdit:focus {{
+    border: 1px solid {focus};
+}}
+
+QPushButton, QToolButton {{
+    background: {surface};
+    border: 1px solid {border};
+    border-radius: 7px;
+    padding: 7px 12px;
+    color: {text};
+    min-height: 30px;
+}}
+
+QPushButton:hover, QToolButton:hover {{
+    background: {hover};
+    border-color: {border_strong};
+}}
+
+QPushButton:pressed, QToolButton:pressed {{
+    background: {selected};
+}}
+
+QPushButton:disabled, QToolButton:disabled {{
+    color: {muted};
+    background: {surface_alt};
+    border-color: {border};
+}}
+
+#PrimaryButton {{
+    background: {accent};
+    color: #101828;
+    border-color: {accent};
+    font-weight: 700;
+}}
+
+#PrimaryButton:hover {{
+    background: {accent_hover};
+    border-color: {accent_hover};
+}}
+
+#PrimaryButton:pressed {{
+    background: {accent_pressed};
+    border-color: {accent_pressed};
+}}
+
+#IconButton {{
+    min-width: 34px;
+    max-width: 34px;
+    padding-left: 0;
+    padding-right: 0;
+}}
+
+QComboBox, QLineEdit {{
+    background: {surface};
+    border: 1px solid {border};
+    border-radius: 7px;
+    padding: 7px 10px;
+    min-height: 30px;
+}}
+
+QComboBox::drop-down {{
+    border: 0;
+    border-left: 1px solid {border};
+    width: 30px;
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+}}
+
+QComboBox::down-arrow {{
+    image: none;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid {muted};
+    margin-right: 9px;
+}}
+
+QMenu {{
+    background: {surface};
+    color: {text};
+    border: 1px solid {border};
+    padding: 6px;
+}}
+
+QMenu::item {{
+    padding: 7px 28px 7px 12px;
+    border-radius: 5px;
+}}
+
+QMenu::item:selected {{
+    background: {hover};
+}}
+
+QMenu::separator {{
+    height: 1px;
+    background: {border};
+    margin: 6px 4px;
+}}
+
+QSplitter::handle:vertical {{
+    background: {background};
+    height: 10px;
+}}
+
+QSplitter::handle:vertical:hover {{
+    background: {border};
+}}
+
+QTableView {{
+    background: {surface};
+    alternate-background-color: {surface_alt};
+    border: 1px solid {border};
+    border-radius: 8px;
+    gridline-color: {border};
+    selection-background-color: {selected};
+    selection-color: {selected_text};
+}}
+
+QTableView::item {{
+    padding: 7px 10px;
+    border: 0;
+}}
+
+QTableView::item:hover {{
+    background: {hover};
+}}
+
+QHeaderView::section {{
+    background: {surface_alt};
+    color: {muted};
+    border: 0;
+    border-bottom: 1px solid {border};
+    padding: 9px 10px;
+    font-size: 12px;
+    font-weight: 700;
+}}
+
+QScrollBar:vertical, QScrollBar:horizontal {{
+    background: transparent;
+    border: 0;
+    margin: 2px;
+}}
+
+QScrollBar::handle:vertical, QScrollBar::handle:horizontal {{
+    background: {border_strong};
+    border-radius: 4px;
+    min-height: 28px;
+    min-width: 28px;
+}}
+
+#EmptyState {{
+    background: {surface};
+    border: 1px dashed {border_strong};
+    border-radius: 8px;
+}}
+
+#EmptyTitle {{
+    font-size: 16px;
+    font-weight: 700;
+    color: {text};
+}}

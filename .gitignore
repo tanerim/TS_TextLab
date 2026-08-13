@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Build and distribution artifacts
+build/
+dist/
+*.spec~
+*.log
+
+# OS and editor local state
+.DS_Store
+Thumbs.db
+.idea/
+
+# Local runtime data
+logs/
