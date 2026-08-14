@@ -81,21 +81,60 @@ QPushButton:disabled, QToolButton:disabled {{
     border-color: {border};
 }}
 
-#PrimaryButton {{
-    background: {accent};
+#TokenizeButton, #PosButton, #FrequencyButton {{
     color: white;
-    border-color: {accent};
     font-weight: 700;
 }}
 
-#PrimaryButton:hover {{
+#TokenizeButton {{
+    background: {accent};
+    border-color: {accent};
+}}
+
+#TokenizeButton:hover {{
     background: {accent_hover};
     border-color: {accent_hover};
 }}
 
-#PrimaryButton:pressed {{
+#TokenizeButton:pressed {{
     background: {accent_pressed};
     border-color: {accent_pressed};
+}}
+
+#PosButton {{
+    background: #267066;
+    border-color: #267066;
+}}
+
+#PosButton:hover {{
+    background: #206258;
+    border-color: #206258;
+}}
+
+#PosButton:pressed {{
+    background: #1A554D;
+    border-color: #1A554D;
+}}
+
+#FrequencyButton {{
+    background: #7C5266;
+    border-color: #7C5266;
+}}
+
+#FrequencyButton:hover {{
+    background: #6E485B;
+    border-color: #6E485B;
+}}
+
+#FrequencyButton:pressed {{
+    background: #603F50;
+    border-color: #603F50;
+}}
+
+#TokenizeButton:disabled, #PosButton:disabled, #FrequencyButton:disabled {{
+    color: {muted};
+    background: {surface_alt};
+    border-color: {border};
 }}
 
 #IconButton {{

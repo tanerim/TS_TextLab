@@ -51,6 +51,10 @@ class TokenizerService:
         tokenized = self.tokenize(text, "tokenized")
         return [row[0] for row in tokenized.rows if row and row[0].strip()]
 
+    def tagged_tokens_for_pos(self, text: str) -> list[tuple[str, str]]:
+        tagged = self.tokenize(text, "tagged_lines")
+        return [(row[0], row[1]) for row in tagged.rows if len(row) >= 2 and row[0].strip()]
+
     def frequency(self, text: str, case_mode: FrequencyCaseMode = "insensitive") -> TokenizerResult:
         tokens = self.tokens_for_pos(text)
         if case_mode == "insensitive":

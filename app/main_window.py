@@ -40,6 +40,7 @@ from PySide6.QtWidgets import (
     QMenu,
     QMessageBox,
     QPushButton,
+    QSizePolicy,
     QPlainTextEdit,
     QSplitter,
     QStackedWidget,
@@ -143,8 +144,8 @@ class NlpWorker(QRunnable):
                     frequency_case_mode=self.frequency_case_mode,
                 )
             else:
-                tokens = self.tokenizer_service.tokens_for_pos(self.text)
-                rows = [(token, tag) for token, tag in self.postagger_service.tag_tokens(tokens)]
+                tagged_tokens = self.tokenizer_service.tagged_tokens_for_pos(self.text)
+                rows = [(token, tag) for token, tag in self.postagger_service.tag_tagged_tokens(tagged_tokens)]
                 result = TaskResult(
                     kind=self.kind,
                     headers=["Token", "POS"],
@@ -200,7 +201,7 @@ class ResultTableModel(QAbstractTableModel):
             return self.rows[row][value_index] if value_index < len(self.rows[row]) else ""
 
         if role == Qt.TextAlignmentRole:
-            if column == 0 or self.headerData(column, Qt.Horizontal, Qt.DisplayRole) == "Count":
+            if column == 0 or (self.kind == "frequency" and column == 2):
                 return int(Qt.AlignRight | Qt.AlignVCenter)
             return int(Qt.AlignLeft | Qt.AlignVCenter)
 
@@ -209,7 +210,7 @@ class ResultTableModel(QAbstractTableModel):
                 return row + 1
             value_index = column - 1
             value = self.rows[row][value_index] if value_index < len(self.rows[row]) else ""
-            if self.headerData(column, Qt.Horizontal, Qt.DisplayRole) == "Count":
+            if self.kind == "frequency" and column == 2:
                 try:
                     return int(value)
                 except ValueError:
@@ -321,16 +322,20 @@ class EmptyState(QWidget):
         layout.setContentsMargins(24, 24, 24, 24)
         layout.setSpacing(8)
         layout.addStretch(1)
-        title = QLabel("No results yet")
-        title.setObjectName("EmptyTitle")
-        title.setAlignment(Qt.AlignCenter)
-        body = QLabel("Enter Turkish text and choose Tokenize, POS Tag or Frequency.")
-        body.setObjectName("HintLabel")
-        body.setAlignment(Qt.AlignCenter)
-        body.setWordWrap(True)
-        layout.addWidget(title)
-        layout.addWidget(body)
+        self.title = QLabel("No results yet")
+        self.title.setObjectName("EmptyTitle")
+        self.title.setAlignment(Qt.AlignCenter)
+        self.body = QLabel("Enter Turkish text and choose Tokenize, POS Tag or Frequency.")
+        self.body.setObjectName("HintLabel")
+        self.body.setAlignment(Qt.AlignCenter)
+        self.body.setWordWrap(True)
+        layout.addWidget(self.title)
+        layout.addWidget(self.body)
         layout.addStretch(1)
+
+    def apply_translations(self, trn: Translator) -> None:
+        self.title.setText(trn.text("no_results_title"))
+        self.body.setText(trn.text("no_results_body"))
 
 
 class SettingsDialog(QDialog):
@@ -343,9 +348,9 @@ class SettingsDialog(QDialog):
     ) -> None:
         super().__init__(parent)
         self.settings = settings
+        self.trn = Translator(self.settings.value("language", None, str))
         self.on_appearance_change = on_appearance_change
         self.on_language_change = on_language_change
-        self.setWindowTitle("Settings")
         self.setMinimumWidth(460)
 
         layout = QVBoxLayout(self)
@@ -356,64 +361,74 @@ class SettingsDialog(QDialog):
         form.setHorizontalSpacing(18)
         form.setVerticalSpacing(12)
 
-        form.addWidget(_section_label("Appearance"), 0, 0, 1, 2)
+        self.appearance_label = _section_label("")
+        form.addWidget(self.appearance_label, 0, 0, 1, 2)
         self.theme_combo = QComboBox()
-        self.theme_combo.addItem("System", "system")
-        self.theme_combo.addItem("Light", "light")
-        self.theme_combo.addItem("Dark", "dark")
+        self.theme_combo.addItem("", "system")
+        self.theme_combo.addItem("", "light")
+        self.theme_combo.addItem("", "dark")
         _set_combo_data(self.theme_combo, self.settings.value("theme", "system", str))
-        form.addWidget(QLabel("Theme"), 1, 0)
+        self.theme_label = QLabel()
+        form.addWidget(self.theme_label, 1, 0)
         form.addWidget(self.theme_combo, 1, 1)
 
         self.accent_combo = QComboBox()
-        self.accent_combo.addItem("Deep Indigo", "indigo")
-        self.accent_combo.addItem("Petrol Blue", "petrol")
-        self.accent_combo.addItem("Modern Teal", "teal")
-        self.accent_combo.addItem("Academic Violet", "violet")
-        self.accent_combo.addItem("Research Slate", "slate")
-        self.accent_combo.addItem("Emerald", "emerald")
-        self.accent_combo.addItem("Burgundy", "burgundy")
-        self.accent_combo.addItem("Amber", "amber")
+        self.accent_combo.addItem("", "indigo")
+        self.accent_combo.addItem("", "petrol")
+        self.accent_combo.addItem("", "teal")
+        self.accent_combo.addItem("", "violet")
+        self.accent_combo.addItem("", "slate")
+        self.accent_combo.addItem("", "emerald")
+        self.accent_combo.addItem("", "burgundy")
+        self.accent_combo.addItem("", "amber")
         _set_combo_data(self.accent_combo, self.settings.value("accent", "indigo", str))
-        form.addWidget(QLabel("Accent"), 2, 0)
+        self.accent_label = QLabel()
+        form.addWidget(self.accent_label, 2, 0)
         form.addWidget(self.accent_combo, 2, 1)
 
-        form.addWidget(_section_label("Language"), 3, 0, 1, 2)
+        self.language_section_label = _section_label("")
+        form.addWidget(self.language_section_label, 3, 0, 1, 2)
         self.language_combo = QComboBox()
-        self.language_combo.addItem("System", "system")
-        self.language_combo.addItem("English", "en")
-        self.language_combo.addItem("Türkçe", "tr")
+        self.language_combo.addItem("", "system")
+        self.language_combo.addItem("", "en")
+        self.language_combo.addItem("", "tr")
         _set_combo_data(self.language_combo, self.settings.value("language", "system", str))
-        form.addWidget(QLabel("Language"), 4, 0)
+        self.language_label = QLabel()
+        form.addWidget(self.language_label, 4, 0)
         form.addWidget(self.language_combo, 4, 1)
 
-        form.addWidget(_section_label("Behavior"), 5, 0, 1, 2)
+        self.behavior_label = _section_label("")
+        form.addWidget(self.behavior_label, 5, 0, 1, 2)
         self.default_mode_combo = QComboBox()
-        self.default_mode_combo.addItem("Tokenized", "tokenized")
-        self.default_mode_combo.addItem("Tagged", "tagged")
-        self.default_mode_combo.addItem("Lines", "lines")
+        self.default_mode_combo.addItem("", "tokenized")
+        self.default_mode_combo.addItem("", "tagged")
+        self.default_mode_combo.addItem("", "lines")
         _set_combo_data(self.default_mode_combo, self.settings.value("default_tokenizer_mode", "tokenized", str))
-        form.addWidget(QLabel("Default tokenization mode"), 6, 0)
+        self.default_mode_label = QLabel()
+        form.addWidget(self.default_mode_label, 6, 0)
         form.addWidget(self.default_mode_combo, 6, 1)
 
-        self.remember_layout = QCheckBox("Remember window layout")
+        self.remember_layout = QCheckBox()
         self.remember_layout.setChecked(self.settings.value("remember_layout", True, bool))
         form.addWidget(self.remember_layout, 7, 1)
 
-        form.addWidget(_section_label("Interface"), 8, 0, 1, 2)
+        self.interface_label = _section_label("")
+        form.addWidget(self.interface_label, 8, 0, 1, 2)
         self.density_combo = QComboBox()
-        self.density_combo.addItem("Comfortable", "comfortable")
-        self.density_combo.addItem("Compact", "compact")
+        self.density_combo.addItem("", "comfortable")
+        self.density_combo.addItem("", "compact")
         _set_combo_data(self.density_combo, self.settings.value("table_density", "comfortable", str))
-        form.addWidget(QLabel("Table density"), 9, 0)
+        self.density_label = QLabel()
+        form.addWidget(self.density_label, 9, 0)
         form.addWidget(self.density_combo, 9, 1)
         form.setColumnStretch(1, 1)
         layout.addLayout(form)
 
-        buttons = QDialogButtonBox(QDialogButtonBox.Cancel | QDialogButtonBox.Ok)
-        buttons.accepted.connect(self.accept)
-        buttons.rejected.connect(self.reject)
-        layout.addWidget(buttons)
+        self.buttons = QDialogButtonBox(QDialogButtonBox.Cancel | QDialogButtonBox.Ok)
+        self.buttons.accepted.connect(self.accept)
+        self.buttons.rejected.connect(self.reject)
+        layout.addWidget(self.buttons)
+        self._apply_translations()
         self.theme_combo.currentIndexChanged.connect(self._apply_appearance_immediately)
         self.accent_combo.currentIndexChanged.connect(self._apply_appearance_immediately)
         self.language_combo.currentIndexChanged.connect(self._apply_language_immediately)
@@ -435,6 +450,8 @@ class SettingsDialog(QDialog):
 
     def _apply_language_immediately(self) -> None:
         self._write_language_setting()
+        self.trn = Translator(self.settings.value("language", None, str))
+        self._apply_translations()
         if self.on_language_change is not None:
             self.on_language_change()
 
@@ -444,6 +461,44 @@ class SettingsDialog(QDialog):
             self.settings.remove("language")
         else:
             self.settings.setValue("language", language)
+
+    def _apply_translations(self) -> None:
+        self.setWindowTitle(self.trn.text("settings"))
+        self.appearance_label.setText(self.trn.text("appearance").upper())
+        self.theme_label.setText(self.trn.text("theme"))
+        self.theme_combo.setItemText(0, self.trn.text("system"))
+        self.theme_combo.setItemText(1, self.trn.text("light"))
+        self.theme_combo.setItemText(2, self.trn.text("dark"))
+        self.accent_label.setText(self.trn.text("accent"))
+        self.accent_combo.setItemText(0, self.trn.text("deep_indigo"))
+        self.accent_combo.setItemText(1, self.trn.text("petrol_blue"))
+        self.accent_combo.setItemText(2, self.trn.text("modern_teal"))
+        self.accent_combo.setItemText(3, self.trn.text("academic_violet"))
+        self.accent_combo.setItemText(4, self.trn.text("research_slate"))
+        self.accent_combo.setItemText(5, self.trn.text("emerald"))
+        self.accent_combo.setItemText(6, self.trn.text("burgundy"))
+        self.accent_combo.setItemText(7, self.trn.text("amber"))
+        self.language_section_label.setText(self.trn.text("language").upper())
+        self.language_label.setText(self.trn.text("language"))
+        self.language_combo.setItemText(0, self.trn.text("system"))
+        self.language_combo.setItemText(1, self.trn.text("english"))
+        self.language_combo.setItemText(2, self.trn.text("turkish"))
+        self.behavior_label.setText(self.trn.text("behavior").upper())
+        self.default_mode_label.setText(self.trn.text("default_tokenization_mode"))
+        self.default_mode_combo.setItemText(0, self.trn.text("tokenized"))
+        self.default_mode_combo.setItemText(1, self.trn.text("tagged"))
+        self.default_mode_combo.setItemText(2, self.trn.text("lines"))
+        self.remember_layout.setText(self.trn.text("remember_window_layout"))
+        self.interface_label.setText(self.trn.text("interface").upper())
+        self.density_label.setText(self.trn.text("table_density"))
+        self.density_combo.setItemText(0, self.trn.text("comfortable"))
+        self.density_combo.setItemText(1, self.trn.text("compact"))
+        ok_button = self.buttons.button(QDialogButtonBox.Ok)
+        cancel_button = self.buttons.button(QDialogButtonBox.Cancel)
+        if ok_button is not None:
+            ok_button.setText(self.trn.text("ok"))
+        if cancel_button is not None:
+            cancel_button.setText(self.trn.text("cancel"))
 
 
 def _section_label(text: str) -> QLabel:
@@ -469,6 +524,8 @@ class MainWindow(QMainWindow):
         self.current_copy_text = ""
         self.current_headers: list[str] = []
         self.current_kind: TaskKind | None = None
+        self.current_tokenizer_mode: TokenizerMode | None = None
+        self.current_frequency_case_mode: FrequencyCaseMode | None = None
         self._task_started_at = 0.0
         self._enforcing_splitter = False
         self._palette = palette_for(self._theme_setting(), self.settings.value("accent", "indigo", str))
@@ -534,7 +591,6 @@ class MainWindow(QMainWindow):
         self.app_menu_button = QToolButton()
         self.app_menu_button.setIcon(self.style().standardIcon(QStyle.SP_FileDialogDetailedView))
         self.app_menu_button.setObjectName("IconButton")
-        self.app_menu_button.setToolTip("Application menu")
         self.app_menu_button.setPopupMode(QToolButton.InstantPopup)
         menu = QMenu(self.app_menu_button)
         self.settings_action = menu.addAction("Settings")
@@ -611,10 +667,14 @@ class MainWindow(QMainWindow):
         self.tokenize_button = QPushButton("Tokenize")
         self.pos_button = QPushButton("POS Tag")
         self.frequency_button = QPushButton("Frequency")
+        self.tokenize_button.setObjectName("TokenizeButton")
+        self.pos_button.setObjectName("PosButton")
+        self.frequency_button.setObjectName("FrequencyButton")
         for button in (self.tokenize_button, self.pos_button, self.frequency_button):
-            button.setObjectName("PrimaryButton")
+            button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.clear_button = QToolButton()
         self.clear_button.setText("Clear")
+        self.clear_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.clear_button.setPopupMode(QToolButton.InstantPopup)
         clear_menu = QMenu(self.clear_button)
         self.clear_input_action = clear_menu.addAction("Clear Input")
@@ -650,7 +710,8 @@ class MainWindow(QMainWindow):
         self.filter_input = QLineEdit()
         self.filter_input.setPlaceholderText("Filter results...")
         self.filter_input.setClearButtonEnabled(True)
-        self.filter_input.setMaximumWidth(220)
+        self.filter_input.setMinimumWidth(260)
+        self.filter_input.setMaximumWidth(360)
         top.addWidget(self.filter_input)
         self.copy_button = QToolButton()
         self.copy_button.setText("Copy")
@@ -792,7 +853,7 @@ class MainWindow(QMainWindow):
         text = self.input_text.toPlainText()
         self._task_started_at = time.perf_counter()
         self._set_busy(True, kind)
-        self.status_label.setText("Preparing POS Tagger..." if kind == "pos" else "Processing...")
+        self.status_label.setText(self.trn.text("preparing_pos") if kind == "pos" else self.trn.text("processing"))
         worker = NlpWorker(
             kind,
             text,
@@ -809,9 +870,12 @@ class MainWindow(QMainWindow):
     @Slot(object)
     def _display_result(self, result: TaskResult) -> None:
         elapsed_ms = max(1, int((time.perf_counter() - self._task_started_at) * 1000))
+        result = self._localized_result(result)
         self.current_copy_text = result.copy_text
         self.current_headers = result.headers
         self.current_kind = result.kind
+        self.current_tokenizer_mode = result.tokenizer_mode
+        self.current_frequency_case_mode = result.frequency_case_mode
         self.result_model.set_result(result)
         self.proxy_model.invalidateFilter()
         self.table_stack.setCurrentWidget(self.results_table)
@@ -828,21 +892,17 @@ class MainWindow(QMainWindow):
 
         label = self._kind_label(result)
         count_label = self._count_label(result.kind, len(result.rows))
-        tag_note = "Given tags are not part-of-speech tags but they define the function of the given string."
+        self.results_meta.setText(f"· {label} · {count_label}")
+        status = f"{self.trn.text('completed')} · {count_label} · {elapsed_ms} ms"
         if result.kind == "tokenize" and result.tokenizer_mode == "tagged":
-            self.results_meta.setText(f"· {label} · {count_label} · {tag_note}")
-        else:
-            self.results_meta.setText(f"· {label} · {count_label}")
-        status = f"Completed · {count_label} · {elapsed_ms} ms"
-        if result.kind == "tokenize" and result.tokenizer_mode == "tagged":
-            status = f"{status} · {tag_note}"
+            status = f"{status} · {self.trn.text('tokenizer_tag_note')}"
         self.status_label.setText(status)
         self._set_busy(False)
 
     @Slot(str)
     def _display_error(self, message: str) -> None:
         self.status_label.setText(message)
-        self.results_meta.setText("· Error")
+        self.results_meta.setText(f"· {self.trn.text('error')}")
         self._set_busy(False)
 
     @Slot(object)
@@ -854,9 +914,9 @@ class MainWindow(QMainWindow):
                 self.trn.text("update_body", latest=result.latest_version, current=APP_VERSION),
             )
         elif result.checked:
-            self.status_label.setText("Current version is up to date.")
+            self.status_label.setText(self.trn.text("up_to_date"))
         else:
-            self.status_label.setText("Version check could not be completed.")
+            self.status_label.setText(self.trn.text("version_check_failed"))
 
     def _copy_result(self) -> None:
         self._copy_selection_or_result()
@@ -868,7 +928,7 @@ class MainWindow(QMainWindow):
             self.status_label.setText(self.trn.text("no_result"))
             return
         QGuiApplication.clipboard().setText(text)
-        self.status_label.setText("Selection copied." if selected_text else self.trn.text("copied"))
+        self.status_label.setText(self.trn.text("selection_copied") if selected_text else self.trn.text("copied"))
 
     def _selected_rows_text(self) -> str:
         selection = self.results_table.selectionModel()
@@ -887,10 +947,12 @@ class MainWindow(QMainWindow):
         self.current_copy_text = ""
         self.current_headers = []
         self.current_kind = None
+        self.current_tokenizer_mode = None
+        self.current_frequency_case_mode = None
         self.result_model.set_result(None)
         self.filter_input.clear()
         self.table_stack.setCurrentWidget(self.empty_state)
-        self.results_meta.setText("Ready")
+        self.results_meta.setText(self.trn.text("ready"))
         self.status_label.setText(self.trn.text("cleared"))
 
     def _clear_all(self) -> None:
@@ -903,30 +965,53 @@ class MainWindow(QMainWindow):
         self.clear_button.setDisabled(busy)
         self.copy_button.setDisabled(busy)
         if busy:
-            self.results_meta.setText("· Preparing POS Tagger" if kind == "pos" else "· Processing")
+            text = self.trn.text("preparing_pos") if kind == "pos" else self.trn.text("processing")
+            self.results_meta.setText(f"· {text}")
             QApplication.setOverrideCursor(Qt.WaitCursor)
         else:
             QApplication.restoreOverrideCursor()
 
     def _apply_translations(self) -> None:
         self.input_text.setPlaceholderText(self.trn.text("input_placeholder"))
+        self.subtitle_label.setText(self.trn.text("subtitle"))
+        self.input_title.setText(self.trn.text("input"))
+        self.results_title.setText(self.trn.text("results"))
         self.tokenization_mode_label.setText(self.trn.text("tokenization_mode"))
+        self.tokenizer_mode_combo.setItemText(0, self.trn.text("tokenized"))
+        self.tokenizer_mode_combo.setItemText(1, self.trn.text("tagged"))
+        self.tokenizer_mode_combo.setItemText(2, self.trn.text("lines"))
         self.frequency_case_label.setText(self.trn.text("frequency_case"))
         self.frequency_case_combo.setItemText(0, self.trn.text("case_insensitive"))
         self.frequency_case_combo.setItemText(1, self.trn.text("case_sensitive"))
         self.tokenize_button.setText(self.trn.text("tokenize"))
         self.pos_button.setText(self.trn.text("pos_tag"))
         self.frequency_button.setText(self.trn.text("frequency"))
+        self.clear_button.setText(self.trn.text("clear"))
         self.clear_input_action.setText(self.trn.text("clear_input"))
         self.clear_result_action.setText(self.trn.text("clear_result"))
+        self.clear_all_action.setText(self.trn.text("clear_all"))
+        self.copy_button.setText(self.trn.text("copy"))
+        self.copy_button.setToolTip(self.trn.text("copy_result"))
+        self.filter_input.setPlaceholderText(self.trn.text("filter_results"))
+        self.app_menu_button.setToolTip(self.trn.text("application_menu"))
         self.settings_action.setText(self.trn.text("settings"))
         self.help_action.setText(self.trn.text("help"))
         self.about_action.setText(f"{self.trn.text('about')} TS TextLab")
+        self.shortcuts_action.setText(self.trn.text("keyboard_shortcuts"))
+        self.check_version_action.setText(self.trn.text("check_version"))
+        self.empty_state.apply_translations(self.trn)
+        self._update_input_meta()
+        if self.current_kind is not None:
+            self.result_model.beginResetModel()
+            self.result_model.headers = self._headers_for_current_result()
+            self.result_model.endResetModel()
+            visible = self.proxy_model.rowCount()
+            self.results_meta.setText(f"· {self._kind_label_from_current()} · {self._visible_count_label(visible)}")
         if not self.current_copy_text:
             self.status_label.setText(self.trn.text("ready"))
 
     def _start_version_check(self) -> None:
-        self.status_label.setText("Checking version...")
+        self.status_label.setText(self.trn.text("checking_version"))
         worker = VersionWorker()
         worker.signals.finished.connect(self._display_version_result)
         self._workers.append(worker)
@@ -944,7 +1029,7 @@ class MainWindow(QMainWindow):
 
     def _show_about(self) -> None:
         dialog = QDialog(self)
-        dialog.setWindowTitle("About TS TextLab")
+        dialog.setWindowTitle(self.trn.text("about_title"))
         dialog.setMinimumWidth(560)
         layout = QVBoxLayout(dialog)
         layout.setContentsMargins(22, 22, 22, 18)
@@ -956,17 +1041,17 @@ class MainWindow(QMainWindow):
 
         body = QLabel(
             f"""
-            <p><b>Local Turkish NLP</b><br>Version {APP_VERSION}</p>
+            <p><b>{self.trn.text('subtitle')}</b><br>{self.trn.text('version')} {APP_VERSION}</p>
             <p><a href="https://tscorpus.com/">TS TextLab</a></p>
-            <p>Powered by:<br>
+            <p>{self.trn.text('powered_by')}:<br>
             <a href="https://pypi.org/project/ts-tokenizer/">TS Tokenizer</a><br>
             <a href="https://github.com/tanerim/ts_SpaCy_PosTagger">TS PosTagger</a></p>
-            <p>All text is processed locally on your computer.<br>
-            No text is uploaded or sent to an external service.</p>
+            <p>{self.trn.text('local_processing_statement')}<br>
+            {self.trn.text('no_upload_statement')}</p>
             <p>SEZER, T. (2025).
             <a href="https://tez.yok.gov.tr/UlusalTezMerkezi/TezGoster?key=Xau5rw3KuCgEuy-FuJQtsNVGSOOMCSQba2T5bZaDSDUTfOiTTVCpuBZPjDrUgB0i">
-            Dizilerden birimlere: Bilişimsel dilbilim çerçevesinde bir birimlendirici tasarımı</a>
-            (Tez No. 959204) [Doktora tezi, HACETTEPE ÜNİVERSİTESİ]. Ulusal Tez Merkezi.</p>
+            Dizilerden birimlere: Bilişimsel dilbilim çerçevesinde bir birimlendirici tasarımı</a><br>
+            [Doktora tezi, HACETTEPE ÜNİVERSİTESİ]. <br> Ulusal Tez Merkezi, Tez No. 959204</p>
             """
         )
         body.setOpenExternalLinks(True)
@@ -983,27 +1068,22 @@ class MainWindow(QMainWindow):
     def _show_guide(self) -> None:
         QMessageBox.information(
             self,
-            "Help",
-            (
-                "1. Type or paste Turkish text into the input area.\n"
-                "2. Choose a tokenization mode when needed.\n"
-                "3. Run Tokenize, POS Tag or Frequency.\n"
-                "4. Filter, select and copy results from the table."
-            ),
+            self.trn.text("guide"),
+            self.trn.text("guide_body"),
         )
 
     def _show_shortcuts(self) -> None:
         modifier = "Cmd" if QGuiApplication.platformName() == "cocoa" else "Ctrl"
         QMessageBox.information(
             self,
-            "Keyboard Shortcuts",
+            self.trn.text("keyboard_shortcuts"),
             (
-                f"{modifier}+Enter    Tokenize\n"
-                f"{modifier}+Shift+P  POS Tag\n"
-                f"{modifier}+Shift+F  Frequency\n"
-                f"{modifier}+C        Copy selected results\n"
-                f"{modifier}+L        Focus input\n"
-                f"{modifier}+,        Settings"
+                f"{modifier}+Enter    {self.trn.text('tokenize')}\n"
+                f"{modifier}+Shift+P  {self.trn.text('pos_tag')}\n"
+                f"{modifier}+Shift+F  {self.trn.text('frequency')}\n"
+                f"{modifier}+C        {self.trn.text('copy')}\n"
+                f"{modifier}+L        {self.trn.text('input')}\n"
+                f"{modifier}+,        {self.trn.text('settings')}"
             ),
         )
 
@@ -1015,12 +1095,12 @@ class MainWindow(QMainWindow):
         self.proxy_model.setFilterRegularExpression(QRegularExpression.escape(text))
         visible = self.proxy_model.rowCount()
         if self.result_model.rowCount():
-            self.results_meta.setText(f"· {self._kind_label_from_current()} · {visible} shown")
+            self.results_meta.setText(f"· {self._kind_label_from_current()} · {self._visible_count_label(visible)}")
 
     def _update_input_meta(self) -> None:
         text = self.input_text.toPlainText()
         spaces = text.count(" ")
-        self.input_meta.setText(f"{len(text):,} characters · {spaces:,} spaces")
+        self.input_meta.setText(f"{len(text):,} {self.trn.text('characters')} · {spaces:,} {self.trn.text('spaces')}")
 
     def _save_tokenizer_mode(self) -> None:
         self.settings.setValue("tokenizer_mode", self.tokenizer_mode_combo.currentData())
@@ -1028,27 +1108,63 @@ class MainWindow(QMainWindow):
     def _save_frequency_case_mode(self) -> None:
         self.settings.setValue("frequency_case_mode", self.frequency_case_combo.currentData())
 
+    def _localized_result(self, result: TaskResult) -> TaskResult:
+        return TaskResult(
+            kind=result.kind,
+            headers=[self._header_label(header) for header in result.headers],
+            rows=result.rows,
+            copy_text=result.copy_text,
+            tokenizer_mode=result.tokenizer_mode,
+            frequency_case_mode=result.frequency_case_mode,
+        )
+
+    def _header_label(self, header: str) -> str:
+        return {
+            "Token": self.trn.text("token"),
+            "Tag": self.trn.text("tag"),
+            "POS": self.trn.text("pos"),
+            "Line": self.trn.text("line"),
+            "Result": self.trn.text("result"),
+            "Count": self.trn.text("count"),
+        }.get(header, header)
+
+    def _headers_for_current_result(self) -> list[str]:
+        if self.current_kind == "frequency":
+            return [self.trn.text("token"), self.trn.text("count")]
+        if self.current_kind == "pos":
+            return [self.trn.text("token"), self.trn.text("pos")]
+        if self.current_kind == "tokenize":
+            return {
+                "tagged": [self.trn.text("token"), self.trn.text("tag")],
+                "lines": [self.trn.text("line"), self.trn.text("result")],
+                "tokenized": [self.trn.text("token")],
+            }.get(self.current_tokenizer_mode or "tokenized", [self.trn.text("token")])
+        return self.current_headers
+
     def _kind_label(self, result: TaskResult) -> str:
         if result.kind == "frequency":
             if result.frequency_case_mode == "sensitive":
-                return "Frequency, case-sensitive"
-            return "Frequency, case-insensitive"
+                return self.trn.text("frequency_sensitive")
+            return self.trn.text("frequency_insensitive")
         if result.kind == "pos":
-            return "POS Tagging"
+            return self.trn.text("pos_tagging")
         mode = result.tokenizer_mode or "tokenized"
         return {
-            "tokenized": "Tokenization",
-            "tagged": "Tokenizer Tags",
-            "lines": "Line Tokenization",
-        }.get(mode, "Tokenization")
+            "tokenized": self.trn.text("tokenization"),
+            "tagged": self.trn.text("tokenizer_tags"),
+            "lines": self.trn.text("line_tokenization"),
+        }.get(mode, self.trn.text("tokenization"))
 
     def _kind_label_from_current(self) -> str:
         return {
-            "frequency": "Frequency",
-            "pos": "POS Tagging",
-            "tokenize": "Tokenization",
-        }.get(self.current_kind or "", "Results")
+            "frequency": self.trn.text("frequency"),
+            "pos": self.trn.text("pos_tagging"),
+            "tokenize": self.trn.text("tokenization"),
+        }.get(self.current_kind or "", self.trn.text("results"))
 
     def _count_label(self, kind: TaskKind, count: int) -> str:
-        noun = "tokens" if kind in {"tokenize", "pos"} else "results"
+        noun = self.trn.text("tokens") if kind in {"tokenize", "pos"} else self.trn.text("rows")
         return f"{count:,} {noun}"
+
+    def _visible_count_label(self, count: int) -> str:
+        return f"{count:,} {self.trn.text('shown')}"
