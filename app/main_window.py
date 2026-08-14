@@ -255,6 +255,37 @@ class ResultProxyModel(QSortFilterProxyModel):
 
 
 class PosBadgeDelegate(QStyledItemDelegate):
+    LIGHT_COLORS = {
+        "NOUN": ("#E5F1FF", "#1F4F82"),
+        "PROPN": ("#E9E7FF", "#4B3D93"),
+        "VERB": ("#E3F7EC", "#1F6A43"),
+        "AUX": ("#E8F5F2", "#1E665E"),
+        "ADJ": ("#FFF1D8", "#7A4B00"),
+        "ADV": ("#FCE5EF", "#823454"),
+        "DET": ("#E6F6FA", "#1F6070"),
+        "PRON": ("#EFE7FA", "#5C3B82"),
+        "ADP": ("#F1F4F8", "#44546A"),
+        "CCONJ": ("#F0EAF2", "#684064"),
+        "SCONJ": ("#F0EAF2", "#684064"),
+        "NUM": ("#F8E7DE", "#7A3E24"),
+        "PUNCT": ("#ECEFF3", "#4D5968"),
+    }
+    DARK_COLORS = {
+        "NOUN": ("#243D5D", "#BBD8FF"),
+        "PROPN": ("#37325F", "#D9D2FF"),
+        "VERB": ("#244937", "#BDEBCF"),
+        "AUX": ("#244842", "#BEE9E1"),
+        "ADJ": ("#52401F", "#F4D194"),
+        "ADV": ("#523044", "#F5BDD2"),
+        "DET": ("#234A54", "#BEEAF2"),
+        "PRON": ("#3E3153", "#DDC8F5"),
+        "ADP": ("#313A47", "#CDD6E2"),
+        "CCONJ": ("#473244", "#E7C6E2"),
+        "SCONJ": ("#473244", "#E7C6E2"),
+        "NUM": ("#54382B", "#F1C5AD"),
+        "PUNCT": ("#343A44", "#D3DAE3"),
+    }
+
     def __init__(self, palette: ThemePalette, parent: QObject | None = None) -> None:
         super().__init__(parent)
         self.palette = palette
@@ -273,11 +304,17 @@ class PosBadgeDelegate(QStyledItemDelegate):
         badge = QRectF(rect.left(), rect.top(), width, rect.height())
         painter.setRenderHint(QPainter.Antialiasing)
         painter.setPen(Qt.NoPen)
-        painter.setBrush(QColor(self.palette.pos_badge_bg))
+        bg, fg = self._colors_for(text)
+        painter.setBrush(QColor(bg))
         painter.drawRoundedRect(badge, 6, 6)
-        painter.setPen(QPen(QColor(self.palette.pos_badge_text)))
+        painter.setPen(QPen(QColor(fg)))
         painter.drawText(badge, Qt.AlignCenter, text)
         painter.restore()
+
+    def _colors_for(self, text: str) -> tuple[str, str]:
+        key = text.strip().upper().split(":", 1)[0].split("-", 1)[0]
+        colors = self.DARK_COLORS if self.palette.name == "dark" else self.LIGHT_COLORS
+        return colors.get(key, (self.palette.pos_badge_bg, self.palette.pos_badge_text))
 
 
 class FrequencyBarDelegate(QStyledItemDelegate):
@@ -526,6 +563,7 @@ class MainWindow(QMainWindow):
         self.current_kind: TaskKind | None = None
         self.current_tokenizer_mode: TokenizerMode | None = None
         self.current_frequency_case_mode: FrequencyCaseMode | None = None
+        self.current_elapsed_ms: int | None = None
         self._task_started_at = 0.0
         self._enforcing_splitter = False
         self._palette = palette_for(self._theme_setting(), self.settings.value("accent", "indigo", str))
@@ -568,20 +606,17 @@ class MainWindow(QMainWindow):
     def _build_header(self) -> QWidget:
         header = QFrame()
         header.setObjectName("AppHeader")
-        header.setFixedHeight(64)
+        header.setFixedHeight(38)
         layout = QHBoxLayout(header)
-        layout.setContentsMargins(20, 8, 18, 8)
+        layout.setContentsMargins(20, 4, 18, 4)
         layout.setSpacing(12)
 
-        title_group = QVBoxLayout()
-        title_group.setSpacing(1)
         self.title_label = QLabel(APP_NAME)
         self.title_label.setObjectName("TitleLabel")
         self.subtitle_label = QLabel("Local Turkish NLP")
         self.subtitle_label.setObjectName("SubtitleLabel")
-        title_group.addWidget(self.title_label)
-        title_group.addWidget(self.subtitle_label)
-        layout.addLayout(title_group)
+        self.subtitle_label.setVisible(False)
+        layout.addWidget(self.title_label)
         layout.addStretch(1)
 
         layout.addWidget(self._build_app_menu_button())
@@ -635,10 +670,8 @@ class MainWindow(QMainWindow):
         self.input_text.setMinimumHeight(82)
         layout.addWidget(self.input_text, 1)
 
-        controls = QHBoxLayout()
-        controls.setSpacing(10)
         mode_group = QVBoxLayout()
-        mode_group.setSpacing(3)
+        mode_group.setSpacing(4)
         self.tokenization_mode_label = QLabel("Tokenization Mode")
         self.tokenization_mode_label.setObjectName("MetaLabel")
         self.tokenizer_mode_combo = QComboBox()
@@ -647,20 +680,11 @@ class MainWindow(QMainWindow):
         self.tokenizer_mode_combo.addItem("Lines", "lines")
         mode_group.addWidget(self.tokenization_mode_label)
         mode_group.addWidget(self.tokenizer_mode_combo)
-        controls.addLayout(mode_group, 1)
+        layout.addLayout(mode_group)
 
-        frequency_case_group = QVBoxLayout()
-        frequency_case_group.setSpacing(3)
-        self.frequency_case_label = QLabel("Frequency Case")
-        self.frequency_case_label.setObjectName("MetaLabel")
-        self.frequency_case_combo = QComboBox()
-        self.frequency_case_combo.addItem("Case-insensitive", "insensitive")
-        self.frequency_case_combo.addItem("Case-sensitive", "sensitive")
-        frequency_case_group.addWidget(self.frequency_case_label)
-        frequency_case_group.addWidget(self.frequency_case_combo)
-        controls.addLayout(frequency_case_group, 1)
-        layout.addLayout(controls)
-
+        self.actions_label = QLabel("Actions")
+        self.actions_label.setObjectName("MetaLabel")
+        layout.addWidget(self.actions_label)
         actions = QGridLayout()
         actions.setHorizontalSpacing(8)
         actions.setVerticalSpacing(8)
@@ -674,7 +698,8 @@ class MainWindow(QMainWindow):
             button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.clear_button = QToolButton()
         self.clear_button.setText("Clear")
-        self.clear_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.clear_button.setObjectName("UtilityButton")
+        self.clear_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         self.clear_button.setPopupMode(QToolButton.InstantPopup)
         clear_menu = QMenu(self.clear_button)
         self.clear_input_action = clear_menu.addAction("Clear Input")
@@ -683,11 +708,27 @@ class MainWindow(QMainWindow):
         self.clear_button.setMenu(clear_menu)
         actions.addWidget(self.tokenize_button, 0, 0)
         actions.addWidget(self.pos_button, 0, 1)
-        actions.addWidget(self.frequency_button, 1, 0)
-        actions.addWidget(self.clear_button, 1, 1)
+        actions.addWidget(self.frequency_button, 0, 2)
+        actions.addWidget(self.clear_button, 0, 3)
         actions.setColumnStretch(0, 1)
         actions.setColumnStretch(1, 1)
+        actions.setColumnStretch(2, 1)
         layout.addLayout(actions)
+
+        self.frequency_case_group = QFrame()
+        self.frequency_case_group.setObjectName("ActionOptions")
+        frequency_case_layout = QHBoxLayout(self.frequency_case_group)
+        frequency_case_layout.setContentsMargins(0, 0, 0, 0)
+        frequency_case_layout.setSpacing(8)
+        self.frequency_case_label = QLabel("Frequency Case")
+        self.frequency_case_label.setObjectName("MetaLabel")
+        self.frequency_case_combo = QComboBox()
+        self.frequency_case_combo.addItem("Case-insensitive", "insensitive")
+        self.frequency_case_combo.addItem("Case-sensitive", "sensitive")
+        frequency_case_layout.addWidget(self.frequency_case_label)
+        frequency_case_layout.addWidget(self.frequency_case_combo, 1)
+        layout.addWidget(self.frequency_case_group)
+        self.frequency_case_group.setVisible(False)
         return panel
 
     def _build_results_panel(self) -> QWidget:
@@ -703,7 +744,7 @@ class MainWindow(QMainWindow):
         self.results_title = QLabel("RESULTS")
         self.results_title.setObjectName("SectionTitle")
         self.results_meta = QLabel("Ready")
-        self.results_meta.setObjectName("MetaLabel")
+        self.results_meta.setObjectName("AnalysisStatus")
         top.addWidget(self.results_title)
         top.addWidget(self.results_meta)
         top.addStretch(1)
@@ -852,6 +893,7 @@ class MainWindow(QMainWindow):
     def _start_task(self, kind: TaskKind) -> None:
         text = self.input_text.toPlainText()
         self._task_started_at = time.perf_counter()
+        self.frequency_case_group.setVisible(kind == "frequency")
         self._set_busy(True, kind)
         self.status_label.setText(self.trn.text("preparing_pos") if kind == "pos" else self.trn.text("processing"))
         worker = NlpWorker(
@@ -876,10 +918,12 @@ class MainWindow(QMainWindow):
         self.current_kind = result.kind
         self.current_tokenizer_mode = result.tokenizer_mode
         self.current_frequency_case_mode = result.frequency_case_mode
+        self.current_elapsed_ms = elapsed_ms
         self.result_model.set_result(result)
         self.proxy_model.invalidateFilter()
         self.table_stack.setCurrentWidget(self.results_table)
         self.results_table.setSortingEnabled(result.kind == "frequency")
+        self.frequency_case_group.setVisible(result.kind == "frequency")
         self.results_table.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
         self.results_table.setColumnWidth(0, 58)
         if result.headers:
@@ -892,8 +936,8 @@ class MainWindow(QMainWindow):
 
         label = self._kind_label(result)
         count_label = self._count_label(result.kind, len(result.rows))
-        self.results_meta.setText(f"· {label} · {count_label}")
-        status = f"{self.trn.text('completed')} · {count_label} · {elapsed_ms} ms"
+        self.results_meta.setText(f"{self.trn.text('analysis')} · {label} · {count_label}")
+        status = f"{self.trn.text('completed')} · {count_label} · {elapsed_ms} {self.trn.text('milliseconds')}"
         if result.kind == "tokenize" and result.tokenizer_mode == "tagged":
             status = f"{status} · {self.trn.text('tokenizer_tag_note')}"
         self.status_label.setText(status)
@@ -902,7 +946,7 @@ class MainWindow(QMainWindow):
     @Slot(str)
     def _display_error(self, message: str) -> None:
         self.status_label.setText(message)
-        self.results_meta.setText(f"· {self.trn.text('error')}")
+        self.results_meta.setText(f"{self.trn.text('analysis')} · {self.trn.text('error')}")
         self._set_busy(False)
 
     @Slot(object)
@@ -949,11 +993,13 @@ class MainWindow(QMainWindow):
         self.current_kind = None
         self.current_tokenizer_mode = None
         self.current_frequency_case_mode = None
+        self.current_elapsed_ms = None
         self.result_model.set_result(None)
         self.filter_input.clear()
         self.table_stack.setCurrentWidget(self.empty_state)
         self.results_meta.setText(self.trn.text("ready"))
         self.status_label.setText(self.trn.text("cleared"))
+        self.frequency_case_group.setVisible(False)
 
     def _clear_all(self) -> None:
         self.input_text.clear()
@@ -966,7 +1012,7 @@ class MainWindow(QMainWindow):
         self.copy_button.setDisabled(busy)
         if busy:
             text = self.trn.text("preparing_pos") if kind == "pos" else self.trn.text("processing")
-            self.results_meta.setText(f"· {text}")
+            self.results_meta.setText(f"{self.trn.text('analysis')} · {text}")
             QApplication.setOverrideCursor(Qt.WaitCursor)
         else:
             QApplication.restoreOverrideCursor()
@@ -986,6 +1032,7 @@ class MainWindow(QMainWindow):
         self.tokenize_button.setText(self.trn.text("tokenize"))
         self.pos_button.setText(self.trn.text("pos_tag"))
         self.frequency_button.setText(self.trn.text("frequency"))
+        self.actions_label.setText(self.trn.text("actions"))
         self.clear_button.setText(self.trn.text("clear"))
         self.clear_input_action.setText(self.trn.text("clear_input"))
         self.clear_result_action.setText(self.trn.text("clear_result"))
@@ -1006,7 +1053,10 @@ class MainWindow(QMainWindow):
             self.result_model.headers = self._headers_for_current_result()
             self.result_model.endResetModel()
             visible = self.proxy_model.rowCount()
-            self.results_meta.setText(f"· {self._kind_label_from_current()} · {self._visible_count_label(visible)}")
+            self.results_meta.setText(
+                f"{self.trn.text('analysis')} · {self._kind_label_from_current()} · {self._visible_count_label(visible)}"
+            )
+            self.status_label.setText(self._status_for_current_result())
         if not self.current_copy_text:
             self.status_label.setText(self.trn.text("ready"))
 
@@ -1095,7 +1145,9 @@ class MainWindow(QMainWindow):
         self.proxy_model.setFilterRegularExpression(QRegularExpression.escape(text))
         visible = self.proxy_model.rowCount()
         if self.result_model.rowCount():
-            self.results_meta.setText(f"· {self._kind_label_from_current()} · {self._visible_count_label(visible)}")
+            self.results_meta.setText(
+                f"{self.trn.text('analysis')} · {self._kind_label_from_current()} · {self._visible_count_label(visible)}"
+            )
 
     def _update_input_meta(self) -> None:
         text = self.input_text.toPlainText()
@@ -1168,3 +1220,11 @@ class MainWindow(QMainWindow):
 
     def _visible_count_label(self, count: int) -> str:
         return f"{count:,} {self.trn.text('shown')}"
+
+    def _status_for_current_result(self) -> str:
+        count_label = self._count_label(self.current_kind or "tokenize", self.result_model.rowCount())
+        elapsed_ms = self.current_elapsed_ms if self.current_elapsed_ms is not None else 0
+        status = f"{self.trn.text('completed')} · {count_label} · {elapsed_ms} {self.trn.text('milliseconds')}"
+        if self.current_kind == "tokenize" and self.current_tokenizer_mode == "tagged":
+            status = f"{status} · {self.trn.text('tokenizer_tag_note')}"
+        return status

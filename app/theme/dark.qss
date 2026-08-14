@@ -11,13 +11,23 @@ QMainWindow, QWidget {{
 }}
 
 #TitleLabel {{
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 700;
     color: {text};
 }}
 
 #SubtitleLabel, #MetaLabel, #StatusLabel, #HintLabel {{
     color: {muted};
+}}
+
+#AnalysisStatus {{
+    color: {text};
+    background: {surface_alt};
+    border: 1px solid {border};
+    border-radius: 7px;
+    padding: 5px 9px;
+    font-size: 12px;
+    font-weight: 700;
 }}
 
 #SectionTitle {{
@@ -142,6 +152,16 @@ QPushButton:disabled, QToolButton:disabled {{
     max-width: 34px;
     padding-left: 0;
     padding-right: 0;
+}}
+
+#UtilityButton {{
+    color: {muted};
+    min-width: 76px;
+}}
+
+#ActionOptions {{
+    background: transparent;
+    border: 0;
 }}
 
 QComboBox, QLineEdit {{
