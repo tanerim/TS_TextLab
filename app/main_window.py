@@ -56,7 +56,7 @@ from app.errors import TextLabError
 from app.i18n import Translator
 from app.postagger_service import PosTaggerService
 from app.theme.theme_manager import ThemeName, ThemePalette, apply_theme, palette_for
-from app.tokenizer_service import TokenizerMode, TokenizerService
+from app.tokenizer_service import FrequencyCaseMode, TokenizerMode, TokenizerService
 from app.version_service import VersionCheckResult, check_for_update
 
 logger = logging.getLogger(__name__)
@@ -70,6 +70,7 @@ class TaskResult:
     rows: list[tuple[str, ...]]
     copy_text: str
     tokenizer_mode: TokenizerMode | None = None
+    frequency_case_mode: FrequencyCaseMode | None = None
 
 
 class WorkerSignals(QObject):
@@ -102,6 +103,7 @@ class NlpWorker(QRunnable):
         kind: TaskKind,
         text: str,
         tokenizer_mode: TokenizerMode,
+        frequency_case_mode: FrequencyCaseMode,
         tokenizer_service: TokenizerService,
         postagger_service: PosTaggerService,
     ) -> None:
@@ -110,6 +112,7 @@ class NlpWorker(QRunnable):
         self.kind = kind
         self.text = text
         self.tokenizer_mode = tokenizer_mode
+        self.frequency_case_mode = frequency_case_mode
         self.tokenizer_service = tokenizer_service
         self.postagger_service = postagger_service
         self.signals = WorkerSignals()
@@ -131,12 +134,13 @@ class NlpWorker(QRunnable):
                     tokenizer_mode=self.tokenizer_mode,
                 )
             elif self.kind == "frequency":
-                frequency_result = self.tokenizer_service.frequency(self.text)
+                frequency_result = self.tokenizer_service.frequency(self.text, self.frequency_case_mode)
                 result = TaskResult(
                     kind=self.kind,
                     headers=frequency_result.headers,
                     rows=frequency_result.rows,
                     copy_text=frequency_result.copy_text,
+                    frequency_case_mode=self.frequency_case_mode,
                 )
             else:
                 tokens = self.tokenizer_service.tokens_for_pos(self.text)
@@ -320,7 +324,7 @@ class EmptyState(QWidget):
         title = QLabel("No results yet")
         title.setObjectName("EmptyTitle")
         title.setAlignment(Qt.AlignCenter)
-        body = QLabel("Enter Turkish text above and choose Tokenize, POS Tag or Frequency.")
+        body = QLabel("Enter Turkish text and choose Tokenize, POS Tag or Frequency.")
         body.setObjectName("HintLabel")
         body.setAlignment(Qt.AlignCenter)
         body.setWordWrap(True)
@@ -490,12 +494,12 @@ class MainWindow(QMainWindow):
         body_layout.setContentsMargins(20, 16, 20, 18)
         body_layout.setSpacing(0)
 
-        self.splitter = QSplitter(Qt.Vertical)
+        self.splitter = QSplitter(Qt.Horizontal)
         self.splitter.setChildrenCollapsible(False)
         self.splitter.setHandleWidth(10)
         self.splitter.addWidget(self._build_input_panel())
         self.splitter.addWidget(self._build_results_panel())
-        self.splitter.setStretchFactor(0, 0)
+        self.splitter.setStretchFactor(0, 1)
         self.splitter.setStretchFactor(1, 1)
         self.splitter.splitterMoved.connect(self._enforce_splitter_limit)
         body_layout.addWidget(self.splitter)
@@ -553,6 +557,7 @@ class MainWindow(QMainWindow):
         panel = QFrame()
         panel.setObjectName("Panel")
         panel.setMinimumHeight(150)
+        panel.setMinimumWidth(360)
         layout = QVBoxLayout(panel)
         layout.setContentsMargins(14, 12, 14, 14)
         layout.setSpacing(10)
@@ -574,8 +579,8 @@ class MainWindow(QMainWindow):
         self.input_text.setMinimumHeight(82)
         layout.addWidget(self.input_text, 1)
 
-        toolbar = QHBoxLayout()
-        toolbar.setSpacing(8)
+        controls = QHBoxLayout()
+        controls.setSpacing(10)
         mode_group = QVBoxLayout()
         mode_group.setSpacing(3)
         self.tokenization_mode_label = QLabel("Tokenization Mode")
@@ -586,17 +591,28 @@ class MainWindow(QMainWindow):
         self.tokenizer_mode_combo.addItem("Lines", "lines")
         mode_group.addWidget(self.tokenization_mode_label)
         mode_group.addWidget(self.tokenizer_mode_combo)
-        toolbar.addLayout(mode_group)
-        toolbar.addSpacing(6)
+        controls.addLayout(mode_group, 1)
 
+        frequency_case_group = QVBoxLayout()
+        frequency_case_group.setSpacing(3)
+        self.frequency_case_label = QLabel("Frequency Case")
+        self.frequency_case_label.setObjectName("MetaLabel")
+        self.frequency_case_combo = QComboBox()
+        self.frequency_case_combo.addItem("Case-insensitive", "insensitive")
+        self.frequency_case_combo.addItem("Case-sensitive", "sensitive")
+        frequency_case_group.addWidget(self.frequency_case_label)
+        frequency_case_group.addWidget(self.frequency_case_combo)
+        controls.addLayout(frequency_case_group, 1)
+        layout.addLayout(controls)
+
+        actions = QGridLayout()
+        actions.setHorizontalSpacing(8)
+        actions.setVerticalSpacing(8)
         self.tokenize_button = QPushButton("Tokenize")
         self.pos_button = QPushButton("POS Tag")
         self.frequency_button = QPushButton("Frequency")
         for button in (self.tokenize_button, self.pos_button, self.frequency_button):
             button.setObjectName("PrimaryButton")
-            toolbar.addWidget(button)
-
-        toolbar.addStretch(1)
         self.clear_button = QToolButton()
         self.clear_button.setText("Clear")
         self.clear_button.setPopupMode(QToolButton.InstantPopup)
@@ -605,14 +621,20 @@ class MainWindow(QMainWindow):
         self.clear_result_action = clear_menu.addAction("Clear Results")
         self.clear_all_action = clear_menu.addAction("Clear All")
         self.clear_button.setMenu(clear_menu)
-        toolbar.addWidget(self.clear_button)
-        layout.addLayout(toolbar)
+        actions.addWidget(self.tokenize_button, 0, 0)
+        actions.addWidget(self.pos_button, 0, 1)
+        actions.addWidget(self.frequency_button, 1, 0)
+        actions.addWidget(self.clear_button, 1, 1)
+        actions.setColumnStretch(0, 1)
+        actions.setColumnStretch(1, 1)
+        layout.addLayout(actions)
         return panel
 
     def _build_results_panel(self) -> QWidget:
         panel = QFrame()
         panel.setObjectName("Panel")
         panel.setMinimumHeight(280)
+        panel.setMinimumWidth(420)
         layout = QVBoxLayout(panel)
         layout.setContentsMargins(14, 12, 14, 14)
         layout.setSpacing(10)
@@ -676,6 +698,7 @@ class MainWindow(QMainWindow):
         self.clear_all_action.triggered.connect(self._clear_all)
         self.input_text.textChanged.connect(self._update_input_meta)
         self.tokenizer_mode_combo.currentIndexChanged.connect(self._save_tokenizer_mode)
+        self.frequency_case_combo.currentIndexChanged.connect(self._save_frequency_case_mode)
         self.filter_input.textChanged.connect(self._filter_results)
 
         QShortcut(QKeySequence("Ctrl+Return"), self, activated=lambda: self._start_task("tokenize"))
@@ -718,15 +741,16 @@ class MainWindow(QMainWindow):
         if mode == "tagged_lines":
             mode = "tagged"
         _set_combo_data(self.tokenizer_mode_combo, mode)
+        _set_combo_data(self.frequency_case_combo, self.settings.value("frequency_case_mode", "insensitive", str))
         self._update_input_meta()
 
     def _initialize_splitter(self) -> None:
-        sizes = self.settings.value("splitter_sizes") if self.settings.value("remember_layout", True, bool) else None
+        sizes = self.settings.value("splitter_sizes_horizontal") if self.settings.value("remember_layout", True, bool) else None
         if isinstance(sizes, list) and len(sizes) == 2:
             self.splitter.setSizes([int(sizes[0]), int(sizes[1])])
         else:
-            height = max(1, self.splitter.height())
-            self.splitter.setSizes([int(height * 0.38), int(height * 0.62)])
+            width = max(1, self.splitter.width())
+            self.splitter.setSizes([int(width * 0.42), int(width * 0.58)])
         self._enforce_splitter_limit()
 
     def _enforce_splitter_limit(self, *_args: object) -> None:
@@ -737,11 +761,12 @@ class MainWindow(QMainWindow):
             total = sum(self.splitter.sizes())
             if total <= 0:
                 return
-            min_input = 140
-            max_input = max(min_input, total // 2)
+            min_input = 360
+            min_result = 420
+            max_input = max(min_input, int(total * 0.62))
             sizes = self.splitter.sizes()
             input_size = min(max(sizes[0], min_input), max_input)
-            result_size = max(total - input_size, 260)
+            result_size = max(total - input_size, min_result)
             if input_size + result_size != total:
                 input_size = max(min_input, total - result_size)
             if sizes != [input_size, result_size]:
@@ -756,7 +781,7 @@ class MainWindow(QMainWindow):
     def closeEvent(self, event) -> None:  # type: ignore[override]
         if self.settings.value("remember_layout", True, bool):
             self.settings.setValue("window_geometry", self.saveGeometry())
-            self.settings.setValue("splitter_sizes", self.splitter.sizes())
+            self.settings.setValue("splitter_sizes_horizontal", self.splitter.sizes())
         super().closeEvent(event)
 
     def _theme_setting(self) -> ThemeName:
@@ -772,6 +797,7 @@ class MainWindow(QMainWindow):
             kind,
             text,
             self.tokenizer_mode_combo.currentData(),
+            self.frequency_case_combo.currentData(),
             self.tokenizer_service,
             self.postagger_service,
         )
@@ -884,6 +910,10 @@ class MainWindow(QMainWindow):
 
     def _apply_translations(self) -> None:
         self.input_text.setPlaceholderText(self.trn.text("input_placeholder"))
+        self.tokenization_mode_label.setText(self.trn.text("tokenization_mode"))
+        self.frequency_case_label.setText(self.trn.text("frequency_case"))
+        self.frequency_case_combo.setItemText(0, self.trn.text("case_insensitive"))
+        self.frequency_case_combo.setItemText(1, self.trn.text("case_sensitive"))
         self.tokenize_button.setText(self.trn.text("tokenize"))
         self.pos_button.setText(self.trn.text("pos_tag"))
         self.frequency_button.setText(self.trn.text("frequency"))
@@ -995,9 +1025,14 @@ class MainWindow(QMainWindow):
     def _save_tokenizer_mode(self) -> None:
         self.settings.setValue("tokenizer_mode", self.tokenizer_mode_combo.currentData())
 
+    def _save_frequency_case_mode(self) -> None:
+        self.settings.setValue("frequency_case_mode", self.frequency_case_combo.currentData())
+
     def _kind_label(self, result: TaskResult) -> str:
         if result.kind == "frequency":
-            return "Frequency"
+            if result.frequency_case_mode == "sensitive":
+                return "Frequency, case-sensitive"
+            return "Frequency, case-insensitive"
         if result.kind == "pos":
             return "POS Tagging"
         mode = result.tokenizer_mode or "tokenized"

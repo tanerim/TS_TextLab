@@ -9,6 +9,7 @@ from typing import Iterable, Literal
 from app.errors import DependencyUnavailableError, EmptyInputError, TextLabError
 
 TokenizerMode = Literal["tokenized", "tagged", "lines", "tagged_lines"]
+FrequencyCaseMode = Literal["sensitive", "insensitive"]
 
 
 @dataclass(frozen=True)
@@ -24,12 +25,13 @@ class TokenizerService:
 
     def __init__(self) -> None:
         try:
-            from ts_tokenizer import tokenize
+            from ts_tokenizer import CharFix, tokenize
         except ImportError as exc:
             raise DependencyUnavailableError(
                 "`ts-tokenizer` kurulu değil. Geliştirme ortamında `pip install -r requirements.txt` çalıştırın."
             ) from exc
         self._tokenize = tokenize
+        self._char_fix = CharFix
 
     def tokenize(self, text: str, mode: TokenizerMode = "tokenized") -> TokenizerResult:
         cleaned = text.strip()
@@ -49,12 +51,14 @@ class TokenizerService:
         tokenized = self.tokenize(text, "tokenized")
         return [row[0] for row in tokenized.rows if row and row[0].strip()]
 
-    def frequency(self, text: str) -> TokenizerResult:
+    def frequency(self, text: str, case_mode: FrequencyCaseMode = "insensitive") -> TokenizerResult:
         tokens = self.tokens_for_pos(text)
+        if case_mode == "insensitive":
+            tokens = [self._char_fix.tr_lowercase(token) for token in tokens]
         counts = Counter(tokens)
         rows = [
             (token, str(count))
-            for token, count in sorted(counts.items(), key=lambda item: (-item[1], item[0].casefold()))
+            for token, count in sorted(counts.items(), key=lambda item: (-item[1], self._sort_key(item[0])))
         ]
         return TokenizerResult(
             mode="tokenized",
@@ -62,6 +66,9 @@ class TokenizerService:
             rows=rows,
             copy_text="\n".join("\t".join(row) for row in rows),
         )
+
+    def _sort_key(self, value: str) -> str:
+        return self._char_fix.tr_lowercase(value)
 
     def _tokenize_by_line(self, text: str, mode: TokenizerMode) -> TokenizerResult:
         source_lines = [line.strip() for line in text.splitlines() if line.strip()]

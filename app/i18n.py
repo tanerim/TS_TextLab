@@ -9,6 +9,9 @@ TRANSLATIONS = {
     "tr": {
         "input_placeholder": "Türkçe metin yazın veya yapıştırın...",
         "tokenization_mode": "Birimlendirme Modu",
+        "frequency_case": "Sıklık Harf Duyarlılığı",
+        "case_insensitive": "Duyarsız",
+        "case_sensitive": "Duyarlı",
         "tokenize": "Birimlendir",
         "pos_tag": "Sözcük Türü Etiketle",
         "frequency": "Sıklık",
@@ -50,6 +53,9 @@ TRANSLATIONS = {
     "en": {
         "input_placeholder": "Type or paste Turkish text...",
         "tokenization_mode": "Tokenization Mode",
+        "frequency_case": "Frequency Case",
+        "case_insensitive": "Case-insensitive",
+        "case_sensitive": "Case-sensitive",
         "tokenize": "Tokenize",
         "pos_tag": "POSTag",
         "frequency": "Frequency",

@@ -35,7 +35,7 @@ python scripts/smoke_test.py
 
 Uygulama model indirmez ve dependency kontrolü için internete bağlanmaz. Dağıtım paketinde Python runtime, TS Tokenizer, spaCy, PySide6 ve model dosyaları birlikte paketlenmelidir.
 
-Başlangıçta kısa timeout ile `https://tscorpus.com/tsapp/version` adresinden sürüm denetimi altyapısı çalışır. Bağlantı yoksa hata kullanıcıya gösterilmez; endpoint canlı olduğunda mevcut sürümden yeni bir değer dönerse güncelleme uyarısı gösterilir. Girilen metin bu denetime veya başka bir servise gönderilmez.
+Başlangıçta kısa timeout ile public repo kökündeki `version.txt` dosyasının raw GitHub adresinden sürüm denetimi yapılır. Bağlantı yoksa hata kullanıcıya gösterilmez; dosya mevcut sürümden yeni bir değer dönerse güncelleme uyarısı gösterilir. Girilen metin bu denetime veya başka bir servise gönderilmez.
 
 ## Windows Build
 
@@ -69,6 +69,7 @@ app/
   resource_manager.py     # dev/build resource yolları
   logging_config.py       # log kurulumu
 main.py                   # uygulama giriş noktası
+version.txt               # public repo üzerinden okunan son sürüm değeri
 scripts/smoke_test.py     # GUI'siz NLP doğrulaması
 packaging/ts_textlab.spec # PyInstaller ayarları
 ```
