@@ -46,12 +46,29 @@ from PySide6.QtWidgets import (
     QStackedWidget,
     QStyle,
     QStyledItemDelegate,
+    QTabBar,
     QTableView,
     QToolButton,
     QVBoxLayout,
     QWidget,
 )
 
+from app.analysis_service import (
+    AnalysisDocument,
+    AnalysisService,
+    concordance_rows,
+    frequency_rows,
+    lexical_coverage_rows,
+    ngram_rows,
+    oov_frequency_rows,
+    pos_distribution_rows,
+    pos_rows,
+    social_profile_rows,
+    text_profile_rows,
+    token_composition_rows,
+    token_statistics_rows,
+    tokenization_rows,
+)
 from app.config import APP_NAME, APP_VERSION, DEFAULT_SAMPLE_TEXT, MAX_INPUT_CHARS
 from app.errors import TextLabError
 from app.i18n import Translator
@@ -61,7 +78,20 @@ from app.tokenizer_service import FrequencyCaseMode, TokenizerMode, TokenizerSer
 from app.version_service import VersionCheckResult, check_for_update
 
 logger = logging.getLogger(__name__)
-TaskKind = Literal["tokenize", "pos", "frequency"]
+TaskKind = Literal[
+    "tokenize",
+    "pos",
+    "frequency",
+    "ngrams",
+    "concordance",
+    "statistics",
+    "composition",
+    "pos_distribution",
+    "text_profile",
+    "social_profile",
+    "lexical_coverage",
+    "oov_detail",
+]
 
 
 @dataclass(frozen=True)
@@ -70,8 +100,10 @@ class TaskResult:
     headers: list[str]
     rows: list[tuple[str, ...]]
     copy_text: str
+    document: AnalysisDocument | None = None
     tokenizer_mode: TokenizerMode | None = None
     frequency_case_mode: FrequencyCaseMode | None = None
+    analysis_label_key: str | None = None
 
 
 class WorkerSignals(QObject):
@@ -105,6 +137,11 @@ class NlpWorker(QRunnable):
         text: str,
         tokenizer_mode: TokenizerMode,
         frequency_case_mode: FrequencyCaseMode,
+        ngram_n: int,
+        ngram_types: set[str],
+        concordance_query: str,
+        concordance_span: int,
+        existing_document: AnalysisDocument | None,
         tokenizer_service: TokenizerService,
         postagger_service: PosTaggerService,
     ) -> None:
@@ -114,8 +151,14 @@ class NlpWorker(QRunnable):
         self.text = text
         self.tokenizer_mode = tokenizer_mode
         self.frequency_case_mode = frequency_case_mode
+        self.ngram_n = ngram_n
+        self.ngram_types = ngram_types
+        self.concordance_query = concordance_query
+        self.concordance_span = concordance_span
+        self.existing_document = existing_document
         self.tokenizer_service = tokenizer_service
         self.postagger_service = postagger_service
+        self.analysis_service = AnalysisService(tokenizer_service, postagger_service)
         self.signals = WorkerSignals()
 
     @Slot()
@@ -125,33 +168,51 @@ class NlpWorker(QRunnable):
                 raise TextLabError(
                     f"Metin çok uzun. İlk sürümde en fazla {MAX_INPUT_CHARS:,} karakter işlenebilir."
                 )
-            if self.kind == "tokenize":
-                tokenizer_result = self.tokenizer_service.tokenize(self.text, self.tokenizer_mode)
-                result = TaskResult(
-                    kind=self.kind,
-                    headers=tokenizer_result.headers,
-                    rows=tokenizer_result.rows,
-                    copy_text=tokenizer_result.copy_text,
-                    tokenizer_mode=self.tokenizer_mode,
-                )
-            elif self.kind == "frequency":
-                frequency_result = self.tokenizer_service.frequency(self.text, self.frequency_case_mode)
-                result = TaskResult(
-                    kind=self.kind,
-                    headers=frequency_result.headers,
-                    rows=frequency_result.rows,
-                    copy_text=frequency_result.copy_text,
-                    frequency_case_mode=self.frequency_case_mode,
-                )
+            include_pos = self.kind in {"pos", "pos_distribution"}
+            if self.existing_document is not None:
+                document = self.existing_document
+                if include_pos and not self.analysis_service.has_pos(document):
+                    document = self.analysis_service.add_pos(document)
             else:
-                tagged_tokens = self.tokenizer_service.tagged_tokens_for_pos(self.text)
-                rows = [(token, tag) for token, tag in self.postagger_service.tag_tagged_tokens(tagged_tokens)]
-                result = TaskResult(
-                    kind=self.kind,
-                    headers=["Token", "POS"],
-                    rows=rows,
-                    copy_text="\n".join(f"{token}\t{tag}" for token, tag in rows),
+                document = self.analysis_service.build_document(self.text, include_pos=include_pos)
+            if self.kind == "tokenize":
+                headers, rows, copy_text = tokenization_rows(document, self.tokenizer_mode)
+                result = TaskResult(self.kind, headers, rows, copy_text, document, self.tokenizer_mode)
+            elif self.kind == "pos":
+                headers, rows, copy_text = pos_rows(document)
+                result = TaskResult(self.kind, headers, rows, copy_text, document, analysis_label_key="pos_tagging")
+            elif self.kind == "frequency":
+                headers, rows, copy_text = frequency_rows(
+                    document, self.frequency_case_mode, self.tokenizer_service._char_fix.tr_lowercase
                 )
+                result = TaskResult(self.kind, headers, rows, copy_text, document, frequency_case_mode=self.frequency_case_mode)
+            elif self.kind == "ngrams":
+                headers, rows, copy_text = ngram_rows(document, self.ngram_n, self.ngram_types)
+                result = TaskResult(self.kind, headers, rows, copy_text, document)
+            elif self.kind == "concordance":
+                headers, rows, copy_text = concordance_rows(document, self.concordance_query, self.concordance_span)
+                result = TaskResult(self.kind, headers, rows, copy_text, document)
+            elif self.kind == "statistics":
+                headers, rows, copy_text = token_statistics_rows(self.text, document)
+                result = TaskResult(self.kind, headers, rows, copy_text, document)
+            elif self.kind == "composition":
+                headers, rows, copy_text = token_composition_rows(document)
+                result = TaskResult(self.kind, headers, rows, copy_text, document)
+            elif self.kind == "pos_distribution":
+                headers, rows, copy_text = pos_distribution_rows(document)
+                result = TaskResult(self.kind, headers, rows, copy_text, document)
+            elif self.kind == "text_profile":
+                headers, rows, copy_text = text_profile_rows(document)
+                result = TaskResult(self.kind, headers, rows, copy_text, document)
+            elif self.kind == "social_profile":
+                headers, rows, copy_text = social_profile_rows(document)
+                result = TaskResult(self.kind, headers, rows, copy_text, document)
+            elif self.kind == "lexical_coverage":
+                headers, rows, copy_text = lexical_coverage_rows(document)
+                result = TaskResult(self.kind, headers, rows, copy_text, document)
+            else:
+                headers, rows, copy_text = oov_frequency_rows(document)
+                result = TaskResult(self.kind, headers, rows, copy_text, document)
             self.signals.finished.emit(result)
         except TextLabError as exc:
             logger.warning("NLP task failed: %s", exc)
@@ -201,7 +262,16 @@ class ResultTableModel(QAbstractTableModel):
             return self.rows[row][value_index] if value_index < len(self.rows[row]) else ""
 
         if role == Qt.TextAlignmentRole:
-            if column == 0 or (self.kind == "frequency" and column == 2):
+            value_index = column - 1
+            value = self.rows[row][value_index] if value_index < len(self.rows[row]) else ""
+            if self.kind == "concordance":
+                if column == 1:
+                    return int(Qt.AlignRight | Qt.AlignVCenter)
+                if column == 2:
+                    return int(Qt.AlignCenter)
+                if column == 3:
+                    return int(Qt.AlignLeft | Qt.AlignVCenter)
+            if column == 0 or _is_number_like(value):
                 return int(Qt.AlignRight | Qt.AlignVCenter)
             return int(Qt.AlignLeft | Qt.AlignVCenter)
 
@@ -210,11 +280,9 @@ class ResultTableModel(QAbstractTableModel):
                 return row + 1
             value_index = column - 1
             value = self.rows[row][value_index] if value_index < len(self.rows[row]) else ""
-            if self.kind == "frequency" and column == 2:
-                try:
-                    return int(value)
-                except ValueError:
-                    return 0
+            numeric = _numeric_value(value)
+            if numeric is not None:
+                return numeric
             return value.casefold()
 
         return None
@@ -232,14 +300,24 @@ class ResultTableModel(QAbstractTableModel):
 
 
 class ResultProxyModel(QSortFilterProxyModel):
+    def __init__(self, parent: QObject | None = None) -> None:
+        super().__init__(parent)
+        self.filter_text = ""
+
+    def set_filter_text(self, text: str) -> None:
+        self.filter_text = text
+        self.setFilterRegularExpression(QRegularExpression.escape(text))
+
     def filterAcceptsRow(self, source_row: int, source_parent: QModelIndex) -> bool:
-        pattern = self.filterRegularExpression().pattern()
-        if not pattern:
+        if not self.filter_text:
             return True
         model = self.sourceModel()
         if model is None:
             return True
-        text = pattern.casefold()
+        text = self.filter_text.casefold()
+        if getattr(model, "kind", None) == "ngrams":
+            value = model.index(source_row, 1, source_parent).data(Qt.DisplayRole)
+            return _contains_token_query(str(value), text)
         for column in range(1, model.columnCount()):
             value = model.index(source_row, column, source_parent).data(Qt.DisplayRole)
             if text in str(value).casefold():
@@ -249,7 +327,7 @@ class ResultProxyModel(QSortFilterProxyModel):
     def lessThan(self, left: QModelIndex, right: QModelIndex) -> bool:
         left_value = left.data(Qt.UserRole)
         right_value = right.data(Qt.UserRole)
-        if isinstance(left_value, int) and isinstance(right_value, int):
+        if isinstance(left_value, (int, float)) and isinstance(right_value, (int, float)):
             return left_value < right_value
         return str(left_value) < str(right_value)
 
@@ -318,36 +396,38 @@ class PosBadgeDelegate(QStyledItemDelegate):
 
 
 class FrequencyBarDelegate(QStyledItemDelegate):
-    def __init__(self, palette: ThemePalette, parent: QObject | None = None) -> None:
+    def __init__(self, palette: ThemePalette, column: int = 2, parent: QObject | None = None) -> None:
         super().__init__(parent)
         self.palette = palette
+        self.column = column
 
     def paint(self, painter: QPainter, option, index: QModelIndex) -> None:  # type: ignore[override]
-        if index.column() != 2:
+        if index.column() != self.column:
             super().paint(painter, option, index)
             return
 
         model = index.model()
-        max_count = 1
+        max_value = 1.0
         for row in range(model.rowCount()):
-            value = model.index(row, index.column()).data(Qt.UserRole)
-            if isinstance(value, int):
-                max_count = max(max_count, value)
+            value = _numeric_value(str(model.index(row, index.column()).data(Qt.DisplayRole) or ""))
+            if value is not None:
+                max_value = max(max_value, float(value))
 
         painter.save()
         if option.state & QStyle.State_Selected:
             painter.fillRect(option.rect, option.palette.highlight())
-        count = int(index.data(Qt.UserRole) or 0)
+        display_text = str(index.data(Qt.DisplayRole) or "")
+        value = _numeric_value(display_text) or 0
         track = option.rect.adjusted(10, 12, -54, -12)
         if track.width() > 24:
             fill = QRectF(track)
-            fill.setWidth(max(4, track.width() * count / max_count))
+            fill.setWidth(max(4, track.width() * float(value) / max_value))
             painter.setRenderHint(QPainter.Antialiasing)
             painter.setPen(Qt.NoPen)
             painter.setBrush(QColor(self.palette.bar_fill))
             painter.drawRoundedRect(fill, 4, 4)
         painter.setPen(QPen(QColor(self.palette.text)))
-        painter.drawText(option.rect.adjusted(0, 0, -12, 0), Qt.AlignRight | Qt.AlignVCenter, str(count))
+        painter.drawText(option.rect.adjusted(0, 0, -12, 0), Qt.AlignRight | Qt.AlignVCenter, display_text)
         painter.restore()
 
 
@@ -549,6 +629,31 @@ def _set_combo_data(combo: QComboBox, value: object) -> None:
     combo.setCurrentIndex(max(index, 0))
 
 
+def _numeric_value(value: str) -> float | None:
+    try:
+        cleaned = value.strip()
+        if cleaned.endswith("%"):
+            cleaned = cleaned[:-1]
+        return float(cleaned.replace(",", ""))
+    except ValueError:
+        return None
+
+
+def _is_number_like(value: str) -> bool:
+    return _numeric_value(value) is not None
+
+
+def _contains_token_query(value: str, query: str) -> bool:
+    query_tokens = [token for token in query.casefold().split() if token]
+    if not query_tokens:
+        return True
+    value_tokens = [token for token in value.casefold().split() if token]
+    if len(query_tokens) == 1:
+        return query_tokens[0] in value_tokens
+    query_length = len(query_tokens)
+    return any(value_tokens[index : index + query_length] == query_tokens for index in range(len(value_tokens)))
+
+
 class MainWindow(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
@@ -561,6 +666,9 @@ class MainWindow(QMainWindow):
         self.current_copy_text = ""
         self.current_headers: list[str] = []
         self.current_kind: TaskKind | None = None
+        self.current_raw_result: TaskResult | None = None
+        self.current_document: AnalysisDocument | None = None
+        self.current_document_text = ""
         self.current_tokenizer_mode: TokenizerMode | None = None
         self.current_frequency_case_mode: FrequencyCaseMode | None = None
         self.current_elapsed_ms: int | None = None
@@ -670,32 +778,8 @@ class MainWindow(QMainWindow):
         self.input_text.setMinimumHeight(82)
         layout.addWidget(self.input_text, 1)
 
-        mode_group = QVBoxLayout()
-        mode_group.setSpacing(4)
-        self.tokenization_mode_label = QLabel("Tokenization Mode")
-        self.tokenization_mode_label.setObjectName("MetaLabel")
-        self.tokenizer_mode_combo = QComboBox()
-        self.tokenizer_mode_combo.addItem("Tokenized", "tokenized")
-        self.tokenizer_mode_combo.addItem("Tagged", "tagged")
-        self.tokenizer_mode_combo.addItem("Lines", "lines")
-        mode_group.addWidget(self.tokenization_mode_label)
-        mode_group.addWidget(self.tokenizer_mode_combo)
-        layout.addLayout(mode_group)
-
-        self.actions_label = QLabel("Actions")
-        self.actions_label.setObjectName("MetaLabel")
-        layout.addWidget(self.actions_label)
-        actions = QGridLayout()
-        actions.setHorizontalSpacing(8)
-        actions.setVerticalSpacing(8)
-        self.tokenize_button = QPushButton("Tokenize")
-        self.pos_button = QPushButton("POS Tag")
-        self.frequency_button = QPushButton("Frequency")
-        self.tokenize_button.setObjectName("TokenizeButton")
-        self.pos_button.setObjectName("PosButton")
-        self.frequency_button.setObjectName("FrequencyButton")
-        for button in (self.tokenize_button, self.pos_button, self.frequency_button):
-            button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        utility_row = QHBoxLayout()
+        utility_row.addStretch(1)
         self.clear_button = QToolButton()
         self.clear_button.setText("Clear")
         self.clear_button.setObjectName("UtilityButton")
@@ -706,29 +790,8 @@ class MainWindow(QMainWindow):
         self.clear_result_action = clear_menu.addAction("Clear Results")
         self.clear_all_action = clear_menu.addAction("Clear All")
         self.clear_button.setMenu(clear_menu)
-        actions.addWidget(self.tokenize_button, 0, 0)
-        actions.addWidget(self.pos_button, 0, 1)
-        actions.addWidget(self.frequency_button, 0, 2)
-        actions.addWidget(self.clear_button, 0, 3)
-        actions.setColumnStretch(0, 1)
-        actions.setColumnStretch(1, 1)
-        actions.setColumnStretch(2, 1)
-        layout.addLayout(actions)
-
-        self.frequency_case_group = QFrame()
-        self.frequency_case_group.setObjectName("ActionOptions")
-        frequency_case_layout = QHBoxLayout(self.frequency_case_group)
-        frequency_case_layout.setContentsMargins(0, 0, 0, 0)
-        frequency_case_layout.setSpacing(8)
-        self.frequency_case_label = QLabel("Frequency Case")
-        self.frequency_case_label.setObjectName("MetaLabel")
-        self.frequency_case_combo = QComboBox()
-        self.frequency_case_combo.addItem("Case-insensitive", "insensitive")
-        self.frequency_case_combo.addItem("Case-sensitive", "sensitive")
-        frequency_case_layout.addWidget(self.frequency_case_label)
-        frequency_case_layout.addWidget(self.frequency_case_combo, 1)
-        layout.addWidget(self.frequency_case_group)
-        self.frequency_case_group.setVisible(False)
+        utility_row.addWidget(self.clear_button)
+        layout.addLayout(utility_row)
         return panel
 
     def _build_results_panel(self) -> QWidget:
@@ -739,6 +802,26 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout(panel)
         layout.setContentsMargins(14, 12, 14, 14)
         layout.setSpacing(10)
+
+        self.action_tabs = QTabBar()
+        self.action_tabs.setObjectName("ActionTabs")
+        self.action_tabs.setExpanding(True)
+        self.action_tabs.addTab("Tokenize")
+        self.action_tabs.addTab("POS Tag")
+        self.action_tabs.addTab("Frequency")
+        self.action_tabs.addTab("N-grams")
+        self.action_tabs.addTab("Text Analysis")
+        self.action_tabs.setCurrentIndex(0)
+        layout.addWidget(self.action_tabs)
+
+        self.action_options_stack = QStackedWidget()
+        self.action_options_stack.setObjectName("ActionOptionsStack")
+        self.action_options_stack.addWidget(self._build_tokenize_actions())
+        self.action_options_stack.addWidget(self._build_pos_actions())
+        self.action_options_stack.addWidget(self._build_frequency_actions())
+        self.action_options_stack.addWidget(self._build_ngram_actions())
+        self.action_options_stack.addWidget(self._build_text_analysis_actions())
+        layout.addWidget(self.action_options_stack)
 
         top = QHBoxLayout()
         self.results_title = QLabel("RESULTS")
@@ -785,15 +868,158 @@ class MainWindow(QMainWindow):
         self.table_stack.addWidget(self.results_table)
         layout.addWidget(self.table_stack, 1)
 
+        self.concordance_context_panel = QFrame()
+        self.concordance_context_panel.setObjectName("InspectorPanel")
+        concordance_layout = QHBoxLayout(self.concordance_context_panel)
+        concordance_layout.setContentsMargins(10, 8, 10, 8)
+        concordance_layout.setSpacing(8)
+        self.concordance_context_label = QLabel("Concordance")
+        self.concordance_context_label.setObjectName("SectionTitle")
+        self.concordance_query_input = QLineEdit()
+        self.concordance_query_input.setReadOnly(True)
+        self.concordance_span_combo = QComboBox()
+        for span in (3, 5, 7, 10):
+            self.concordance_span_combo.addItem(f"+/-{span}", span)
+        self.concordance_context_button = QPushButton("Concordance")
+        self.concordance_context_button.setObjectName("FrequencyButton")
+        concordance_layout.addWidget(self.concordance_context_label)
+        concordance_layout.addWidget(self.concordance_query_input, 1)
+        concordance_layout.addWidget(self.concordance_span_combo)
+        concordance_layout.addWidget(self.concordance_context_button)
+        layout.addWidget(self.concordance_context_panel)
+        self.concordance_context_panel.setVisible(False)
+
         self.status_label = QLabel("Ready")
         self.status_label.setObjectName("StatusLabel")
         layout.addWidget(self.status_label)
+        return panel
+
+    def _build_tokenize_actions(self) -> QWidget:
+        panel = QFrame()
+        panel.setObjectName("ActionOptions")
+        layout = QHBoxLayout(panel)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(8)
+        self.tokenization_mode_label = QLabel("Tokenization Mode")
+        self.tokenization_mode_label.setObjectName("MetaLabel")
+        self.tokenizer_mode_combo = QComboBox()
+        self.tokenizer_mode_combo.addItem("Tokenized", "tokenized")
+        self.tokenizer_mode_combo.addItem("Tagged", "tagged")
+        self.tokenizer_mode_combo.addItem("Lines", "lines")
+        self.tokenize_button = QPushButton("Tokenize")
+        self.tokenize_button.setObjectName("TokenizeButton")
+        layout.addWidget(self.tokenization_mode_label)
+        layout.addWidget(self.tokenizer_mode_combo, 1)
+        layout.addWidget(self.tokenize_button)
+        return panel
+
+    def _build_pos_actions(self) -> QWidget:
+        panel = QFrame()
+        panel.setObjectName("ActionOptions")
+        layout = QHBoxLayout(panel)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.addStretch(1)
+        self.pos_button = QPushButton("POS Tag")
+        self.pos_button.setObjectName("PosButton")
+        layout.addWidget(self.pos_button)
+        return panel
+
+    def _build_frequency_actions(self) -> QWidget:
+        panel = QFrame()
+        panel.setObjectName("ActionOptions")
+        layout = QHBoxLayout(panel)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(8)
+        self.frequency_case_label = QLabel("Frequency Case")
+        self.frequency_case_label.setObjectName("MetaLabel")
+        self.frequency_case_combo = QComboBox()
+        self.frequency_case_combo.addItem("Case-insensitive", "insensitive")
+        self.frequency_case_combo.addItem("Case-sensitive", "sensitive")
+        self.frequency_button = QPushButton("Frequency")
+        self.frequency_button.setObjectName("FrequencyButton")
+        layout.addWidget(self.frequency_case_label)
+        layout.addWidget(self.frequency_case_combo, 1)
+        layout.addWidget(self.frequency_button)
+        return panel
+
+    def _build_ngram_actions(self) -> QWidget:
+        panel = QFrame()
+        panel.setObjectName("ActionOptions")
+        layout = QGridLayout(panel)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setHorizontalSpacing(8)
+        layout.setVerticalSpacing(6)
+        self.ngram_n_label = QLabel("n")
+        self.ngram_n_label.setObjectName("MetaLabel")
+        self.ngram_n_combo = QComboBox()
+        for n in (2, 3, 4, 5):
+            self.ngram_n_combo.addItem(str(n), n)
+        self.ngram_words_check = QCheckBox("Words")
+        self.ngram_punctuation_check = QCheckBox("Punctuation")
+        self.ngram_urls_check = QCheckBox("URLs")
+        self.ngram_mentions_check = QCheckBox("Mentions")
+        self.ngram_hashtags_check = QCheckBox("Hashtags")
+        self.ngram_words_check.setChecked(True)
+        self.ngrams_button = QPushButton("N-grams")
+        self.ngrams_button.setObjectName("FrequencyButton")
+        layout.addWidget(self.ngram_n_label, 0, 0)
+        layout.addWidget(self.ngram_n_combo, 0, 1)
+        layout.addWidget(self.ngrams_button, 0, 5)
+        for index, checkbox in enumerate(
+            (
+                self.ngram_words_check,
+                self.ngram_punctuation_check,
+                self.ngram_urls_check,
+                self.ngram_mentions_check,
+                self.ngram_hashtags_check,
+            )
+        ):
+            layout.addWidget(checkbox, 1, index)
+        layout.setColumnStretch(4, 1)
+        return panel
+
+    def _build_text_analysis_actions(self) -> QWidget:
+        panel = QFrame()
+        panel.setObjectName("ActionOptions")
+        layout = QGridLayout(panel)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setHorizontalSpacing(8)
+        layout.setVerticalSpacing(8)
+        self.statistics_button = QPushButton("Token Statistics")
+        self.composition_button = QPushButton("Token Composition")
+        self.pos_distribution_button = QPushButton("POS Distribution")
+        self.text_profile_button = QPushButton("Text Profile")
+        self.social_profile_button = QPushButton("Social Media Profile")
+        self.lexical_coverage_button = QPushButton("Lexical Coverage")
+        for index, button in enumerate(
+            (
+                self.statistics_button,
+                self.composition_button,
+                self.pos_distribution_button,
+                self.text_profile_button,
+                self.social_profile_button,
+                self.lexical_coverage_button,
+            )
+        ):
+            button.setObjectName("PosButton")
+            button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+            layout.addWidget(button, index // 3, index % 3)
+        for column in range(3):
+            layout.setColumnStretch(column, 1)
         return panel
 
     def _connect_actions(self) -> None:
         self.tokenize_button.clicked.connect(lambda: self._start_task("tokenize"))
         self.pos_button.clicked.connect(lambda: self._start_task("pos"))
         self.frequency_button.clicked.connect(lambda: self._start_task("frequency"))
+        self.ngrams_button.clicked.connect(lambda: self._start_task("ngrams"))
+        self.concordance_context_button.clicked.connect(lambda: self._start_task("concordance"))
+        self.statistics_button.clicked.connect(lambda: self._start_task("statistics"))
+        self.composition_button.clicked.connect(lambda: self._start_task("composition"))
+        self.pos_distribution_button.clicked.connect(lambda: self._start_task("pos_distribution"))
+        self.text_profile_button.clicked.connect(lambda: self._start_task("text_profile"))
+        self.social_profile_button.clicked.connect(lambda: self._start_task("social_profile"))
+        self.lexical_coverage_button.clicked.connect(lambda: self._start_task("lexical_coverage"))
         self.copy_button.clicked.connect(self._copy_result)
         self.clear_input_action.triggered.connect(self.input_text.clear)
         self.clear_result_action.triggered.connect(self._clear_result)
@@ -802,6 +1028,8 @@ class MainWindow(QMainWindow):
         self.tokenizer_mode_combo.currentIndexChanged.connect(self._save_tokenizer_mode)
         self.frequency_case_combo.currentIndexChanged.connect(self._save_frequency_case_mode)
         self.filter_input.textChanged.connect(self._filter_results)
+        self.results_table.clicked.connect(self._inspect_clicked_row)
+        self.action_tabs.currentChanged.connect(self._sync_action_options)
 
         QShortcut(QKeySequence("Ctrl+Return"), self, activated=lambda: self._start_task("tokenize"))
         QShortcut(QKeySequence("Meta+Return"), self, activated=lambda: self._start_task("tokenize"))
@@ -829,10 +1057,19 @@ class MainWindow(QMainWindow):
     def _apply_delegates(self) -> None:
         self.results_table.setItemDelegate(QStyledItemDelegate(self.results_table))
         self.results_table.setItemDelegateForColumn(2, QStyledItemDelegate(self.results_table))
+        self.results_table.setItemDelegateForColumn(3, QStyledItemDelegate(self.results_table))
         if self.current_kind == "pos":
             self.results_table.setItemDelegateForColumn(2, PosBadgeDelegate(self._palette, self.results_table))
-        elif self.current_kind == "frequency":
-            self.results_table.setItemDelegateForColumn(2, FrequencyBarDelegate(self._palette, self.results_table))
+        elif self.current_kind in {"frequency", "ngrams"}:
+            self.results_table.setItemDelegateForColumn(2, FrequencyBarDelegate(self._palette, 2, self.results_table))
+        elif self.current_kind in {
+            "composition",
+            "pos_distribution",
+            "text_profile",
+            "social_profile",
+            "lexical_coverage",
+        }:
+            self.results_table.setItemDelegateForColumn(3, FrequencyBarDelegate(self._palette, 3, self.results_table))
 
     def _restore_settings(self) -> None:
         if self.settings.value("remember_layout", True, bool):
@@ -893,7 +1130,6 @@ class MainWindow(QMainWindow):
     def _start_task(self, kind: TaskKind) -> None:
         text = self.input_text.toPlainText()
         self._task_started_at = time.perf_counter()
-        self.frequency_case_group.setVisible(kind == "frequency")
         self._set_busy(True, kind)
         self.status_label.setText(self.trn.text("preparing_pos") if kind == "pos" else self.trn.text("processing"))
         worker = NlpWorker(
@@ -901,6 +1137,11 @@ class MainWindow(QMainWindow):
             text,
             self.tokenizer_mode_combo.currentData(),
             self.frequency_case_combo.currentData(),
+            self.ngram_n_combo.currentData(),
+            self._selected_ngram_types(),
+            self.concordance_query_input.text(),
+            self.concordance_span_combo.currentData(),
+            self.current_document if text == self.current_document_text else None,
             self.tokenizer_service,
             self.postagger_service,
         )
@@ -912,24 +1153,31 @@ class MainWindow(QMainWindow):
     @Slot(object)
     def _display_result(self, result: TaskResult) -> None:
         elapsed_ms = max(1, int((time.perf_counter() - self._task_started_at) * 1000))
+        self.current_raw_result = result
         result = self._localized_result(result)
         self.current_copy_text = result.copy_text
         self.current_headers = result.headers
         self.current_kind = result.kind
+        self.current_document = result.document
+        self.current_document_text = self.input_text.toPlainText()
         self.current_tokenizer_mode = result.tokenizer_mode
         self.current_frequency_case_mode = result.frequency_case_mode
         self.current_elapsed_ms = elapsed_ms
+        self._select_action_tab_for_kind(result.kind)
+        if result.kind not in {"frequency", "concordance"}:
+            self.concordance_context_panel.setVisible(False)
         self.result_model.set_result(result)
         self.proxy_model.invalidateFilter()
         self.table_stack.setCurrentWidget(self.results_table)
-        self.results_table.setSortingEnabled(result.kind == "frequency")
-        self.frequency_case_group.setVisible(result.kind == "frequency")
+        self.results_table.setSortingEnabled(result.kind in {"frequency", "ngrams", "oov_detail"})
         self.results_table.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
         self.results_table.setColumnWidth(0, 58)
         if result.headers:
             self.results_table.setColumnWidth(1, 280)
-        if result.kind == "frequency":
+        if result.kind in {"frequency", "ngrams"}:
             self.results_table.sortByColumn(2, Qt.DescendingOrder)
+        elif result.kind == "oov_detail":
+            self.results_table.sortByColumn(1, Qt.DescendingOrder)
         else:
             self.proxy_model.sort(0, Qt.AscendingOrder)
         self._apply_delegates()
@@ -991,22 +1239,37 @@ class MainWindow(QMainWindow):
         self.current_copy_text = ""
         self.current_headers = []
         self.current_kind = None
+        self.current_raw_result = None
+        self.current_document = None
+        self.current_document_text = ""
         self.current_tokenizer_mode = None
         self.current_frequency_case_mode = None
         self.current_elapsed_ms = None
         self.result_model.set_result(None)
         self.filter_input.clear()
         self.table_stack.setCurrentWidget(self.empty_state)
+        self.concordance_context_panel.setVisible(False)
         self.results_meta.setText(self.trn.text("ready"))
         self.status_label.setText(self.trn.text("cleared"))
-        self.frequency_case_group.setVisible(False)
 
     def _clear_all(self) -> None:
         self.input_text.clear()
         self._clear_result()
 
     def _set_busy(self, busy: bool, kind: TaskKind | None = None) -> None:
-        for button in (self.tokenize_button, self.pos_button, self.frequency_button):
+        for button in (
+            self.tokenize_button,
+            self.pos_button,
+            self.frequency_button,
+            self.ngrams_button,
+            self.concordance_context_button,
+            self.statistics_button,
+            self.composition_button,
+            self.pos_distribution_button,
+            self.text_profile_button,
+            self.social_profile_button,
+            self.lexical_coverage_button,
+        ):
             button.setDisabled(busy)
         self.clear_button.setDisabled(busy)
         self.copy_button.setDisabled(busy)
@@ -1032,13 +1295,32 @@ class MainWindow(QMainWindow):
         self.tokenize_button.setText(self.trn.text("tokenize"))
         self.pos_button.setText(self.trn.text("pos_tag"))
         self.frequency_button.setText(self.trn.text("frequency"))
-        self.actions_label.setText(self.trn.text("actions"))
+        self.ngrams_button.setText(self.trn.text("ngrams"))
+        self.concordance_context_label.setText(self.trn.text("concordance"))
+        self.concordance_context_button.setText(self.trn.text("concordance"))
+        self.statistics_button.setText(self.trn.text("token_statistics"))
+        self.composition_button.setText(self.trn.text("token_composition"))
+        self.pos_distribution_button.setText(self.trn.text("pos_distribution"))
+        self.text_profile_button.setText(self.trn.text("text_profile"))
+        self.social_profile_button.setText(self.trn.text("social_media_profile"))
+        self.lexical_coverage_button.setText(self.trn.text("lexical_coverage"))
+        self.action_tabs.setTabText(0, self.trn.text("tokenize"))
+        self.action_tabs.setTabText(1, self.trn.text("pos_tag"))
+        self.action_tabs.setTabText(2, self.trn.text("frequency"))
+        self.action_tabs.setTabText(3, self.trn.text("ngrams"))
+        self.action_tabs.setTabText(4, self.trn.text("text_analysis"))
         self.clear_button.setText(self.trn.text("clear"))
         self.clear_input_action.setText(self.trn.text("clear_input"))
         self.clear_result_action.setText(self.trn.text("clear_result"))
         self.clear_all_action.setText(self.trn.text("clear_all"))
         self.copy_button.setText(self.trn.text("copy"))
         self.copy_button.setToolTip(self.trn.text("copy_result"))
+        self.ngram_words_check.setText(self.trn.text("words"))
+        self.ngram_punctuation_check.setText(self.trn.text("punctuation"))
+        self.ngram_urls_check.setText(self.trn.text("urls"))
+        self.ngram_mentions_check.setText(self.trn.text("mentions"))
+        self.ngram_hashtags_check.setText(self.trn.text("hashtags"))
+        self.concordance_query_input.setPlaceholderText(self.trn.text("token"))
         self.filter_input.setPlaceholderText(self.trn.text("filter_results"))
         self.app_menu_button.setToolTip(self.trn.text("application_menu"))
         self.settings_action.setText(self.trn.text("settings"))
@@ -1049,9 +1331,12 @@ class MainWindow(QMainWindow):
         self.empty_state.apply_translations(self.trn)
         self._update_input_meta()
         if self.current_kind is not None:
-            self.result_model.beginResetModel()
-            self.result_model.headers = self._headers_for_current_result()
-            self.result_model.endResetModel()
+            if self.current_raw_result is not None:
+                self.result_model.set_result(self._localized_result(self.current_raw_result))
+            else:
+                self.result_model.beginResetModel()
+                self.result_model.headers = self._headers_for_current_result()
+                self.result_model.endResetModel()
             visible = self.proxy_model.rowCount()
             self.results_meta.setText(
                 f"{self.trn.text('analysis')} · {self._kind_label_from_current()} · {self._visible_count_label(visible)}"
@@ -1142,12 +1427,62 @@ class MainWindow(QMainWindow):
         self.input_text.moveCursor(QTextCursor.End)
 
     def _filter_results(self, text: str) -> None:
-        self.proxy_model.setFilterRegularExpression(QRegularExpression.escape(text))
+        self.proxy_model.set_filter_text(text)
         visible = self.proxy_model.rowCount()
         if self.result_model.rowCount():
             self.results_meta.setText(
                 f"{self.trn.text('analysis')} · {self._kind_label_from_current()} · {self._visible_count_label(visible)}"
             )
+
+    def _inspect_clicked_row(self, index: QModelIndex) -> None:
+        source_index = self.proxy_model.mapToSource(index)
+        if not source_index.isValid() or self.current_document is None:
+            return
+        row = source_index.row()
+        if row >= len(self.result_model.rows):
+            return
+        values = self.result_model.rows[row]
+        if self.current_kind == "lexical_coverage" and values and values[0] == "OOV":
+            self._show_oov_detail()
+            return
+        surface = self._surface_from_row(values)
+        if not surface:
+            return
+        if self.current_kind == "frequency":
+            self.concordance_query_input.setText(surface)
+            self.concordance_context_panel.setVisible(True)
+
+    def _surface_from_row(self, values: tuple[str, ...]) -> str:
+        if not values:
+            return ""
+        if self.current_kind == "concordance" and len(values) >= 2:
+            return values[1]
+        if self.current_kind == "oov_detail" and len(values) >= 2:
+            return values[1]
+        if self.current_kind in {"tokenize", "pos", "frequency"}:
+            return values[0]
+        return ""
+
+    def _show_oov_detail(self) -> None:
+        if self.current_document is None:
+            return
+        headers, rows, copy_text = oov_frequency_rows(self.current_document)
+        result = self._localized_result(TaskResult("oov_detail", headers, rows, copy_text, self.current_document))
+        self.current_raw_result = TaskResult("oov_detail", headers, rows, copy_text, self.current_document)
+        self.current_copy_text = result.copy_text
+        self.current_headers = result.headers
+        self.current_kind = result.kind
+        self.concordance_context_panel.setVisible(False)
+        self.result_model.set_result(result)
+        self.proxy_model.invalidateFilter()
+        self.table_stack.setCurrentWidget(self.results_table)
+        self.results_table.setSortingEnabled(True)
+        self.results_table.sortByColumn(1, Qt.DescendingOrder)
+        self._apply_delegates()
+        self.results_meta.setText(
+            f"{self.trn.text('analysis')} · {self.trn.text('oov_tokens')} · {self._count_label(result.kind, len(result.rows))}"
+        )
+        self.status_label.setText(self._status_for_current_result())
 
     def _update_input_meta(self) -> None:
         text = self.input_text.toPlainText()
@@ -1160,15 +1495,127 @@ class MainWindow(QMainWindow):
     def _save_frequency_case_mode(self) -> None:
         self.settings.setValue("frequency_case_mode", self.frequency_case_combo.currentData())
 
+    def _selected_ngram_types(self) -> set[str]:
+        selected = set()
+        if self.ngram_words_check.isChecked():
+            selected.add("Words")
+        if self.ngram_punctuation_check.isChecked():
+            selected.add("Punctuation")
+        if self.ngram_urls_check.isChecked():
+            selected.add("URLs")
+        if self.ngram_mentions_check.isChecked():
+            selected.add("Mentions")
+        if self.ngram_hashtags_check.isChecked():
+            selected.add("Hashtags")
+        return selected or {"Words"}
+
+    def _sync_action_options(self, index: int) -> None:
+        self.action_options_stack.setCurrentIndex(index)
+
+    def _select_action_tab_for_kind(self, kind: TaskKind) -> None:
+        tab = {
+            "tokenize": 0,
+            "pos": 1,
+            "frequency": 2,
+            "concordance": 2,
+            "ngrams": 3,
+            "statistics": 4,
+            "composition": 4,
+            "pos_distribution": 4,
+            "text_profile": 4,
+            "social_profile": 4,
+            "lexical_coverage": 4,
+            "oov_detail": 4,
+        }.get(kind)
+        if tab is not None and self.action_tabs.currentIndex() != tab:
+            self.action_tabs.setCurrentIndex(tab)
+
     def _localized_result(self, result: TaskResult) -> TaskResult:
+        rows = [self._localized_row(result.kind, row) for row in result.rows]
         return TaskResult(
             kind=result.kind,
             headers=[self._header_label(header) for header in result.headers],
-            rows=result.rows,
+            rows=rows,
             copy_text=result.copy_text,
+            document=result.document,
             tokenizer_mode=result.tokenizer_mode,
             frequency_case_mode=result.frequency_case_mode,
+            analysis_label_key=result.analysis_label_key,
         )
+
+    def _localized_row(self, kind: TaskKind, row: tuple[str, ...]) -> tuple[str, ...]:
+        if not row:
+            return row
+        if kind not in {
+            "statistics",
+            "pos_distribution",
+            "text_profile",
+            "social_profile",
+            "lexical_coverage",
+        }:
+            return row
+        values = (self._row_label(row[0]), *row[1:])
+        if kind == "statistics" and len(values) >= 3:
+            values = (values[0], values[1], self._description_label(values[2]))
+        if kind == "pos_distribution" and len(values) >= 4:
+            values = (values[0], values[1], values[2], self._row_label(values[3]))
+        return values
+
+    def _row_label(self, value: str) -> str:
+        return {
+            "Characters": self.trn.text("characters_measure"),
+            "Tokens": self.trn.text("tokens_measure"),
+            "Lexical tokens": self.trn.text("lexical_tokens"),
+            "Unique tokens": self.trn.text("unique_tokens"),
+            "Sentences": self.trn.text("sentences"),
+            "Punctuation": self.trn.text("punctuation"),
+            "Type-token ratio": self.trn.text("type_token_ratio"),
+            "Mean token length": self.trn.text("mean_token_length"),
+            "Mean sentence length": self.trn.text("mean_sentence_length"),
+            "Paragraph count": self.trn.text("paragraph_count"),
+            "Mean paragraph length": self.trn.text("mean_paragraph_length"),
+            "Median paragraph length": self.trn.text("median_paragraph_length"),
+            "Shortest paragraph": self.trn.text("shortest_paragraph"),
+            "Longest paragraph": self.trn.text("longest_paragraph"),
+            "Sentence count": self.trn.text("sentence_count"),
+            "Median sentence length": self.trn.text("median_sentence_length"),
+            "Shortest sentence": self.trn.text("shortest_sentence"),
+            "Longest sentence": self.trn.text("longest_sentence"),
+            "Punctuation density": self.trn.text("punctuation_density"),
+            "Lexical density": self.trn.text("lexical_density"),
+            "Lexical Density": self.trn.text("lexical_density"),
+            "Recognized lexical forms": self.trn.text("recognized_lexical_forms"),
+            "Lexical Words": self.trn.text("lexical_words"),
+            "Function Words": self.trn.text("function_words"),
+            "POS distribution": self.trn.text("pos_distribution_info"),
+            "Other Lexical Tokens": self.trn.text("other_lexical_tokens"),
+            "Surface": self.trn.text("surface"),
+            "Position": self.trn.text("position"),
+            "Tokenizer": self.trn.text("tokenizer"),
+            "Length": self.trn.text("length"),
+            "Frequency": self.trn.text("count"),
+            "Sentence": self.trn.text("sentence"),
+            "Mention": self.trn.text("mentions"),
+            "Hashtag": self.trn.text("hashtags"),
+            "URL": self.trn.text("urls"),
+            "Emoji": self.trn.text("emojis"),
+            "Email": self.trn.text("emails"),
+            "Date": self.trn.text("dates"),
+            "Time": self.trn.text("times"),
+        }.get(value, value)
+
+    def _description_label(self, value: str) -> str:
+        return {
+            "Total Unicode code points in the input text.": self.trn.text("characters_description"),
+            "All non-empty TS Tokenizer tokens.": self.trn.text("tokens_description"),
+            "Word-like tokens used for lexical calculations.": self.trn.text("lexical_tokens_description"),
+            "Distinct lexical forms after case folding.": self.trn.text("unique_tokens_description"),
+            "Line-based units; each non-empty input line is counted as one unit.": self.trn.text("line_units_description"),
+            "Tokens classified or detected as punctuation.": self.trn.text("punctuation_description"),
+            "Unique lexical tokens divided by lexical tokens.": self.trn.text("ttr_description"),
+            "Average character length of lexical tokens.": self.trn.text("mean_token_length_description"),
+            "Average lexical tokens per non-empty line.": self.trn.text("mean_line_length_description"),
+        }.get(value, value)
 
     def _header_label(self, header: str) -> str:
         return {
@@ -1178,11 +1625,41 @@ class MainWindow(QMainWindow):
             "Line": self.trn.text("line"),
             "Result": self.trn.text("result"),
             "Count": self.trn.text("count"),
+            "Frequency": self.trn.text("count"),
+            "Percentage": self.trn.text("percentage"),
+            "Category": self.trn.text("category"),
+            "Measure": self.trn.text("measure"),
+            "Value": self.trn.text("value"),
+            "Property": self.trn.text("property"),
+            "Description": self.trn.text("description"),
+            "Info": self.trn.text("info"),
+            "Left": self.trn.text("left_context"),
+            "Node": self.trn.text("node"),
+            "Right": self.trn.text("right_context"),
+            "N-gram": self.trn.text("ngram"),
+            "Distribution": self.trn.text("distribution"),
         }.get(header, header)
 
     def _headers_for_current_result(self) -> list[str]:
         if self.current_kind == "frequency":
             return [self.trn.text("token"), self.trn.text("count")]
+        if self.current_kind == "ngrams":
+            return [self.trn.text("ngram"), self.trn.text("count")]
+        if self.current_kind == "concordance":
+            return [self.trn.text("left_context"), self.trn.text("node"), self.trn.text("right_context")]
+        if self.current_kind == "statistics":
+            return [self.trn.text("measure"), self.trn.text("value"), self.trn.text("description")]
+        if self.current_kind == "text_profile":
+            return [self.trn.text("measure"), self.trn.text("value"), self.trn.text("distribution")]
+        if self.current_kind == "pos_distribution":
+            return [self.trn.text("pos"), self.trn.text("count"), self.trn.text("percentage"), self.trn.text("info")]
+        if self.current_kind in {"composition", "pos_distribution", "text_profile", "social_profile", "lexical_coverage"}:
+            first = self.trn.text("pos") if self.current_kind == "pos_distribution" else self.trn.text("category")
+            if self.current_kind == "text_profile":
+                first = self.trn.text("measure")
+            return [first, self.trn.text("count"), self.trn.text("percentage")]
+        if self.current_kind == "oov_detail":
+            return [self.trn.text("count"), self.trn.text("token")]
         if self.current_kind == "pos":
             return [self.trn.text("token"), self.trn.text("pos")]
         if self.current_kind == "tokenize":
@@ -1194,6 +1671,8 @@ class MainWindow(QMainWindow):
         return self.current_headers
 
     def _kind_label(self, result: TaskResult) -> str:
+        if result.analysis_label_key:
+            return self.trn.text(result.analysis_label_key)
         if result.kind == "frequency":
             if result.frequency_case_mode == "sensitive":
                 return self.trn.text("frequency_sensitive")
@@ -1210,6 +1689,15 @@ class MainWindow(QMainWindow):
     def _kind_label_from_current(self) -> str:
         return {
             "frequency": self.trn.text("frequency"),
+            "ngrams": self.trn.text("ngrams"),
+            "concordance": self.trn.text("concordance"),
+            "statistics": self.trn.text("token_statistics"),
+            "composition": self.trn.text("token_composition"),
+            "pos_distribution": self.trn.text("pos_distribution"),
+            "text_profile": self.trn.text("text_profile"),
+            "social_profile": self.trn.text("social_media_profile"),
+            "lexical_coverage": self.trn.text("lexical_coverage"),
+            "oov_detail": self.trn.text("oov_tokens"),
             "pos": self.trn.text("pos_tagging"),
             "tokenize": self.trn.text("tokenization"),
         }.get(self.current_kind or "", self.trn.text("results"))

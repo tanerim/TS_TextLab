@@ -164,6 +164,50 @@ QPushButton:disabled, QToolButton:disabled {{
     border: 0;
 }}
 
+#InspectorPanel {{
+    background: {surface_alt};
+    border: 1px solid {border};
+    border-radius: 8px;
+}}
+
+QTabWidget::pane {{
+    border: 0;
+    margin-top: 6px;
+}}
+
+QTabBar::tab {{
+    background: {surface_alt};
+    color: {muted};
+    border: 1px solid {border};
+    border-bottom-color: {border};
+    padding: 7px 11px;
+    min-width: 76px;
+    font-size: 11px;
+    font-weight: 700;
+}}
+
+QTabBar::tab:selected {{
+    background: {surface};
+    color: {text};
+    border-color: {border_strong};
+}}
+
+QTabBar#ActionTabs::tab {{
+    padding: 9px 10px;
+    min-width: 0;
+}}
+
+QTabBar#ActionTabs::tab:selected {{
+    background: {selected};
+    color: {selected_text};
+    border-color: {focus};
+}}
+
+QCheckBox {{
+    color: {text};
+    spacing: 6px;
+}}
+
 QComboBox, QLineEdit {{
     background: {surface};
     border: 1px solid {border};
