@@ -1,5 +1,5 @@
+ts-tokenizer
 PySide6>=6.7,<7
 spacy>=3.8.7,<3.9
-ts-tokenizer>=0.1.23,<0.2
 pyinstaller>=6.10,<7
 
