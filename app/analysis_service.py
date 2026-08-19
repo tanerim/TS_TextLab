@@ -4,17 +4,13 @@ from __future__ import annotations
 
 from collections import Counter
 from dataclasses import dataclass
-from statistics import median
 
 from app.postagger_service import PosTaggerService
 from app.tokenizer_service import FrequencyCaseMode, TokenizerMode, TokenizerService
 
 
-LEXICAL_TAGS = frozenset({"", "Valid_Word", "OOV", "One_Char_Fixed"})
-SOCIAL_TAGS = frozenset({"Mention", "Hashtag", "URL", "Emoji", "Email", "Date", "Time"})
+LEXICAL_TAGS = frozenset({"", "Valid_Word", "Apostrophed", "OOV", "One_Char_Fixed"})
 PUNCTUATION_CHARS = frozenset(".!?;:,-()[]{}\"'`…")
-LEXICAL_POS = frozenset({"NOUN", "VERB", "ADJ", "ADV"})
-FUNCTION_POS = frozenset({"ADP", "CCONJ", "SCONJ", "DET", "PRON", "PART"})
 
 
 @dataclass(frozen=True)
@@ -60,14 +56,15 @@ class AnalysisService:
         self.postagger_service = postagger_service
 
     def build_document(self, text: str, include_pos: bool = False) -> AnalysisDocument:
-        tagged = self.tokenizer_service.tokenize(text, "tagged_lines")
+        analysis_text = _strip_tabular_annotations(text)
+        if include_pos:
+            return self._build_postagger_document(analysis_text)
+
+        tagged = self.tokenizer_service.tokenize(analysis_text, "tagged_lines")
         pairs = [(row[0], row[1] if len(row) > 1 else "") for row in tagged.rows if row and row[0].strip()]
         pos_by_position: list[str] = ["-"] * len(pairs)
-        if include_pos:
-            pos_rows = self.postagger_service.tag_tagged_tokens(pairs)
-            pos_by_position = [pos for _, pos in pos_rows]
 
-        paragraph_sequence = self._paragraph_sequence(text)
+        paragraph_sequence = self._paragraph_sequence(analysis_text)
         tokens: list[TokenInfo] = []
         for position, ((surface, tokenizer_tag), pos) in enumerate(zip(pairs, pos_by_position, strict=True), start=1):
             tag = normalize_tokenizer_tag(surface, tokenizer_tag)
@@ -75,24 +72,18 @@ class AnalysisService:
             tokens.append(TokenInfo(surface=surface, position=position, tokenizer=tag, pos=pos, paragraph=paragraph))
         return AnalysisDocument(tokens=tokens)
 
-    def add_pos(self, document: AnalysisDocument) -> AnalysisDocument:
-        pairs = [(token.surface, token.tokenizer) for token in document.tokens]
-        pos_rows = self.postagger_service.tag_tagged_tokens(pairs)
+    def _build_postagger_document(self, text: str) -> AnalysisDocument:
         tokens = [
             TokenInfo(
-                surface=token.surface,
-                position=token.position,
-                tokenizer=token.tokenizer,
-                pos=pos,
-                paragraph=token.paragraph,
+                surface=token.text,
+                position=position,
+                tokenizer=token.token_type,
+                pos=token.pos or "-",
+                paragraph=1,
             )
-            for token, (_, pos) in zip(document.tokens, pos_rows, strict=True)
+            for position, token in enumerate(self.postagger_service.tokens(text), start=1)
         ]
         return AnalysisDocument(tokens=tokens)
-
-    @staticmethod
-    def has_pos(document: AnalysisDocument) -> bool:
-        return any(token.pos and token.pos != "-" for token in document.tokens)
 
     def _paragraph_sequence(self, text: str) -> list[int]:
         sequence: list[int] = []
@@ -120,11 +111,6 @@ def tokenization_rows(document: AnalysisDocument, mode: TokenizerMode) -> tuple[
     return ["Token"], rows, "\n".join(token.surface for token in document.tokens)
 
 
-def pos_rows(document: AnalysisDocument) -> tuple[list[str], list[tuple[str, ...]], str]:
-    rows = [(token.surface, token.pos) for token in document.tokens]
-    return ["Token", "POS"], rows, "\n".join("\t".join(row) for row in rows)
-
-
 def frequency_rows(
     document: AnalysisDocument, case_mode: FrequencyCaseMode, lowercase_func=None
 ) -> tuple[list[str], list[tuple[str, ...]], str]:
@@ -137,22 +123,28 @@ def frequency_rows(
     return ["Token", "Count"], rows, "\n".join("\t".join(row) for row in rows)
 
 
-def token_statistics_rows(text: str, document: AnalysisDocument) -> tuple[list[str], list[tuple[str, ...]], str]:
+def dashboard_rows(text: str, document: AnalysisDocument) -> tuple[list[str], list[tuple[str, ...]], str]:
     lexical = document.lexical_tokens
-    paragraph_lengths = [len([token for token in paragraph if is_lexical(token)]) for paragraph in document.paragraphs]
     token_lengths = [token.length for token in lexical]
-    rows = [
-        ("Characters", str(len(text)), "Total Unicode code points in the input text."),
-        ("Tokens", str(len(document.tokens)), "All non-empty TS Tokenizer tokens."),
-        ("Lexical tokens", str(len(lexical)), "Word-like tokens used for lexical calculations."),
-        ("Unique tokens", str(len({token.surface.casefold() for token in lexical})), "Distinct lexical forms after case folding."),
-        ("Sentences", str(len(document.paragraphs)), "Line-based units; each non-empty input line is counted as one unit."),
-        ("Punctuation", str(sum(1 for token in document.tokens if is_punctuation(token))), "Tokens classified or detected as punctuation."),
-        ("Type-token ratio", _ratio(len({token.surface.casefold() for token in lexical}), len(lexical)), "Unique lexical tokens divided by lexical tokens."),
-        ("Mean token length", _mean(token_lengths), "Average character length of lexical tokens."),
-        ("Mean sentence length", _mean(paragraph_lengths), "Average lexical tokens per non-empty line."),
+    type_counts = Counter(token_type(token) for token in document.tokens if token_type(token) != "XML_Tag")
+    pos_counts = Counter(
+        token.pos
+        for token in document.tokens
+        if token.tokenizer != "XML_Tag" and token.pos and token.pos != "-"
+    )
+    metric_rows = [
+        ("Metric", "Characters", str(len(text))),
+        ("Metric", "Tokens", str(len([token for token in document.tokens if token.tokenizer != "XML_Tag"]))),
+        ("Metric", "Lexical tokens", str(len(lexical))),
+        ("Metric", "Unique tokens", str(len({token.surface.casefold() for token in lexical}))),
+        ("Metric", "Sentences", str(len(document.paragraphs))),
+        ("Metric", "Mean token length", _mean(token_lengths)),
+        ("Metric", "Type-token ratio", _ratio(len({token.surface.casefold() for token in lexical}), len(lexical))),
     ]
-    return ["Measure", "Value", "Description"], rows, "\n".join("\t".join(row) for row in rows)
+    type_rows = [("Token Type", name, str(count)) for name, count in _sorted_counts(type_counts)]
+    pos_rows = [("POS", name, str(count)) for name, count in _sorted_counts(pos_counts)]
+    rows = metric_rows + type_rows + pos_rows
+    return ["Section", "Label", "Value"], rows, "\n".join("\t".join(row) for row in rows)
 
 
 def token_composition_rows(document: AnalysisDocument) -> tuple[list[str], list[tuple[str, ...]], str]:
@@ -161,63 +153,14 @@ def token_composition_rows(document: AnalysisDocument) -> tuple[list[str], list[
     return ["Category", "Count", "Percentage"], rows, "\n".join("\t".join(row) for row in rows)
 
 
-def pos_distribution_rows(document: AnalysisDocument) -> tuple[list[str], list[tuple[str, ...]], str]:
-    lexical = document.lexical_tokens
-    counts = Counter(token.pos for token in document.tokens if token.pos and token.pos != "-")
-    lexical_words = sum(1 for token in lexical if token.pos in LEXICAL_POS)
-    function_words = sum(1 for token in lexical if token.pos in FUNCTION_POS)
-    rows = [(name, str(count), _percent(count, max(1, sum(counts.values()))), "POS distribution") for name, count in _sorted_counts(counts)]
-    rows.extend(
-        [
-            ("", str(lexical_words), _percent(lexical_words, len(lexical)), "Lexical Density"),
-            ("", str(lexical_words), _percent(lexical_words, len(lexical)), "Lexical Words"),
-            ("", str(function_words), _percent(function_words, len(lexical)), "Function Words"),
-        ]
-    )
-    return ["POS", "Count", "Percentage", "Info"], rows, "\n".join("\t".join(row) for row in rows)
-
-
-def text_profile_rows(document: AnalysisDocument) -> tuple[list[str], list[tuple[str, ...]], str]:
-    paragraph_lengths = [len([token for token in paragraph if is_lexical(token)]) for paragraph in document.paragraphs]
-    punctuation_count = sum(1 for token in document.tokens if is_punctuation(token))
-    lexical_count = len(document.lexical_tokens)
-    rows = [
-        ("Paragraph count", str(len(document.paragraphs)), _percent(len(document.paragraphs), len(document.paragraphs))),
-        ("Mean paragraph length", _mean(paragraph_lengths), _percent(round(float(_mean(paragraph_lengths))), max(paragraph_lengths or [1]))),
-        ("Median paragraph length", _format_number(median(paragraph_lengths) if paragraph_lengths else 0), _percent(round(median(paragraph_lengths) if paragraph_lengths else 0), max(paragraph_lengths or [1]))),
-        ("Shortest paragraph", str(min(paragraph_lengths or [0])), _percent(min(paragraph_lengths or [0]), max(paragraph_lengths or [1]))),
-        ("Longest paragraph", str(max(paragraph_lengths or [0])), _percent(max(paragraph_lengths or [0]), max(paragraph_lengths or [1]))),
-        ("Punctuation density", str(punctuation_count), _percent(punctuation_count, len(document.tokens))),
-        ("Lexical density", str(lexical_count), _percent(lexical_count, len(document.tokens))),
-    ]
-    length_counts = Counter(paragraph_lengths)
-    for length, count in sorted(length_counts.items()):
-        rows.append((f"{length} tokens", str(count), _percent(count, len(document.paragraphs))))
-    return ["Measure", "Value", "Distribution"], rows, "\n".join("\t".join(row) for row in rows)
-
-
-def social_profile_rows(document: AnalysisDocument) -> tuple[list[str], list[tuple[str, ...]], str]:
-    categories = ["Mention", "Hashtag", "URL", "Emoji", "Email", "Date", "Time"]
-    counts = Counter(token.tokenizer for token in document.tokens)
-    rows = [(category, str(counts.get(category, 0)), _percent(counts.get(category, 0), len(document.tokens))) for category in categories]
-    return ["Category", "Count", "Percentage"], rows, "\n".join("\t".join(row) for row in rows)
-
-
 def lexical_coverage_rows(document: AnalysisDocument) -> tuple[list[str], list[tuple[str, ...]], str]:
-    lexical = document.lexical_tokens
-    oov = [token for token in lexical if token.tokenizer == "OOV"]
-    recognized = max(0, len(lexical) - len(oov))
-    rows = [
-        ("Recognized lexical forms", str(recognized), _percent(recognized, len(lexical))),
-        ("OOV", str(len(oov)), _percent(len(oov), len(lexical))),
-    ]
-    return ["Category", "Count", "Percentage"], rows, "\n".join("\t".join(row) for row in rows)
-
-
-def oov_frequency_rows(document: AnalysisDocument) -> tuple[list[str], list[tuple[str, ...]], str]:
-    counts = Counter(token.surface for token in document.lexical_tokens if token.tokenizer == "OOV")
-    rows = [(str(count), token) for token, count in _sorted_counts(counts)]
-    return ["Frequency", "Token"], rows, "\n".join("\t".join(row) for row in rows)
+    counts = Counter(
+        token.surface
+        for token in document.tokens
+        if token.tokenizer == "OOV" and token.surface.isalpha()
+    )
+    rows = [(token, str(count)) for token, count in _sorted_counts(counts)]
+    return ["Token", "Count"], rows, "\n".join("\t".join(row) for row in rows)
 
 
 def ngram_rows(
@@ -246,6 +189,9 @@ def concordance_rows(
 
 
 def normalize_tokenizer_tag(surface: str, tag: str) -> str:
+    if _is_xml_tag(surface):
+        return "XML_Tag"
+
     clean = tag.strip() or "Valid_Word"
     if clean in {"Mention", "Hashtag", "URL", "Emoji", "Email", "Date", "Time", "OOV", "Punctuation"}:
         return clean
@@ -263,11 +209,13 @@ def normalize_tokenizer_tag(surface: str, tag: str) -> str:
 
 
 def token_type(token: TokenInfo) -> str:
+    if token.tokenizer == "XML_Tag":
+        return "XML_Tag"
     if is_lexical(token):
         return "Words"
-    if token.tokenizer == "Punctuation":
+    if token.tokenizer in {"Punctuation", "Punc"}:
         return "Punctuation"
-    if token.tokenizer == "URL":
+    if token.tokenizer in {"URL", "Full_URL", "Web_URL"}:
         return "URLs"
     if token.tokenizer == "Mention":
         return "Mentions"
@@ -281,7 +229,41 @@ def is_lexical(token: TokenInfo) -> bool:
 
 
 def is_punctuation(token: TokenInfo) -> bool:
-    return token.tokenizer == "Punctuation" or all(char in PUNCTUATION_CHARS for char in token.surface)
+    return token.tokenizer in {"Punctuation", "Punc"} or all(char in PUNCTUATION_CHARS for char in token.surface)
+
+
+def _is_xml_tag(surface: str) -> bool:
+    value = surface.strip()
+    return len(value) >= 3 and value.startswith("<") and value.endswith(">")
+
+
+def _strip_tabular_annotations(text: str) -> str:
+    lines = text.splitlines()
+    if not any("\t" in line for line in lines):
+        return text
+
+    stripped_lines: list[str] = []
+    changed = False
+    for line in lines:
+        if _looks_like_annotation_row(line):
+            stripped_lines.append(line.split("\t", 1)[0].strip())
+            changed = True
+        else:
+            stripped_lines.append(line)
+
+    return "\n".join(stripped_lines) if changed else text
+
+
+def _looks_like_annotation_row(line: str) -> bool:
+    parts = [part.strip() for part in line.split("\t")]
+    if len(parts) not in {2, 3} or not parts[0]:
+        return False
+
+    label = parts[-1]
+    if not label or any(char.isspace() for char in label):
+        return False
+
+    return label[0].isupper() and all(char.isalnum() or char == "_" for char in label)
 
 
 def _sorted_counts(counts: Counter[str]) -> list[tuple[str, int]]:
@@ -308,9 +290,3 @@ def _mean(values: list[int]) -> str:
     if not values:
         return "0.0"
     return f"{sum(values) / len(values):.1f}"
-
-
-def _format_number(value: float | int) -> str:
-    if float(value).is_integer():
-        return str(int(value))
-    return f"{value:.1f}"

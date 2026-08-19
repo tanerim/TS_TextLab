@@ -11,10 +11,12 @@ from PySide6.QtCore import (
     QAbstractTableModel,
     QModelIndex,
     QObject,
+    QMarginsF,
     QRegularExpression,
     QRunnable,
     QRectF,
     QSettings,
+    QSize,
     QSortFilterProxyModel,
     Qt,
     QThreadPool,
@@ -22,7 +24,19 @@ from PySide6.QtCore import (
     Signal,
     Slot,
 )
-from PySide6.QtGui import QColor, QGuiApplication, QKeySequence, QPainter, QPen, QShortcut, QTextCursor
+from PySide6.QtGui import (
+    QColor,
+    QFont,
+    QGuiApplication,
+    QKeySequence,
+    QPageLayout,
+    QPageSize,
+    QPainter,
+    QPdfWriter,
+    QPen,
+    QShortcut,
+    QTextCursor,
+)
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QApplication,
@@ -30,6 +44,7 @@ from PySide6.QtWidgets import (
     QComboBox,
     QDialog,
     QDialogButtonBox,
+    QFileDialog,
     QFrame,
     QGridLayout,
     QHBoxLayout,
@@ -40,6 +55,7 @@ from PySide6.QtWidgets import (
     QMenu,
     QMessageBox,
     QPushButton,
+    QScrollArea,
     QSizePolicy,
     QPlainTextEdit,
     QSplitter,
@@ -57,23 +73,18 @@ from app.analysis_service import (
     AnalysisDocument,
     AnalysisService,
     concordance_rows,
+    dashboard_rows,
     frequency_rows,
     lexical_coverage_rows,
     ngram_rows,
-    oov_frequency_rows,
-    pos_distribution_rows,
-    pos_rows,
-    social_profile_rows,
-    text_profile_rows,
     token_composition_rows,
-    token_statistics_rows,
     tokenization_rows,
 )
 from app.config import APP_NAME, APP_VERSION, DEFAULT_SAMPLE_TEXT, MAX_INPUT_CHARS
 from app.errors import TextLabError
 from app.i18n import Translator
-from app.postagger_service import PosTaggerService
-from app.theme.theme_manager import ThemeName, ThemePalette, apply_theme, palette_for
+from app.postagger_service import PosTaggerService, PostaggerOutputMode
+from app.theme.theme_manager import LIGHT_PALETTE, ThemeName, ThemePalette, apply_theme, palette_for
 from app.tokenizer_service import FrequencyCaseMode, TokenizerMode, TokenizerService
 from app.version_service import VersionCheckResult, check_for_update
 
@@ -84,13 +95,9 @@ TaskKind = Literal[
     "frequency",
     "ngrams",
     "concordance",
-    "statistics",
+    "dashboard",
     "composition",
-    "pos_distribution",
-    "text_profile",
-    "social_profile",
     "lexical_coverage",
-    "oov_detail",
 ]
 
 
@@ -102,6 +109,7 @@ class TaskResult:
     copy_text: str
     document: AnalysisDocument | None = None
     tokenizer_mode: TokenizerMode | None = None
+    postagger_output_mode: PostaggerOutputMode | None = None
     frequency_case_mode: FrequencyCaseMode | None = None
     analysis_label_key: str | None = None
 
@@ -136,6 +144,7 @@ class NlpWorker(QRunnable):
         kind: TaskKind,
         text: str,
         tokenizer_mode: TokenizerMode,
+        postagger_output_mode: PostaggerOutputMode,
         frequency_case_mode: FrequencyCaseMode,
         ngram_n: int,
         ngram_types: set[str],
@@ -150,6 +159,7 @@ class NlpWorker(QRunnable):
         self.kind = kind
         self.text = text
         self.tokenizer_mode = tokenizer_mode
+        self.postagger_output_mode = postagger_output_mode
         self.frequency_case_mode = frequency_case_mode
         self.ngram_n = ngram_n
         self.ngram_types = ngram_types
@@ -168,19 +178,29 @@ class NlpWorker(QRunnable):
                 raise TextLabError(
                     f"Metin çok uzun. İlk sürümde en fazla {MAX_INPUT_CHARS:,} karakter işlenebilir."
                 )
-            include_pos = self.kind in {"pos", "pos_distribution"}
-            if self.existing_document is not None:
+            if self.kind == "pos":
+                headers, rows, copy_text = self.postagger_service.format_output(self.text, self.postagger_output_mode)
+                result = TaskResult(
+                    self.kind,
+                    headers,
+                    rows,
+                    copy_text,
+                    postagger_output_mode=self.postagger_output_mode,
+                    analysis_label_key="pos_tagging",
+                )
+                self.signals.finished.emit(result)
+                return
+
+            include_pos = self.kind == "dashboard"
+            if include_pos:
+                document = self.analysis_service.build_document(self.text, include_pos=True)
+            elif self.existing_document is not None:
                 document = self.existing_document
-                if include_pos and not self.analysis_service.has_pos(document):
-                    document = self.analysis_service.add_pos(document)
             else:
-                document = self.analysis_service.build_document(self.text, include_pos=include_pos)
+                document = self.analysis_service.build_document(self.text)
             if self.kind == "tokenize":
                 headers, rows, copy_text = tokenization_rows(document, self.tokenizer_mode)
                 result = TaskResult(self.kind, headers, rows, copy_text, document, self.tokenizer_mode)
-            elif self.kind == "pos":
-                headers, rows, copy_text = pos_rows(document)
-                result = TaskResult(self.kind, headers, rows, copy_text, document, analysis_label_key="pos_tagging")
             elif self.kind == "frequency":
                 headers, rows, copy_text = frequency_rows(
                     document, self.frequency_case_mode, self.tokenizer_service._char_fix.tr_lowercase
@@ -192,27 +212,17 @@ class NlpWorker(QRunnable):
             elif self.kind == "concordance":
                 headers, rows, copy_text = concordance_rows(document, self.concordance_query, self.concordance_span)
                 result = TaskResult(self.kind, headers, rows, copy_text, document)
-            elif self.kind == "statistics":
-                headers, rows, copy_text = token_statistics_rows(self.text, document)
+            elif self.kind == "dashboard":
+                headers, rows, copy_text = dashboard_rows(self.text, document)
                 result = TaskResult(self.kind, headers, rows, copy_text, document)
             elif self.kind == "composition":
                 headers, rows, copy_text = token_composition_rows(document)
-                result = TaskResult(self.kind, headers, rows, copy_text, document)
-            elif self.kind == "pos_distribution":
-                headers, rows, copy_text = pos_distribution_rows(document)
-                result = TaskResult(self.kind, headers, rows, copy_text, document)
-            elif self.kind == "text_profile":
-                headers, rows, copy_text = text_profile_rows(document)
-                result = TaskResult(self.kind, headers, rows, copy_text, document)
-            elif self.kind == "social_profile":
-                headers, rows, copy_text = social_profile_rows(document)
                 result = TaskResult(self.kind, headers, rows, copy_text, document)
             elif self.kind == "lexical_coverage":
                 headers, rows, copy_text = lexical_coverage_rows(document)
                 result = TaskResult(self.kind, headers, rows, copy_text, document)
             else:
-                headers, rows, copy_text = oov_frequency_rows(document)
-                result = TaskResult(self.kind, headers, rows, copy_text, document)
+                raise TextLabError(f"Bilinmeyen analiz türü: {self.kind}")
             self.signals.finished.emit(result)
         except TextLabError as exc:
             logger.warning("NLP task failed: %s", exc)
@@ -364,12 +374,13 @@ class PosBadgeDelegate(QStyledItemDelegate):
         "PUNCT": ("#343A44", "#D3DAE3"),
     }
 
-    def __init__(self, palette: ThemePalette, parent: QObject | None = None) -> None:
+    def __init__(self, palette: ThemePalette, column: int = 2, parent: QObject | None = None) -> None:
         super().__init__(parent)
         self.palette = palette
+        self.column = column
 
     def paint(self, painter: QPainter, option, index: QModelIndex) -> None:  # type: ignore[override]
-        if index.column() != 2:
+        if index.column() != self.column:
             super().paint(painter, option, index)
             return
 
@@ -453,6 +464,215 @@ class EmptyState(QWidget):
     def apply_translations(self, trn: Translator) -> None:
         self.title.setText(trn.text("no_results_title"))
         self.body.setText(trn.text("no_results_body"))
+
+
+class AnalysisDashboard(QWidget):
+    REPORT_SIZE = QSize(980, 1180)
+    BAR_COLORS = ["#2854A3", "#147A6C", "#8A3C55", "#8A5A12", "#3E5C76", "#5B4BA8", "#2F7D56", "#11606B"]
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.result: TaskResult | None = None
+        self.trn: Translator | None = None
+        self.palette: ThemePalette | None = None
+        self.setMinimumSize(self.REPORT_SIZE)
+
+    def set_result(self, result: TaskResult | None, trn: Translator, palette: ThemePalette) -> None:
+        self.result = result
+        self.trn = trn
+        self.palette = palette
+        self.update()
+
+    def export_pdf(self, path: str) -> None:
+        writer = QPdfWriter(path)
+        writer.setResolution(144)
+        writer.setPageSize(QPageSize(QPageSize.A4))
+        writer.setPageMargins(QMarginsF(16, 16, 16, 16), QPageLayout.Millimeter)
+        painter = QPainter(writer)
+        try:
+            page = writer.pageLayout().paintRectPixels(writer.resolution())
+            source = QRectF(0, 0, self.REPORT_SIZE.width(), self.REPORT_SIZE.height())
+            scale = min(page.width() / source.width(), page.height() / source.height())
+            painter.translate(page.x() + (page.width() - source.width() * scale) / 2, page.y())
+            painter.scale(scale, scale)
+            self._paint_report(painter, source, for_pdf=True)
+        finally:
+            painter.end()
+
+    def paintEvent(self, _event) -> None:  # type: ignore[override]
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+        self._paint_report(painter, QRectF(0, 0, self.width(), self.height()), for_pdf=False)
+
+    def _paint_report(self, painter: QPainter, rect: QRectF, for_pdf: bool) -> None:
+        palette = LIGHT_PALETTE if for_pdf else (self.palette or LIGHT_PALETTE)
+        painter.fillRect(rect, QColor("#FFFFFF" if for_pdf else palette.panel))
+        result = self.result
+        if result is None:
+            return
+
+        metrics, token_types, pos_counts = self._sections(result.rows)
+        margin = 34
+        x = rect.left() + margin
+        y = rect.top() + margin
+        width = rect.width() - margin * 2
+
+        self._draw_watermark(painter, rect)
+        self._draw_title(painter, x, y, width, palette)
+        y += 78
+        y = self._draw_metric_cards(painter, x, y, width, metrics, palette)
+        y += 22
+        chart_width = (width - 22) / 2
+        self._draw_bar_panel(painter, QRectF(x, y, chart_width, 360), self._text("token_composition"), token_types, palette)
+        self._draw_bar_panel(painter, QRectF(x + chart_width + 22, y, chart_width, 360), self._text("pos_distribution"), pos_counts, palette)
+        y += 388
+        self._draw_summary_panel(painter, QRectF(x, y, width, 210), metrics, palette)
+
+    def _draw_title(self, painter: QPainter, x: float, y: float, width: float, palette: ThemePalette) -> None:
+        painter.setPen(QColor(palette.text))
+        font = QFont()
+        font.setPointSize(22)
+        font.setBold(True)
+        painter.setFont(font)
+        painter.drawText(QRectF(x, y, width, 34), Qt.AlignLeft | Qt.AlignVCenter, self._text("dashboard"))
+        font.setPointSize(10)
+        font.setBold(False)
+        painter.setFont(font)
+        painter.setPen(QColor(palette.muted))
+        painter.drawText(QRectF(x, y + 38, width, 22), Qt.AlignLeft | Qt.AlignVCenter, f"TS TextLab · {self._text('local_processing_statement')}")
+
+    def _draw_metric_cards(
+        self, painter: QPainter, x: float, y: float, width: float, metrics: dict[str, str], palette: ThemePalette
+    ) -> float:
+        keys = ["Characters", "Tokens", "Lexical tokens", "Unique tokens", "Type-token ratio", "Mean token length"]
+        card_gap = 12
+        card_width = (width - card_gap * 2) / 3
+        card_height = 94
+        for index, key in enumerate(keys):
+            row = index // 3
+            column = index % 3
+            rect = QRectF(x + column * (card_width + card_gap), y + row * (card_height + card_gap), card_width, card_height)
+            self._rounded_panel(painter, rect, palette.surface, palette.border)
+            painter.setPen(QColor(palette.muted))
+            font = QFont()
+            font.setPointSize(9)
+            font.setBold(True)
+            painter.setFont(font)
+            painter.drawText(rect.adjusted(14, 12, -14, -54), Qt.AlignLeft | Qt.AlignVCenter, self._metric_label(key))
+            painter.setPen(QColor(palette.text))
+            font.setPointSize(24)
+            font.setBold(True)
+            painter.setFont(font)
+            painter.drawText(rect.adjusted(14, 38, -14, -10), Qt.AlignLeft | Qt.AlignVCenter, metrics.get(key, "0"))
+        return y + card_height * 2 + card_gap
+
+    def _draw_bar_panel(
+        self, painter: QPainter, rect: QRectF, title: str, values: list[tuple[str, int]], palette: ThemePalette
+    ) -> None:
+        self._rounded_panel(painter, rect, palette.surface, palette.border)
+        painter.setPen(QColor(palette.text))
+        font = QFont()
+        font.setPointSize(13)
+        font.setBold(True)
+        painter.setFont(font)
+        painter.drawText(rect.adjusted(16, 12, -16, -318), Qt.AlignLeft | Qt.AlignVCenter, title)
+
+        top_values = values[:8]
+        max_value = max([value for _, value in top_values] or [1])
+        y = rect.top() + 54
+        for index, (label, value) in enumerate(top_values):
+            bar_rect = QRectF(rect.left() + 16, y + index * 34, rect.width() - 92, 16)
+            painter.setPen(QColor(palette.muted))
+            font.setPointSize(9)
+            font.setBold(False)
+            painter.setFont(font)
+            painter.drawText(QRectF(bar_rect.left(), bar_rect.top() - 17, bar_rect.width(), 16), Qt.AlignLeft, self._metric_label(label))
+            painter.setPen(Qt.NoPen)
+            painter.setBrush(QColor(palette.surface_alt))
+            painter.drawRoundedRect(bar_rect, 5, 5)
+            fill = QRectF(bar_rect)
+            fill.setWidth(max(4, bar_rect.width() * value / max_value))
+            painter.setBrush(QColor(self.BAR_COLORS[index % len(self.BAR_COLORS)]))
+            painter.drawRoundedRect(fill, 5, 5)
+            painter.setPen(QColor(palette.text))
+            painter.drawText(QRectF(bar_rect.right() + 10, bar_rect.top() - 2, 52, 20), Qt.AlignRight, str(value))
+
+    def _draw_summary_panel(self, painter: QPainter, rect: QRectF, metrics: dict[str, str], palette: ThemePalette) -> None:
+        self._rounded_panel(painter, rect, palette.surface, palette.border)
+        painter.setPen(QColor(palette.text))
+        font = QFont()
+        font.setPointSize(13)
+        font.setBold(True)
+        painter.setFont(font)
+        painter.drawText(rect.adjusted(18, 14, -18, -166), Qt.AlignLeft | Qt.AlignVCenter, self._text("text_profile"))
+        font.setPointSize(10)
+        font.setBold(False)
+        painter.setFont(font)
+        painter.setPen(QColor(palette.muted))
+        lines = [
+            f"{self._metric_label('Sentences')}: {metrics.get('Sentences', '0')}",
+            f"{self._metric_label('Lexical tokens')}: {metrics.get('Lexical tokens', '0')}",
+            f"{self._metric_label('Unique tokens')}: {metrics.get('Unique tokens', '0')}",
+            f"{self._metric_label('Type-token ratio')}: {metrics.get('Type-token ratio', '0')}",
+        ]
+        painter.drawText(rect.adjusted(18, 58, -18, -18), Qt.AlignLeft | Qt.AlignTop, "\n".join(lines))
+
+    def _draw_watermark(self, painter: QPainter, rect: QRectF) -> None:
+        painter.save()
+        painter.translate(rect.center())
+        painter.rotate(-32)
+        color = QColor("#2854A3")
+        color.setAlpha(25)
+        painter.setPen(color)
+        font = QFont()
+        font.setPointSize(54)
+        font.setBold(True)
+        painter.setFont(font)
+        painter.drawText(QRectF(-360, -55, 720, 110), Qt.AlignCenter, "TS TextLab")
+        painter.restore()
+
+    def _rounded_panel(self, painter: QPainter, rect: QRectF, background: str, border: str) -> None:
+        painter.setPen(QPen(QColor(border), 1))
+        painter.setBrush(QColor(background))
+        painter.drawRoundedRect(rect, 8, 8)
+
+    def _sections(self, rows: list[tuple[str, ...]]) -> tuple[dict[str, str], list[tuple[str, int]], list[tuple[str, int]]]:
+        metrics: dict[str, str] = {}
+        token_types: list[tuple[str, int]] = []
+        pos_counts: list[tuple[str, int]] = []
+        for row in rows:
+            if len(row) < 3:
+                continue
+            section, label, value = row[0], row[1], row[2]
+            if section == "Metric":
+                metrics[label] = value
+            elif section == "Token Type":
+                token_types.append((label, int(float(value))))
+            elif section == "POS":
+                pos_counts.append((label, int(float(value))))
+        return metrics, token_types, pos_counts
+
+    def _text(self, key: str) -> str:
+        return self.trn.text(key) if self.trn is not None else key
+
+    def _metric_label(self, label: str) -> str:
+        mapping = {
+            "Characters": "characters_measure",
+            "Tokens": "tokens_measure",
+            "Lexical tokens": "lexical_tokens",
+            "Unique tokens": "unique_tokens",
+            "Sentences": "sentences",
+            "Mean token length": "mean_token_length",
+            "Type-token ratio": "type_token_ratio",
+            "Words": "words",
+            "Punctuation": "punctuation",
+            "URLs": "urls",
+            "Mentions": "mentions",
+            "Hashtags": "hashtags",
+            "XML_Tag": "xml_tags",
+        }
+        key = mapping.get(label)
+        return self._text(key) if key else label
 
 
 class SettingsDialog(QDialog):
@@ -670,6 +890,7 @@ class MainWindow(QMainWindow):
         self.current_document: AnalysisDocument | None = None
         self.current_document_text = ""
         self.current_tokenizer_mode: TokenizerMode | None = None
+        self.current_postagger_output_mode: PostaggerOutputMode | None = None
         self.current_frequency_case_mode: FrequencyCaseMode | None = None
         self.current_elapsed_ms: int | None = None
         self._task_started_at = 0.0
@@ -841,6 +1062,11 @@ class MainWindow(QMainWindow):
         self.copy_button.setText("Copy")
         self.copy_button.setToolTip("Copy result")
         top.addWidget(self.copy_button)
+        self.export_pdf_button = QToolButton()
+        self.export_pdf_button.setText("Export PDF")
+        self.export_pdf_button.setToolTip("Export dashboard as PDF")
+        self.export_pdf_button.setVisible(False)
+        top.addWidget(self.export_pdf_button)
         layout.addLayout(top)
 
         self.result_model = ResultTableModel(self)
@@ -866,6 +1092,11 @@ class MainWindow(QMainWindow):
         self.results_table.horizontalHeader().setDefaultAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         self.table_stack.addWidget(self.empty_state)
         self.table_stack.addWidget(self.results_table)
+        self.dashboard_view = AnalysisDashboard()
+        self.dashboard_scroll = QScrollArea()
+        self.dashboard_scroll.setWidgetResizable(True)
+        self.dashboard_scroll.setWidget(self.dashboard_view)
+        self.table_stack.addWidget(self.dashboard_scroll)
         layout.addWidget(self.table_stack, 1)
 
         self.concordance_context_panel = QFrame()
@@ -918,9 +1149,16 @@ class MainWindow(QMainWindow):
         panel.setObjectName("ActionOptions")
         layout = QHBoxLayout(panel)
         layout.setContentsMargins(0, 0, 0, 0)
-        layout.addStretch(1)
+        layout.setSpacing(8)
+        self.postagger_output_mode_label = QLabel("POSTag Output")
+        self.postagger_output_mode_label.setObjectName("MetaLabel")
+        self.postagger_output_mode_combo = QComboBox()
+        self.postagger_output_mode_combo.addItem("POSTag - Full (Default)", "full")
+        self.postagger_output_mode_combo.addItem("POSTag - Tag", "tag")
         self.pos_button = QPushButton("POS Tag")
         self.pos_button.setObjectName("PosButton")
+        layout.addWidget(self.postagger_output_mode_label)
+        layout.addWidget(self.postagger_output_mode_combo, 1)
         layout.addWidget(self.pos_button)
         return panel
 
@@ -959,12 +1197,13 @@ class MainWindow(QMainWindow):
         self.ngram_urls_check = QCheckBox("URLs")
         self.ngram_mentions_check = QCheckBox("Mentions")
         self.ngram_hashtags_check = QCheckBox("Hashtags")
+        self.ngram_xml_tags_check = QCheckBox("XML_Tag")
         self.ngram_words_check.setChecked(True)
         self.ngrams_button = QPushButton("N-grams")
         self.ngrams_button.setObjectName("FrequencyButton")
         layout.addWidget(self.ngram_n_label, 0, 0)
         layout.addWidget(self.ngram_n_combo, 0, 1)
-        layout.addWidget(self.ngrams_button, 0, 5)
+        layout.addWidget(self.ngrams_button, 0, 6)
         for index, checkbox in enumerate(
             (
                 self.ngram_words_check,
@@ -972,10 +1211,11 @@ class MainWindow(QMainWindow):
                 self.ngram_urls_check,
                 self.ngram_mentions_check,
                 self.ngram_hashtags_check,
+                self.ngram_xml_tags_check,
             )
         ):
             layout.addWidget(checkbox, 1, index)
-        layout.setColumnStretch(4, 1)
+        layout.setColumnStretch(5, 1)
         return panel
 
     def _build_text_analysis_actions(self) -> QWidget:
@@ -987,23 +1227,17 @@ class MainWindow(QMainWindow):
         layout.setVerticalSpacing(8)
         self.statistics_button = QPushButton("Token Statistics")
         self.composition_button = QPushButton("Token Composition")
-        self.pos_distribution_button = QPushButton("POS Distribution")
-        self.text_profile_button = QPushButton("Text Profile")
-        self.social_profile_button = QPushButton("Social Media Profile")
         self.lexical_coverage_button = QPushButton("Lexical Coverage")
         for index, button in enumerate(
             (
                 self.statistics_button,
                 self.composition_button,
-                self.pos_distribution_button,
-                self.text_profile_button,
-                self.social_profile_button,
                 self.lexical_coverage_button,
             )
         ):
             button.setObjectName("PosButton")
             button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-            layout.addWidget(button, index // 3, index % 3)
+            layout.addWidget(button, 0, index)
         for column in range(3):
             layout.setColumnStretch(column, 1)
         return panel
@@ -1014,18 +1248,17 @@ class MainWindow(QMainWindow):
         self.frequency_button.clicked.connect(lambda: self._start_task("frequency"))
         self.ngrams_button.clicked.connect(lambda: self._start_task("ngrams"))
         self.concordance_context_button.clicked.connect(lambda: self._start_task("concordance"))
-        self.statistics_button.clicked.connect(lambda: self._start_task("statistics"))
+        self.statistics_button.clicked.connect(lambda: self._start_task("dashboard"))
         self.composition_button.clicked.connect(lambda: self._start_task("composition"))
-        self.pos_distribution_button.clicked.connect(lambda: self._start_task("pos_distribution"))
-        self.text_profile_button.clicked.connect(lambda: self._start_task("text_profile"))
-        self.social_profile_button.clicked.connect(lambda: self._start_task("social_profile"))
         self.lexical_coverage_button.clicked.connect(lambda: self._start_task("lexical_coverage"))
         self.copy_button.clicked.connect(self._copy_result)
+        self.export_pdf_button.clicked.connect(self._export_dashboard_pdf)
         self.clear_input_action.triggered.connect(self.input_text.clear)
         self.clear_result_action.triggered.connect(self._clear_result)
         self.clear_all_action.triggered.connect(self._clear_all)
         self.input_text.textChanged.connect(self._update_input_meta)
         self.tokenizer_mode_combo.currentIndexChanged.connect(self._save_tokenizer_mode)
+        self.postagger_output_mode_combo.currentIndexChanged.connect(self._save_postagger_output_mode)
         self.frequency_case_combo.currentIndexChanged.connect(self._save_frequency_case_mode)
         self.filter_input.textChanged.connect(self._filter_results)
         self.results_table.clicked.connect(self._inspect_clicked_row)
@@ -1049,6 +1282,8 @@ class MainWindow(QMainWindow):
             self._palette = apply_theme(app, self.settings)
         self._apply_density()
         self._apply_delegates()
+        if self.current_raw_result is not None and self.current_kind == "dashboard":
+            self.dashboard_view.set_result(self.current_raw_result, self.trn, self._palette)
 
     def _apply_density(self) -> None:
         density = self.settings.value("table_density", "comfortable", str)
@@ -1059,17 +1294,16 @@ class MainWindow(QMainWindow):
         self.results_table.setItemDelegateForColumn(2, QStyledItemDelegate(self.results_table))
         self.results_table.setItemDelegateForColumn(3, QStyledItemDelegate(self.results_table))
         if self.current_kind == "pos":
-            self.results_table.setItemDelegateForColumn(2, PosBadgeDelegate(self._palette, self.results_table))
+            pos_column = len(self.result_model.headers)
+            self.results_table.setItemDelegateForColumn(
+                pos_column, PosBadgeDelegate(self._palette, pos_column, self.results_table)
+            )
         elif self.current_kind in {"frequency", "ngrams"}:
             self.results_table.setItemDelegateForColumn(2, FrequencyBarDelegate(self._palette, 2, self.results_table))
-        elif self.current_kind in {
-            "composition",
-            "pos_distribution",
-            "text_profile",
-            "social_profile",
-            "lexical_coverage",
-        }:
+        elif self.current_kind == "composition":
             self.results_table.setItemDelegateForColumn(3, FrequencyBarDelegate(self._palette, 3, self.results_table))
+        elif self.current_kind == "lexical_coverage":
+            self.results_table.setItemDelegateForColumn(2, FrequencyBarDelegate(self._palette, 2, self.results_table))
 
     def _restore_settings(self) -> None:
         if self.settings.value("remember_layout", True, bool):
@@ -1080,6 +1314,7 @@ class MainWindow(QMainWindow):
         if mode == "tagged_lines":
             mode = "tagged"
         _set_combo_data(self.tokenizer_mode_combo, mode)
+        _set_combo_data(self.postagger_output_mode_combo, self.settings.value("postagger_output_mode", "full", str))
         _set_combo_data(self.frequency_case_combo, self.settings.value("frequency_case_mode", "insensitive", str))
         self._update_input_meta()
 
@@ -1136,6 +1371,7 @@ class MainWindow(QMainWindow):
             kind,
             text,
             self.tokenizer_mode_combo.currentData(),
+            self.postagger_output_mode_combo.currentData(),
             self.frequency_case_combo.currentData(),
             self.ngram_n_combo.currentData(),
             self._selected_ngram_types(),
@@ -1161,6 +1397,7 @@ class MainWindow(QMainWindow):
         self.current_document = result.document
         self.current_document_text = self.input_text.toPlainText()
         self.current_tokenizer_mode = result.tokenizer_mode
+        self.current_postagger_output_mode = result.postagger_output_mode
         self.current_frequency_case_mode = result.frequency_case_mode
         self.current_elapsed_ms = elapsed_ms
         self._select_action_tab_for_kind(result.kind)
@@ -1168,18 +1405,26 @@ class MainWindow(QMainWindow):
             self.concordance_context_panel.setVisible(False)
         self.result_model.set_result(result)
         self.proxy_model.invalidateFilter()
-        self.table_stack.setCurrentWidget(self.results_table)
-        self.results_table.setSortingEnabled(result.kind in {"frequency", "ngrams", "oov_detail"})
-        self.results_table.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
-        self.results_table.setColumnWidth(0, 58)
-        if result.headers:
-            self.results_table.setColumnWidth(1, 280)
-        if result.kind in {"frequency", "ngrams"}:
-            self.results_table.sortByColumn(2, Qt.DescendingOrder)
-        elif result.kind == "oov_detail":
-            self.results_table.sortByColumn(1, Qt.DescendingOrder)
+        self.filter_input.setVisible(result.kind != "dashboard")
+        self.export_pdf_button.setVisible(result.kind == "dashboard")
+        if result.kind == "dashboard":
+            dashboard_source = self.current_raw_result or result
+            self.dashboard_view.set_result(dashboard_source, self.trn, self._palette)
+            self.table_stack.setCurrentWidget(self.dashboard_scroll)
+            self.results_table.setSortingEnabled(False)
         else:
-            self.proxy_model.sort(0, Qt.AscendingOrder)
+            self.table_stack.setCurrentWidget(self.results_table)
+            self.results_table.setSortingEnabled(result.kind in {"frequency", "ngrams", "lexical_coverage"})
+            self.results_table.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
+            self.results_table.setColumnWidth(0, 58)
+            if result.headers:
+                self.results_table.setColumnWidth(1, 280)
+            if result.kind in {"frequency", "ngrams"}:
+                self.results_table.sortByColumn(2, Qt.DescendingOrder)
+            elif result.kind == "lexical_coverage":
+                self.results_table.sortByColumn(2, Qt.DescendingOrder)
+            else:
+                self.proxy_model.sort(0, Qt.AscendingOrder)
         self._apply_delegates()
 
         label = self._kind_label(result)
@@ -1213,6 +1458,28 @@ class MainWindow(QMainWindow):
     def _copy_result(self) -> None:
         self._copy_selection_or_result()
 
+    def _export_dashboard_pdf(self) -> None:
+        if self.current_kind != "dashboard" or self.current_raw_result is None:
+            self.status_label.setText(self.trn.text("no_result"))
+            return
+        path, _ = QFileDialog.getSaveFileName(
+            self,
+            self.trn.text("export_pdf"),
+            "ts-textlab-dashboard.pdf",
+            "PDF (*.pdf)",
+        )
+        if not path:
+            return
+        if not path.lower().endswith(".pdf"):
+            path = f"{path}.pdf"
+        try:
+            self.dashboard_view.export_pdf(path)
+        except Exception as exc:  # pragma: no cover - QFile/QPainter boundary
+            logger.exception("Dashboard PDF export failed")
+            self.status_label.setText(f"{self.trn.text('operation_failed')}: {exc}")
+            return
+        self.status_label.setText(self.trn.text("pdf_exported"))
+
     def _copy_selection_or_result(self) -> None:
         selected_text = self._selected_rows_text()
         text = selected_text or self.current_copy_text
@@ -1243,10 +1510,14 @@ class MainWindow(QMainWindow):
         self.current_document = None
         self.current_document_text = ""
         self.current_tokenizer_mode = None
+        self.current_postagger_output_mode = None
         self.current_frequency_case_mode = None
         self.current_elapsed_ms = None
         self.result_model.set_result(None)
         self.filter_input.clear()
+        self.filter_input.setVisible(True)
+        self.export_pdf_button.setVisible(False)
+        self.dashboard_view.set_result(None, self.trn, self._palette)
         self.table_stack.setCurrentWidget(self.empty_state)
         self.concordance_context_panel.setVisible(False)
         self.results_meta.setText(self.trn.text("ready"))
@@ -1265,14 +1536,13 @@ class MainWindow(QMainWindow):
             self.concordance_context_button,
             self.statistics_button,
             self.composition_button,
-            self.pos_distribution_button,
-            self.text_profile_button,
-            self.social_profile_button,
             self.lexical_coverage_button,
         ):
             button.setDisabled(busy)
         self.clear_button.setDisabled(busy)
         self.copy_button.setDisabled(busy)
+        self.export_pdf_button.setDisabled(busy)
+        self.postagger_output_mode_combo.setDisabled(busy)
         if busy:
             text = self.trn.text("preparing_pos") if kind == "pos" else self.trn.text("processing")
             self.results_meta.setText(f"{self.trn.text('analysis')} · {text}")
@@ -1292,18 +1562,20 @@ class MainWindow(QMainWindow):
         self.frequency_case_label.setText(self.trn.text("frequency_case"))
         self.frequency_case_combo.setItemText(0, self.trn.text("case_insensitive"))
         self.frequency_case_combo.setItemText(1, self.trn.text("case_sensitive"))
+        self.postagger_output_mode_label.setText(self.trn.text("postagger_output"))
+        self.postagger_output_mode_combo.setItemText(0, self.trn.text("postagger_full_default"))
+        self.postagger_output_mode_combo.setItemText(1, self.trn.text("postagger_tag"))
         self.tokenize_button.setText(self.trn.text("tokenize"))
         self.pos_button.setText(self.trn.text("pos_tag"))
         self.frequency_button.setText(self.trn.text("frequency"))
         self.ngrams_button.setText(self.trn.text("ngrams"))
         self.concordance_context_label.setText(self.trn.text("concordance"))
         self.concordance_context_button.setText(self.trn.text("concordance"))
-        self.statistics_button.setText(self.trn.text("token_statistics"))
+        self.statistics_button.setText(self.trn.text("dashboard"))
         self.composition_button.setText(self.trn.text("token_composition"))
-        self.pos_distribution_button.setText(self.trn.text("pos_distribution"))
-        self.text_profile_button.setText(self.trn.text("text_profile"))
-        self.social_profile_button.setText(self.trn.text("social_media_profile"))
-        self.lexical_coverage_button.setText(self.trn.text("lexical_coverage"))
+        self.lexical_coverage_button.setText(self.trn.text("neologisms"))
+        self.export_pdf_button.setText(self.trn.text("export_pdf"))
+        self.export_pdf_button.setToolTip(self.trn.text("export_pdf"))
         self.action_tabs.setTabText(0, self.trn.text("tokenize"))
         self.action_tabs.setTabText(1, self.trn.text("pos_tag"))
         self.action_tabs.setTabText(2, self.trn.text("frequency"))
@@ -1320,6 +1592,7 @@ class MainWindow(QMainWindow):
         self.ngram_urls_check.setText(self.trn.text("urls"))
         self.ngram_mentions_check.setText(self.trn.text("mentions"))
         self.ngram_hashtags_check.setText(self.trn.text("hashtags"))
+        self.ngram_xml_tags_check.setText(self.trn.text("xml_tags"))
         self.concordance_query_input.setPlaceholderText(self.trn.text("token"))
         self.filter_input.setPlaceholderText(self.trn.text("filter_results"))
         self.app_menu_button.setToolTip(self.trn.text("application_menu"))
@@ -1333,6 +1606,8 @@ class MainWindow(QMainWindow):
         if self.current_kind is not None:
             if self.current_raw_result is not None:
                 self.result_model.set_result(self._localized_result(self.current_raw_result))
+                if self.current_kind == "dashboard":
+                    self.dashboard_view.set_result(self.current_raw_result, self.trn, self._palette)
             else:
                 self.result_model.beginResetModel()
                 self.result_model.headers = self._headers_for_current_result()
@@ -1372,26 +1647,30 @@ class MainWindow(QMainWindow):
 
         title = QLabel(APP_NAME)
         title.setObjectName("TitleLabel")
+        title.setAlignment(Qt.AlignCenter)
         layout.addWidget(title)
 
         body = QLabel(
             f"""
+            <div style="text-align:center;">
             <p><b>{self.trn.text('subtitle')}</b><br>{self.trn.text('version')} {APP_VERSION}</p>
-            <p><a href="https://tscorpus.com/">TS TextLab</a></p>
+            <p><a style="color:#173A74; text-decoration:none;" href="https://tscorpus.com/">TS TextLab</a></p>
             <p>{self.trn.text('powered_by')}:<br>
-            <a href="https://pypi.org/project/ts-tokenizer/">TS Tokenizer</a><br>
-            <a href="https://pypi.org/project/ts-postagger/">TS PosTagger</a></p>
+            <a style="color:#173A74; text-decoration:none;" href="https://pypi.org/project/ts-tokenizer/">TS Tokenizer</a><br>
+            <a style="color:#173A74; text-decoration:none;" href="https://pypi.org/project/ts-postagger/">TS PosTagger</a></p>
             <p>{self.trn.text('local_processing_statement')}<br>
             {self.trn.text('no_upload_statement')}</p>
             <p>SEZER, T. (2025).
-            <a href="https://tez.yok.gov.tr/UlusalTezMerkezi/TezGoster?key=Xau5rw3KuCgEuy-FuJQtsNVGSOOMCSQba2T5bZaDSDUTfOiTTVCpuBZPjDrUgB0i">
+            <a style="color:#173A74; text-decoration:none;" href="https://tez.yok.gov.tr/UlusalTezMerkezi/TezGoster?key=Xau5rw3KuCgEuy-FuJQtsNVGSOOMCSQba2T5bZaDSDUTfOiTTVCpuBZPjDrUgB0i">
             Dizilerden birimlere: Bilişimsel dilbilim çerçevesinde bir birimlendirici tasarımı</a><br>
             [Doktora tezi, HACETTEPE ÜNİVERSİTESİ]. <br> Ulusal Tez Merkezi, Tez No. 959204</p>
+            </div>
             """
         )
         body.setOpenExternalLinks(True)
         body.setTextFormat(Qt.RichText)
         body.setTextInteractionFlags(Qt.TextBrowserInteraction)
+        body.setAlignment(Qt.AlignCenter)
         body.setWordWrap(True)
         layout.addWidget(body)
 
@@ -1442,9 +1721,6 @@ class MainWindow(QMainWindow):
         if row >= len(self.result_model.rows):
             return
         values = self.result_model.rows[row]
-        if self.current_kind == "lexical_coverage" and values and values[0] == "OOV":
-            self._show_oov_detail()
-            return
         surface = self._surface_from_row(values)
         if not surface:
             return
@@ -1457,32 +1733,9 @@ class MainWindow(QMainWindow):
             return ""
         if self.current_kind == "concordance" and len(values) >= 2:
             return values[1]
-        if self.current_kind == "oov_detail" and len(values) >= 2:
-            return values[1]
-        if self.current_kind in {"tokenize", "pos", "frequency"}:
+        if self.current_kind in {"tokenize", "pos", "frequency", "lexical_coverage"}:
             return values[0]
         return ""
-
-    def _show_oov_detail(self) -> None:
-        if self.current_document is None:
-            return
-        headers, rows, copy_text = oov_frequency_rows(self.current_document)
-        result = self._localized_result(TaskResult("oov_detail", headers, rows, copy_text, self.current_document))
-        self.current_raw_result = TaskResult("oov_detail", headers, rows, copy_text, self.current_document)
-        self.current_copy_text = result.copy_text
-        self.current_headers = result.headers
-        self.current_kind = result.kind
-        self.concordance_context_panel.setVisible(False)
-        self.result_model.set_result(result)
-        self.proxy_model.invalidateFilter()
-        self.table_stack.setCurrentWidget(self.results_table)
-        self.results_table.setSortingEnabled(True)
-        self.results_table.sortByColumn(1, Qt.DescendingOrder)
-        self._apply_delegates()
-        self.results_meta.setText(
-            f"{self.trn.text('analysis')} · {self.trn.text('oov_tokens')} · {self._count_label(result.kind, len(result.rows))}"
-        )
-        self.status_label.setText(self._status_for_current_result())
 
     def _update_input_meta(self) -> None:
         text = self.input_text.toPlainText()
@@ -1491,6 +1744,9 @@ class MainWindow(QMainWindow):
 
     def _save_tokenizer_mode(self) -> None:
         self.settings.setValue("tokenizer_mode", self.tokenizer_mode_combo.currentData())
+
+    def _save_postagger_output_mode(self) -> None:
+        self.settings.setValue("postagger_output_mode", self.postagger_output_mode_combo.currentData())
 
     def _save_frequency_case_mode(self) -> None:
         self.settings.setValue("frequency_case_mode", self.frequency_case_combo.currentData())
@@ -1507,6 +1763,8 @@ class MainWindow(QMainWindow):
             selected.add("Mentions")
         if self.ngram_hashtags_check.isChecked():
             selected.add("Hashtags")
+        if self.ngram_xml_tags_check.isChecked():
+            selected.add("XML_Tag")
         return selected or {"Words"}
 
     def _sync_action_options(self, index: int) -> None:
@@ -1519,13 +1777,9 @@ class MainWindow(QMainWindow):
             "frequency": 2,
             "concordance": 2,
             "ngrams": 3,
-            "statistics": 4,
+            "dashboard": 4,
             "composition": 4,
-            "pos_distribution": 4,
-            "text_profile": 4,
-            "social_profile": 4,
             "lexical_coverage": 4,
-            "oov_detail": 4,
         }.get(kind)
         if tab is not None and self.action_tabs.currentIndex() != tab:
             self.action_tabs.setCurrentIndex(tab)
@@ -1539,6 +1793,7 @@ class MainWindow(QMainWindow):
             copy_text=result.copy_text,
             document=result.document,
             tokenizer_mode=result.tokenizer_mode,
+            postagger_output_mode=result.postagger_output_mode,
             frequency_case_mode=result.frequency_case_mode,
             analysis_label_key=result.analysis_label_key,
         )
@@ -1546,19 +1801,9 @@ class MainWindow(QMainWindow):
     def _localized_row(self, kind: TaskKind, row: tuple[str, ...]) -> tuple[str, ...]:
         if not row:
             return row
-        if kind not in {
-            "statistics",
-            "pos_distribution",
-            "text_profile",
-            "social_profile",
-            "lexical_coverage",
-        }:
+        if kind not in {"composition"}:
             return row
         values = (self._row_label(row[0]), *row[1:])
-        if kind == "statistics" and len(values) >= 3:
-            values = (values[0], values[1], self._description_label(values[2]))
-        if kind == "pos_distribution" and len(values) >= 4:
-            values = (values[0], values[1], values[2], self._row_label(values[3]))
         return values
 
     def _row_label(self, value: str) -> str:
@@ -1597,6 +1842,7 @@ class MainWindow(QMainWindow):
             "Sentence": self.trn.text("sentence"),
             "Mention": self.trn.text("mentions"),
             "Hashtag": self.trn.text("hashtags"),
+            "XML_Tag": self.trn.text("xml_tags"),
             "URL": self.trn.text("urls"),
             "Emoji": self.trn.text("emojis"),
             "Email": self.trn.text("emails"),
@@ -1620,6 +1866,7 @@ class MainWindow(QMainWindow):
     def _header_label(self, header: str) -> str:
         return {
             "Token": self.trn.text("token"),
+            "Lowercase": self.trn.text("lowercase"),
             "Tag": self.trn.text("tag"),
             "POS": self.trn.text("pos"),
             "Line": self.trn.text("line"),
@@ -1647,21 +1894,16 @@ class MainWindow(QMainWindow):
             return [self.trn.text("ngram"), self.trn.text("count")]
         if self.current_kind == "concordance":
             return [self.trn.text("left_context"), self.trn.text("node"), self.trn.text("right_context")]
-        if self.current_kind == "statistics":
-            return [self.trn.text("measure"), self.trn.text("value"), self.trn.text("description")]
-        if self.current_kind == "text_profile":
-            return [self.trn.text("measure"), self.trn.text("value"), self.trn.text("distribution")]
-        if self.current_kind == "pos_distribution":
-            return [self.trn.text("pos"), self.trn.text("count"), self.trn.text("percentage"), self.trn.text("info")]
-        if self.current_kind in {"composition", "pos_distribution", "text_profile", "social_profile", "lexical_coverage"}:
-            first = self.trn.text("pos") if self.current_kind == "pos_distribution" else self.trn.text("category")
-            if self.current_kind == "text_profile":
-                first = self.trn.text("measure")
-            return [first, self.trn.text("count"), self.trn.text("percentage")]
-        if self.current_kind == "oov_detail":
-            return [self.trn.text("count"), self.trn.text("token")]
+        if self.current_kind == "dashboard":
+            return [self.trn.text("category"), self.trn.text("measure"), self.trn.text("value")]
+        if self.current_kind == "composition":
+            return [self.trn.text("category"), self.trn.text("count"), self.trn.text("percentage")]
+        if self.current_kind == "lexical_coverage":
+            return [self.trn.text("token"), self.trn.text("count")]
         if self.current_kind == "pos":
-            return [self.trn.text("token"), self.trn.text("pos")]
+            if self.current_postagger_output_mode == "tag":
+                return [self.trn.text("token"), self.trn.text("pos")]
+            return [self.trn.text("token"), self.trn.text("lowercase"), self.trn.text("pos")]
         if self.current_kind == "tokenize":
             return {
                 "tagged": [self.trn.text("token"), self.trn.text("tag")],
@@ -1679,6 +1921,12 @@ class MainWindow(QMainWindow):
             return self.trn.text("frequency_insensitive")
         if result.kind == "pos":
             return self.trn.text("pos_tagging")
+        if result.kind == "dashboard":
+            return self.trn.text("dashboard")
+        if result.kind == "composition":
+            return self.trn.text("token_composition")
+        if result.kind == "lexical_coverage":
+            return self.trn.text("neologisms")
         mode = result.tokenizer_mode or "tokenized"
         return {
             "tokenized": self.trn.text("tokenization"),
@@ -1691,13 +1939,9 @@ class MainWindow(QMainWindow):
             "frequency": self.trn.text("frequency"),
             "ngrams": self.trn.text("ngrams"),
             "concordance": self.trn.text("concordance"),
-            "statistics": self.trn.text("token_statistics"),
+            "dashboard": self.trn.text("dashboard"),
             "composition": self.trn.text("token_composition"),
-            "pos_distribution": self.trn.text("pos_distribution"),
-            "text_profile": self.trn.text("text_profile"),
-            "social_profile": self.trn.text("social_media_profile"),
-            "lexical_coverage": self.trn.text("lexical_coverage"),
-            "oov_detail": self.trn.text("oov_tokens"),
+            "lexical_coverage": self.trn.text("neologisms"),
             "pos": self.trn.text("pos_tagging"),
             "tokenize": self.trn.text("tokenization"),
         }.get(self.current_kind or "", self.trn.text("results"))
