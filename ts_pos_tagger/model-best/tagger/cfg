@@ -16,6 +16,7 @@
     "English_Word",
     "Exception",
     "Full_URL",
+    "Hashtag",
     "Hour",
     "Hour_Suffix",
     "Interj",
@@ -41,7 +42,7 @@
     "Smiley",
     "Trademark",
     "URL_Suffix",
-    "UnDef",
+    "Valid_Word",
     "Verb",
     "Web_URL"
   ],

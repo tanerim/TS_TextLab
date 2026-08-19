@@ -36,6 +36,7 @@
       "English_Word",
       "Exception",
       "Full_URL",
+      "Hashtag",
       "Hour",
       "Hour_Suffix",
       "Interj",
@@ -61,7 +62,7 @@
       "Smiley",
       "Trademark",
       "URL_Suffix",
-      "UnDef",
+      "Valid_Word",
       "Verb",
       "Web_URL"
     ]
@@ -78,12 +79,12 @@
 
   ],
   "performance":{
-    "tag_acc":0.9202700884,
+    "tag_acc":0.9300391733,
     "pos_acc":0.0,
     "tag_micro_p":0.0,
     "tag_micro_r":0.0,
     "tag_micro_f":0.0,
-    "tok2vec_loss":5507.4509608623,
-    "tagger_loss":16378.6100883484
+    "tok2vec_loss":8610.2976769201,
+    "tagger_loss":106461.2770690918
   }
 }
