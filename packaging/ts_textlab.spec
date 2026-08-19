@@ -14,7 +14,7 @@ datas = []
 binaries = []
 hiddenimports = []
 
-for package_name in ("spacy", "thinc", "ts_tokenizer"):
+for package_name in ("spacy", "thinc", "ts_tokenizer", "ts_postagger"):
     package_datas, package_binaries, package_hiddenimports = collect_all(package_name)
     datas += package_datas
     binaries += package_binaries
@@ -25,15 +25,6 @@ for package_name in ("spacy", "thinc", "ts_tokenizer"):
     ]
 
 hiddenimports += collect_submodules("spacy.lang.tr")
-
-model_candidates = [
-    project_root / "models" / "ts_postagger_model",
-    project_root / "ts_pos_tagger" / "model-best",
-]
-for model_path in model_candidates:
-    if model_path.exists():
-        datas.append((str(model_path), str(model_path.relative_to(project_root))))
-        break
 
 
 a = Analysis(

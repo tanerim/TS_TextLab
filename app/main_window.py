@@ -1380,7 +1380,7 @@ class MainWindow(QMainWindow):
             <p><a href="https://tscorpus.com/">TS TextLab</a></p>
             <p>{self.trn.text('powered_by')}:<br>
             <a href="https://pypi.org/project/ts-tokenizer/">TS Tokenizer</a><br>
-            <a href="https://github.com/tanerim/ts_SpaCy_PosTagger">TS PosTagger</a></p>
+            <a href="https://pypi.org/project/ts-postagger/">TS PosTagger</a></p>
             <p>{self.trn.text('local_processing_statement')}<br>
             {self.trn.text('no_upload_statement')}</p>
             <p>SEZER, T. (2025).
