@@ -6,79 +6,160 @@ QMainWindow, QWidget {{
 }}
 
 #AppHeader {{
+    background: #FFFFFF;
+    border-bottom: 1px solid #C9D6E8;
+}}
+
+#AppBody {{
     background: {surface};
-    border-bottom: 1px solid {border};
 }}
 
 #TitleLabel {{
-    font-size: 16px;
-    font-weight: 700;
-    color: {text};
+    font-size: 19px;
+    font-weight: 800;
+    color: #000000;
+    background: transparent;
 }}
 
-#SubtitleLabel, #MetaLabel, #StatusLabel, #HintLabel {{
+#SubtitleLabel, #MetaLabel, #HintLabel {{
     color: {muted};
+}}
+
+#CounterLabel {{
+    color: {muted};
+    background: {surface_alt};
+    border: 0;
+    border-radius: 8px;
+    padding: 4px 9px;
+    font-size: 12px;
+    font-weight: 600;
 }}
 
 #AnalysisStatus {{
-    color: {text};
-    background: {surface_alt};
-    border: 1px solid {border};
-    border-radius: 7px;
-    padding: 5px 9px;
+    color: {muted};
+    background: transparent;
+    border: 0;
+    padding: 0;
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 600;
+}}
+
+#ResultsTitle {{
+    color: {text};
+    background: transparent;
+    border: 0;
+    font-size: 22px;
+    font-weight: 900;
+    padding: 2px 0 0 0;
+}}
+
+#ResultsSubtitle {{
+    color: {muted};
+    background: transparent;
+    border: 0;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 0 0 4px 0;
 }}
 
 #SectionTitle {{
-    color: {muted};
+    color: {text};
+    font-size: 13px;
+    font-weight: 800;
+}}
+
+#OptionLabel {{
+    color: {text};
+    background: transparent;
+    border: 0;
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 900;
+    padding: 0 2px;
 }}
 
 #LocalBadge {{
     color: {success};
     background: {surface_alt};
-    border: 1px solid {border};
+    border: 0;
     border-radius: 8px;
     padding: 4px 8px;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 700;
 }}
 
-#Panel {{
+#Panel, #InputPanel, #ResultsPanel {{
     background: {panel};
-    border: 1px solid {border};
-    border-radius: 8px;
+    border: 0;
+    border-radius: 0;
+}}
+
+#InputPanel {{
+    background: #FFFFFF;
+}}
+
+#ResultsPanel {{
+    background: {surface};
+}}
+
+#ResultsPanel[analysisKind="tokenize"] {{
+    background: #3A2F16;
+}}
+
+#ResultsPanel[analysisKind="pos"] {{
+    background: #173426;
+}}
+
+#ResultsPanel[analysisKind="frequency"] {{
+    background: #182A4A;
+}}
+
+#ResultsPanel[analysisKind="ngrams"] {{
+    background: #2C214A;
+}}
+
+#ResultsPanel[analysisKind="dashboard"] {{
+    background: #163541;
 }}
 
 #InputEditor {{
-    background: {surface};
-    border: 1px solid {border};
+    background: #FFFFFF;
+    color: #111827;
+    border: 1px solid #C9D6E8;
     border-radius: 8px;
-    padding: 10px;
-    selection-background-color: {selected};
-    selection-color: {selected_text};
+    padding: 14px;
+    selection-background-color: #CFE1FF;
+    selection-color: #061E42;
     font-size: 14px;
-    line-height: 1.35;
+    line-height: 1.4;
 }}
 
-#InputEditor:focus, QComboBox:focus, QLineEdit:focus {{
+#InputEditor:focus {{
     border: 1px solid {focus};
+    background: #FFFFFF;
+}}
+
+QComboBox:focus, QLineEdit:focus {{
+    border: 1px solid {focus};
+    background: {surface};
+}}
+
+#HeaderSide, #HeaderLogo, #AboutLogo {{
+    background: transparent;
 }}
 
 QPushButton, QToolButton {{
-    background: {surface};
-    border: 1px solid {border};
-    border-radius: 7px;
-    padding: 7px 12px;
+    background: #252B4D;
+    border: 1px solid #434B73;
+    border-radius: 8px;
+    padding: 7px 13px;
     color: {text};
-    min-height: 30px;
+    min-height: 34px;
+    font-weight: 700;
 }}
 
 QPushButton:hover, QToolButton:hover {{
     background: {hover};
-    border-color: {border_strong};
+    border-color: {border};
 }}
 
 QPushButton:pressed, QToolButton:pressed {{
@@ -88,137 +169,282 @@ QPushButton:pressed, QToolButton:pressed {{
 QPushButton:disabled, QToolButton:disabled {{
     color: {muted};
     background: {surface_alt};
-    border-color: {border};
+    border-color: transparent;
 }}
 
-#TokenizeButton, #PosButton, #FrequencyButton {{
-    color: #101828;
-    font-weight: 700;
+QToolButton::menu-indicator {{
+    image: none;
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid #AEB7D8;
+    subcontrol-origin: padding;
+    subcontrol-position: right center;
+    right: 10px;
 }}
 
-#TokenizeButton {{
+QToolButton[hideMenuIndicator="true"]::menu-indicator {{
+    image: none;
+    width: 0;
+    height: 0;
+    border: 0;
+    right: 0;
+}}
+
+#PrimaryButton, #TokenizeButton, #PosButton, #FrequencyButton {{
+    color: #FFFFFF;
     background: {accent};
     border-color: {accent};
+    font-weight: 800;
 }}
 
-#TokenizeButton:hover {{
+#PrimaryButton[analysisKind="tokenize"] {{
+    color: #1A1305;
+    background: #D6A43A;
+    border-color: #D6A43A;
+}}
+
+#PrimaryButton[analysisKind="pos"] {{
+    background: #34A17B;
+    border-color: #34A17B;
+}}
+
+#PrimaryButton[analysisKind="frequency"] {{
+    color: #FFFFFF;
+    background: #5B8DEF;
+    border-color: #5B8DEF;
+}}
+
+#PrimaryButton[analysisKind="ngrams"] {{
+    background: #A78BFA;
+    border-color: #A78BFA;
+}}
+
+#PrimaryButton[analysisKind="dashboard"] {{
+    background: #38AFC8;
+    border-color: #38AFC8;
+}}
+
+#PrimaryButton:hover, #TokenizeButton:hover, #PosButton:hover, #FrequencyButton:hover {{
     background: {accent_hover};
     border-color: {accent_hover};
 }}
 
-#TokenizeButton:pressed {{
+#PrimaryButton:pressed, #TokenizeButton:pressed, #PosButton:pressed, #FrequencyButton:pressed {{
     background: {accent_pressed};
     border-color: {accent_pressed};
 }}
 
-#PosButton {{
-    background: #75C8BC;
-    border-color: #75C8BC;
+#PrimaryButton[analysisKind="tokenize"]:hover {{
+    color: #1A1305;
+    background: #E8B84F;
+    border-color: #E8B84F;
 }}
 
-#PosButton:hover {{
-    background: #8AD6CC;
-    border-color: #8AD6CC;
+#PrimaryButton[analysisKind="pos"]:hover {{
+    background: #43B890;
+    border-color: #43B890;
 }}
 
-#PosButton:pressed {{
-    background: #5CB7AA;
-    border-color: #5CB7AA;
+#PrimaryButton[analysisKind="frequency"]:hover {{
+    color: #FFFFFF;
+    background: #79A2F5;
+    border-color: #79A2F5;
 }}
 
-#FrequencyButton {{
-    background: #C999AF;
-    border-color: #C999AF;
+#PrimaryButton[analysisKind="ngrams"]:hover {{
+    background: #BCA7FF;
+    border-color: #BCA7FF;
 }}
 
-#FrequencyButton:hover {{
-    background: #D7ABC0;
-    border-color: #D7ABC0;
+#PrimaryButton[analysisKind="dashboard"]:hover {{
+    background: #55C4DA;
+    border-color: #55C4DA;
 }}
 
-#FrequencyButton:pressed {{
-    background: #B8849D;
-    border-color: #B8849D;
+#PrimaryButton[analysisKind="tokenize"]:pressed {{
+    color: #1A1305;
+    background: #B98625;
+    border-color: #B98625;
 }}
 
-#TokenizeButton:disabled, #PosButton:disabled, #FrequencyButton:disabled {{
+#PrimaryButton[analysisKind="pos"]:pressed {{
+    background: #278864;
+    border-color: #278864;
+}}
+
+#PrimaryButton[analysisKind="frequency"]:pressed {{
+    color: #FFFFFF;
+    background: #477ADB;
+    border-color: #477ADB;
+}}
+
+#PrimaryButton[analysisKind="ngrams"]:pressed {{
+    background: #9276E8;
+    border-color: #9276E8;
+}}
+
+#PrimaryButton[analysisKind="dashboard"]:pressed {{
+    background: #2698B0;
+    border-color: #2698B0;
+}}
+
+#PrimaryButton:disabled, #TokenizeButton:disabled, #PosButton:disabled, #FrequencyButton:disabled {{
     color: {muted};
     background: {surface_alt};
+    border-color: transparent;
+}}
+
+#SecondaryButton, #UtilityButton {{
+    color: {text};
+    background: {surface_alt};
+    border: 1px solid #434B73;
+    font-weight: 700;
+}}
+
+#SecondaryButton:hover, #UtilityButton:hover {{
+    background: {hover};
     border-color: {border};
 }}
 
-#IconButton {{
+#HeaderMenuButton, #IconButton {{
     min-width: 34px;
     max-width: 34px;
-    padding-left: 0;
-    padding-right: 0;
+    min-height: 34px;
+    max-height: 34px;
+    padding: 0;
+    background: #FFFFFF;
+    border: 1px solid #B9C7DA;
+    color: #111827;
 }}
 
-#UtilityButton {{
-    color: {muted};
-    min-width: 76px;
+#HeaderMenuButton:hover, #IconButton:hover {{
+    background: #EEF4FF;
+    border-color: #8FA4C0;
+}}
+
+#ActionOptionsStack {{
+    background: #222844;
+    border: 1px solid #465079;
+    border-radius: 8px;
 }}
 
 #ActionOptions {{
-    background: transparent;
+    background: #222844;
     border: 0;
+    border-radius: 8px;
 }}
 
 #InspectorPanel {{
     background: {surface_alt};
-    border: 1px solid {border};
+    border: 0;
     border-radius: 8px;
 }}
 
 QTabWidget::pane {{
     border: 0;
-    margin-top: 6px;
+    margin-top: 8px;
 }}
 
 QTabBar::tab {{
-    background: {surface_alt};
+    background: transparent;
     color: {muted};
-    border: 1px solid {border};
-    border-bottom-color: {border};
-    padding: 7px 11px;
-    min-width: 76px;
-    font-size: 11px;
-    font-weight: 700;
+    border: 0;
+    border-bottom: 3px solid transparent;
+    padding: 9px 12px;
+    min-width: 88px;
+    min-height: 30px;
+    font-size: 12px;
+    font-weight: 800;
+}}
+
+QTabBar::tab:hover {{
+    color: {text};
+    background: rgba(255, 255, 255, 0.08);
 }}
 
 QTabBar::tab:selected {{
-    background: {surface};
     color: {text};
-    border-color: {border_strong};
+    background: rgba(255, 255, 255, 0.12);
+    border-bottom-color: {accent};
+}}
+
+QTabBar#ActionTabs[analysisKind="tokenize"]::tab:selected {{
+    background: #4A3A18;
+    border-bottom-color: #D6A43A;
+}}
+
+QTabBar#ActionTabs[analysisKind="pos"]::tab:selected {{
+    background: #214533;
+    border-bottom-color: #34A17B;
+}}
+
+QTabBar#ActionTabs[analysisKind="frequency"]::tab:selected {{
+    background: #223A63;
+    border-bottom-color: #5B8DEF;
+}}
+
+QTabBar#ActionTabs[analysisKind="ngrams"]::tab:selected {{
+    background: #3B2E63;
+    border-bottom-color: #A78BFA;
+}}
+
+QTabBar#ActionTabs[analysisKind="dashboard"]::tab:selected {{
+    background: #214957;
+    border-bottom-color: #38AFC8;
 }}
 
 QTabBar#ActionTabs::tab {{
-    padding: 9px 10px;
+    padding: 10px 12px;
     min-width: 0;
-}}
-
-QTabBar#ActionTabs::tab:selected {{
-    background: {selected};
-    color: {selected_text};
-    border-color: {focus};
 }}
 
 QCheckBox {{
     color: {text};
-    spacing: 6px;
+    spacing: 8px;
+    font-size: 12px;
+    font-weight: 600;
+}}
+
+QCheckBox::indicator {{
+    width: 15px;
+    height: 15px;
+    border-radius: 4px;
+    border: 1px solid {border_strong};
+    background: {surface};
+}}
+
+QCheckBox::indicator:hover {{
+    border-color: {focus};
+}}
+
+QCheckBox::indicator:checked {{
+    background: {accent};
+    border-color: {accent};
 }}
 
 QComboBox, QLineEdit {{
+    background: #151A33;
+    border: 1px solid #434B73;
+    border-radius: 8px;
+    padding: 7px 11px;
+    min-height: 34px;
+    color: {text};
+}}
+
+QComboBox {{
+    padding-right: 36px;
+}}
+
+QComboBox:hover, QLineEdit:hover {{
+    border-color: {border};
     background: {surface};
-    border: 1px solid {border};
-    border-radius: 7px;
-    padding: 7px 10px;
-    min-height: 30px;
 }}
 
 QComboBox::drop-down {{
     border: 0;
-    border-left: 1px solid {border};
+    border-left: 1px solid #434B73;
     width: 30px;
     subcontrol-origin: padding;
     subcontrol-position: top right;
@@ -230,20 +456,21 @@ QComboBox::down-arrow {{
     height: 0;
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
-    border-top: 6px solid {muted};
-    margin-right: 9px;
+    border-top: 6px solid #AEB7D8;
+    margin-right: 10px;
 }}
 
 QMenu {{
     background: {surface};
     color: {text};
     border: 1px solid {border};
+    border-radius: 8px;
     padding: 6px;
 }}
 
 QMenu::item {{
-    padding: 7px 28px 7px 12px;
-    border-radius: 5px;
+    padding: 8px 30px 8px 12px;
+    border-radius: 6px;
 }}
 
 QMenu::item:selected {{
@@ -257,26 +484,52 @@ QMenu::separator {{
 }}
 
 QSplitter::handle:horizontal {{
-    background: {background};
-    width: 10px;
+    background: #3C446A;
+    width: 2px;
 }}
 
 QSplitter::handle:horizontal:hover {{
-    background: {border};
+    background: {focus};
 }}
 
 QTableView {{
     background: {surface};
     alternate-background-color: {surface_alt};
-    border: 1px solid {border};
-    border-radius: 8px;
-    gridline-color: {border};
+    border: 0;
+    border-radius: 0;
+    gridline-color: transparent;
     selection-background-color: {selected};
     selection-color: {selected_text};
+    font-size: 13px;
+}}
+
+QTableView[analysisKind="tokenize"] {{
+    background: #3A2F16;
+    alternate-background-color: #46391C;
+}}
+
+QTableView[analysisKind="pos"] {{
+    background: #173426;
+    alternate-background-color: #213E31;
+}}
+
+QTableView[analysisKind="frequency"] {{
+    background: #182A4A;
+    alternate-background-color: #22344E;
+}}
+
+QTableView[analysisKind="ngrams"] {{
+    background: #2C214A;
+    alternate-background-color: #372C54;
+}}
+
+QTableView[analysisKind="dashboard"] {{
+    background: #163541;
+    alternate-background-color: #20404C;
 }}
 
 QTableView::item {{
-    padding: 7px 10px;
+    padding: 5px 9px;
     border: 0;
 }}
 
@@ -285,13 +538,22 @@ QTableView::item:hover {{
 }}
 
 QHeaderView::section {{
-    background: {surface_alt};
-    color: {muted};
+    background: {surface};
+    color: {text};
     border: 0;
     border-bottom: 1px solid {border};
-    padding: 9px 10px;
+    padding: 8px 9px;
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 800;
+}}
+
+QScrollArea#DashboardScroll {{
+    background: {surface};
+    border: 0;
+}}
+
+QScrollArea#DashboardScroll > QWidget > QWidget {{
+    background: {surface};
 }}
 
 QScrollBar:vertical, QScrollBar:horizontal {{
@@ -301,20 +563,110 @@ QScrollBar:vertical, QScrollBar:horizontal {{
 }}
 
 QScrollBar::handle:vertical, QScrollBar::handle:horizontal {{
-    background: {border_strong};
-    border-radius: 4px;
+    background: {border};
+    border-radius: 3px;
     min-height: 28px;
     min-width: 28px;
 }}
 
+QScrollBar::handle:vertical:hover, QScrollBar::handle:horizontal:hover {{
+    background: {border_strong};
+}}
+
+QScrollBar::add-line, QScrollBar::sub-line {{
+    width: 0;
+    height: 0;
+}}
+
+#StatusLabel {{
+    color: {muted};
+    background: rgba(255, 255, 255, 0.07);
+    border: 0;
+    border-radius: 0;
+    padding: 6px 0;
+    font-size: 12px;
+    font-weight: 600;
+}}
+
 #EmptyState {{
-    background: {surface};
-    border: 1px dashed {border_strong};
-    border-radius: 8px;
+    background: {surface_alt};
+    border: 0;
+    border-radius: 0;
 }}
 
 #EmptyTitle {{
     font-size: 16px;
-    font-weight: 700;
+    font-weight: 800;
     color: {text};
+}}
+
+QDialog {{
+    background: {surface};
+    color: {text};
+}}
+
+#DialogTitle {{
+    font-size: 18px;
+    font-weight: 800;
+    color: {text};
+}}
+
+#DialogSection {{
+    color: {text};
+    font-size: 12px;
+    font-weight: 800;
+}}
+
+#DialogCard {{
+    background: {surface_alt};
+    border: 0;
+    border-radius: 8px;
+}}
+
+#DialogCard[flat="true"] {{
+    background: transparent;
+    border: 0;
+}}
+
+#DialogMuted {{
+    color: {muted};
+    font-size: 12px;
+}}
+
+#DialogFooter {{
+    background: {surface_alt};
+    border-top: 1px solid {border};
+}}
+
+#DialogFooter[flat="true"] {{
+    background: transparent;
+    border-top: 0;
+}}
+
+#KbdLabel {{
+    background: {surface};
+    color: {text};
+    border: 1px solid {border};
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-family: monospace;
+    font-weight: 800;
+}}
+
+#DialogPrimaryButton {{
+    color: #FFFFFF;
+    background: {accent};
+    border-color: {accent};
+    font-weight: 800;
+}}
+
+#DialogPrimaryButton:hover {{
+    background: {accent_hover};
+    border-color: {accent_hover};
+}}
+
+#DialogSecondaryButton {{
+    color: {text};
+    background: {surface};
+    border-color: transparent;
 }}

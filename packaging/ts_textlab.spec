@@ -14,6 +14,8 @@ datas = []
 binaries = []
 hiddenimports = []
 
+datas += [(str(path), "app/theme") for path in (project_root / "app" / "theme").glob("*") if path.is_file()]
+
 for package_name in ("spacy", "thinc", "ts_tokenizer", "ts_postagger"):
     package_datas, package_binaries, package_hiddenimports = collect_all(package_name)
     datas += package_datas

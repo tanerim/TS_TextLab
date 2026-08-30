@@ -2,14 +2,16 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+import re
 from collections import Counter
+from dataclasses import dataclass
 from typing import Iterable, Literal
 
 from app.errors import DependencyUnavailableError, EmptyInputError, TextLabError
 
 TokenizerMode = Literal["tokenized", "tagged", "lines", "tagged_lines"]
 FrequencyCaseMode = Literal["sensitive", "insensitive"]
+XML_TAG_PATTERN = re.compile(r"</?[\w:.-]+(?:\s+[^<>]*)?/?>")
 
 
 @dataclass(frozen=True)
@@ -39,6 +41,8 @@ class TokenizerService:
             raise EmptyInputError("Lütfen işlenecek bir metin girin.")
 
         try:
+            if mode in {"tokenized", "tagged", "tagged_lines"} and XML_TAG_PATTERN.search(cleaned):
+                return self._tokenize_preserving_xml(cleaned, mode)
             if mode in {"lines", "tagged_lines"}:
                 return self._tokenize_by_line(cleaned, mode)
             result = self._tokenize(cleaned, mode)
@@ -46,6 +50,36 @@ class TokenizerService:
             raise TextLabError(f"Tokenization sırasında hata oluştu: {exc}") from exc
 
         return self._normalize_result(mode, result)
+
+    def _tokenize_preserving_xml(self, text: str, mode: TokenizerMode) -> TokenizerResult:
+        rows: list[tuple[str, ...]] = []
+        for piece, is_xml_tag in self._xml_segments(text):
+            if is_xml_tag:
+                rows.append((piece, "XML_Tag") if mode in {"tagged", "tagged_lines"} else (piece,))
+                continue
+            if not piece.strip():
+                continue
+            if mode == "tokenized":
+                rows.extend(self._normalize_result("tokenized", self._tokenize(piece, "tokenized")).rows)
+            else:
+                rows.extend(self._normalize_pairs(self._tokenize(piece, "tagged_lines")))
+
+        headers = ["Token", "Tag"] if mode in {"tagged", "tagged_lines"} else ["Token"]
+        copy_text = "\n".join("\t".join(row) for row in rows)
+        return TokenizerResult(mode=mode, headers=headers, rows=rows, copy_text=copy_text)
+
+    @staticmethod
+    def _xml_segments(text: str) -> list[tuple[str, bool]]:
+        segments: list[tuple[str, bool]] = []
+        cursor = 0
+        for match in XML_TAG_PATTERN.finditer(text):
+            if match.start() > cursor:
+                segments.append((text[cursor : match.start()], False))
+            segments.append((match.group(0), True))
+            cursor = match.end()
+        if cursor < len(text):
+            segments.append((text[cursor:], False))
+        return segments
 
     def tokens_for_pos(self, text: str) -> list[str]:
         tokenized = self.tokenize(text, "tokenized")

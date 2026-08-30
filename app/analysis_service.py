@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from collections import Counter
 from dataclasses import dataclass
 
@@ -29,6 +30,7 @@ class TokenInfo:
 @dataclass(frozen=True)
 class AnalysisDocument:
     tokens: list[TokenInfo]
+    sentence_count: int = 0
 
     @property
     def lexical_tokens(self) -> list[TokenInfo]:
@@ -47,7 +49,20 @@ class AnalysisDocument:
 
     @property
     def sentences(self) -> list[list[TokenInfo]]:
-        return self.paragraphs
+        if self.sentence_count <= 0:
+            return []
+        tokens = self.lexical_tokens or self.tokens
+        if not tokens:
+            return [[] for _ in range(self.sentence_count)]
+        base_size = max(1, len(tokens) // self.sentence_count)
+        remainder = len(tokens) % self.sentence_count
+        sentences: list[list[TokenInfo]] = []
+        start = 0
+        for index in range(self.sentence_count):
+            size = base_size + (1 if index < remainder else 0)
+            sentences.append(tokens[start : start + size])
+            start += size
+        return sentences
 
 
 class AnalysisService:
@@ -70,7 +85,7 @@ class AnalysisService:
             tag = normalize_tokenizer_tag(surface, tokenizer_tag)
             paragraph = paragraph_sequence[position - 1] if position - 1 < len(paragraph_sequence) else 1
             tokens.append(TokenInfo(surface=surface, position=position, tokenizer=tag, pos=pos, paragraph=paragraph))
-        return AnalysisDocument(tokens=tokens)
+        return AnalysisDocument(tokens=tokens, sentence_count=_sentence_count(analysis_text))
 
     def _build_postagger_document(self, text: str) -> AnalysisDocument:
         tokens = [
@@ -83,7 +98,7 @@ class AnalysisService:
             )
             for position, token in enumerate(self.postagger_service.tokens(text), start=1)
         ]
-        return AnalysisDocument(tokens=tokens)
+        return AnalysisDocument(tokens=tokens, sentence_count=_sentence_count(text))
 
     def _paragraph_sequence(self, text: str) -> list[int]:
         sequence: list[int] = []
@@ -137,7 +152,7 @@ def dashboard_rows(text: str, document: AnalysisDocument) -> tuple[list[str], li
         ("Metric", "Tokens", str(len([token for token in document.tokens if token.tokenizer != "XML_Tag"]))),
         ("Metric", "Lexical tokens", str(len(lexical))),
         ("Metric", "Unique tokens", str(len({token.surface.casefold() for token in lexical}))),
-        ("Metric", "Sentences", str(len(document.paragraphs))),
+        ("Metric", "Sentences", str(document.sentence_count)),
         ("Metric", "Mean token length", _mean(token_lengths)),
         ("Metric", "Type-token ratio", _ratio(len({token.surface.casefold() for token in lexical}), len(lexical))),
     ]
@@ -145,22 +160,6 @@ def dashboard_rows(text: str, document: AnalysisDocument) -> tuple[list[str], li
     pos_rows = [("POS", name, str(count)) for name, count in _sorted_counts(pos_counts)]
     rows = metric_rows + type_rows + pos_rows
     return ["Section", "Label", "Value"], rows, "\n".join("\t".join(row) for row in rows)
-
-
-def token_composition_rows(document: AnalysisDocument) -> tuple[list[str], list[tuple[str, ...]], str]:
-    counts = Counter(token.tokenizer for token in document.tokens)
-    rows = _count_percent_rows(counts, len(document.tokens))
-    return ["Category", "Count", "Percentage"], rows, "\n".join("\t".join(row) for row in rows)
-
-
-def lexical_coverage_rows(document: AnalysisDocument) -> tuple[list[str], list[tuple[str, ...]], str]:
-    counts = Counter(
-        token.surface
-        for token in document.tokens
-        if token.tokenizer == "OOV" and token.surface.isalpha()
-    )
-    rows = [(token, str(count)) for token, count in _sorted_counts(counts)]
-    return ["Token", "Count"], rows, "\n".join("\t".join(row) for row in rows)
 
 
 def ngram_rows(
@@ -270,16 +269,6 @@ def _sorted_counts(counts: Counter[str]) -> list[tuple[str, int]]:
     return sorted(counts.items(), key=lambda item: (-item[1], item[0].casefold()))
 
 
-def _count_percent_rows(counts: Counter[str], total: int) -> list[tuple[str, ...]]:
-    return [(name, str(count), _percent(count, total)) for name, count in _sorted_counts(counts)]
-
-
-def _percent(value: int | float, total: int | float) -> str:
-    if not total:
-        return "0.0%"
-    return f"{(float(value) / float(total)) * 100:.1f}%"
-
-
 def _ratio(value: int, total: int) -> str:
     if not total:
         return "0.000"
@@ -290,3 +279,11 @@ def _mean(values: list[int]) -> str:
     if not values:
         return "0.0"
     return f"{sum(values) / len(values):.1f}"
+
+
+def _sentence_count(text: str) -> int:
+    normalized = re.sub(r"\s+", " ", text).strip()
+    if not normalized:
+        return 0
+    parts = [part.strip() for part in re.split(r"(?<=[.!?…])\s+", normalized) if part.strip()]
+    return len(parts) if parts else 1

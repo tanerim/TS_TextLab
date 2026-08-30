@@ -41,21 +41,21 @@ class ThemePalette:
 
 LIGHT_PALETTE = ThemePalette(
     name="light",
-    accent="#2854A3",
-    accent_hover="#21498F",
-    accent_pressed="#1B3F7D",
-    focus="#3B82F6",
-    background="#F5F7FA",
+    accent="#0F4C9A",
+    accent_hover="#0B3E80",
+    accent_pressed="#092F63",
+    focus="#2563EB",
+    background="#E8EEF7",
     surface="#FFFFFF",
-    surface_alt="#F8FAFC",
+    surface_alt="#EEF4FF",
     panel="#FFFFFF",
-    text="#18202B",
-    muted="#667085",
-    border="#D7DEE8",
-    border_strong="#B8C2D2",
-    hover="#EEF4FF",
-    selected="#DCEAFF",
-    selected_text="#102A56",
+    text="#000000",
+    muted="#1F2937",
+    border="#B9C7DA",
+    border_strong="#6F839F",
+    hover="#D7E7FF",
+    selected="#CFE1FF",
+    selected_text="#061E42",
     success="#27815C",
     warning="#A15C07",
     error="#B42318",
@@ -66,15 +66,15 @@ LIGHT_PALETTE = ThemePalette(
 
 ACCENTS = {
     "indigo": {
-        "accent": "#2854A3",
-        "accent_hover": "#21498F",
-        "accent_pressed": "#1B3F7D",
-        "focus": "#3B82F6",
-        "selected": "#DCEAFF",
-        "selected_text": "#102A56",
-        "pos_badge_bg": "#E8EEF8",
-        "pos_badge_text": "#24436F",
-        "bar_fill": "#D8E6FA",
+        "accent": "#0F4C9A",
+        "accent_hover": "#0B3E80",
+        "accent_pressed": "#092F63",
+        "focus": "#2563EB",
+        "selected": "#CFE1FF",
+        "selected_text": "#061E42",
+        "pos_badge_bg": "#DCEAFF",
+        "pos_badge_text": "#183F74",
+        "bar_fill": "#AFCBFF",
     },
     "petrol": {
         "accent": "#11606B",
@@ -147,31 +147,31 @@ ACCENTS = {
         "accent_hover": "#794F10",
         "accent_pressed": "#68450E",
         "focus": "#B47A21",
-        "selected": "#F4E9D2",
-        "selected_text": "#563A0E",
+        "selected": "#E7ECF3",
+        "selected_text": "#1F2937",
         "pos_badge_bg": "#F2E8D7",
         "pos_badge_text": "#6A4B1E",
-        "bar_fill": "#EBDDBE",
+        "bar_fill": "#D8DEE8",
     },
 }
 
 DARK_PALETTE = ThemePalette(
     name="dark",
-    accent="#7AA7FF",
-    accent_hover="#94B8FF",
-    accent_pressed="#5F93F2",
-    focus="#9CC2FF",
-    background="#1A2230",
-    surface="#253044",
-    surface_alt="#2B384D",
-    panel="#202B3C",
-    text="#F0F4FA",
-    muted="#BAC4D2",
-    border="#49576B",
-    border_strong="#64748B",
-    hover="#334158",
-    selected="#3A527A",
-    selected_text="#F6F9FF",
+    accent="#72A7FF",
+    accent_hover="#8EB9FF",
+    accent_pressed="#528BE8",
+    focus="#22D3EE",
+    background="#11162D",
+    surface="#1B2140",
+    surface_alt="#252B4D",
+    panel="#171C36",
+    text="#FFFFFF",
+    muted="#D8DEF0",
+    border="#3D4568",
+    border_strong="#7781A8",
+    hover="#30385F",
+    selected="#293F71",
+    selected_text="#FFFFFF",
     success="#6CC39B",
     warning="#F2B15B",
     error="#F97066",
@@ -182,15 +182,15 @@ DARK_PALETTE = ThemePalette(
 
 DARK_ACCENTS = {
     "indigo": {
-        "accent": "#7AA7FF",
-        "accent_hover": "#94B8FF",
-        "accent_pressed": "#5F93F2",
-        "focus": "#9CC2FF",
-        "selected": "#2C4266",
-        "selected_text": "#F6F9FF",
-        "pos_badge_bg": "#293B56",
-        "pos_badge_text": "#C8DAFF",
-        "bar_fill": "#263A5A",
+        "accent": "#72A7FF",
+        "accent_hover": "#8EB9FF",
+        "accent_pressed": "#528BE8",
+        "focus": "#22D3EE",
+        "selected": "#293F71",
+        "selected_text": "#FFFFFF",
+        "pos_badge_bg": "#263D68",
+        "pos_badge_text": "#DDEAFF",
+        "bar_fill": "#365A96",
     },
     "petrol": {
         "accent": "#58C2D0",
@@ -263,11 +263,11 @@ DARK_ACCENTS = {
         "accent_hover": "#E2B775",
         "accent_pressed": "#BF8E41",
         "focus": "#F0CB8D",
-        "selected": "#55442B",
-        "selected_text": "#FFF9EF",
+        "selected": "#374151",
+        "selected_text": "#F9FAFB",
         "pos_badge_bg": "#4B3D2B",
         "pos_badge_text": "#F2D7A8",
-        "bar_fill": "#4B3E2C",
+        "bar_fill": "#4B5563",
     },
 }
 
@@ -296,11 +296,7 @@ def load_qss(theme: ThemeName, accent: str = "indigo") -> str:
 
 
 def apply_theme(app: QApplication, settings: QSettings) -> ThemePalette:
-    theme = settings.value("theme", "system", str)
-    if theme not in {"system", "light", "dark"}:
-        theme = "system"
-    accent = settings.value("accent", "indigo", str)
-    if accent not in ACCENTS:
-        accent = "indigo"
-    app.setStyleSheet(load_qss(theme, accent))  # type: ignore[arg-type]
-    return palette_for(theme, accent)  # type: ignore[arg-type]
+    settings.setValue("theme", "light")
+    settings.setValue("accent", "indigo")
+    app.setStyleSheet(load_qss("light", "indigo"))
+    return palette_for("light", "indigo")
