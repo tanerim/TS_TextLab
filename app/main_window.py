@@ -490,16 +490,16 @@ class WatermarkedPlainTextEdit(QPlainTextEdit):
 
 
 class AnalysisDashboard(QWidget):
-    REPORT_SIZE = QSize(1280, 900)
-    BAR_COLORS = ["#536B8E", "#3F7D72", "#8B6F47", "#7A5E75", "#607080", "#6F7E55", "#756A8F", "#4E7A8A"]
+    REPORT_SIZE = QSize(1080, 940)
+    BAR_COLORS = ["#0D6EFD", "#20C997", "#6F42C1", "#FD7E14", "#198754", "#0DCAF0", "#D63384", "#FFC107"]
 
     def __init__(self) -> None:
         super().__init__()
         self.result: TaskResult | None = None
         self.trn: Translator | None = None
         self.palette: ThemePalette | None = None
-        self.setMinimumSize(QSize(640, 620))
-        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.setMinimumSize(self.REPORT_SIZE)
+        self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
 
     def set_result(self, result: TaskResult | None, trn: Translator, palette: ThemePalette) -> None:
         self.result = result
@@ -530,21 +530,19 @@ class AnalysisDashboard(QWidget):
 
     def _paint_report(self, painter: QPainter, rect: QRectF, for_pdf: bool) -> None:
         palette = LIGHT_PALETTE if for_pdf else (self.palette or LIGHT_PALETTE)
-        painter.fillRect(rect, QColor("#FFFFFF" if for_pdf else self._dashboard_background(palette)))
+        painter.fillRect(rect, QColor("#F4F7FB"))
         result = self.result
         if result is None:
             return
 
         metrics, token_types, pos_counts = self._sections(result.rows)
-        margin = 24
+        margin = 22
         x = rect.left() + margin
         y = rect.top() + margin
         width = rect.width() - margin * 2
 
-        y = self._draw_header_band(painter, QRectF(x, y, width, 58), metrics, palette)
-        y += 16
         y = self._draw_metric_cards(painter, x, y, width, metrics, palette)
-        y += 16
+        y += 18
         chart_gap = 16
         chart_width = (width - chart_gap) / 2
         chart_height = 292
@@ -562,52 +560,33 @@ class AnalysisDashboard(QWidget):
             palette,
         )
 
-    def _draw_header_band(self, painter: QPainter, rect: QRectF, metrics: dict[str, str], palette: ThemePalette) -> float:
-        title_rect = QRectF(rect.left(), rect.top(), rect.width() * 0.42, 30)
-        subtitle_rect = QRectF(rect.left(), rect.top() + 32, rect.width() * 0.5, 20)
-        chip_row_rect = QRectF(rect.left() + rect.width() * 0.52, rect.top() + 12, rect.width() * 0.48, 28)
-
-        painter.setPen(QColor(palette.text))
-        self._fit_text(painter, title_rect, self._text("dashboard"), 19, 14, bold=True)
-
-        font = QFont()
-        font.setPointSize(10)
-        font.setBold(False)
-        painter.setFont(font)
-        painter.setPen(QColor(palette.muted))
-        painter.drawText(subtitle_rect, Qt.AlignLeft | Qt.AlignVCenter, f"TS TextLab · {self._text('local_processing_statement')}")
-
-        chip_x = chip_row_rect.left()
-        for label in self._header_chips(metrics):
-            chip_width = max(104, min(152, self._text_width(painter, label, 9, True) + 22))
-            chip_rect = QRectF(chip_x, chip_row_rect.top(), chip_width, chip_row_rect.height())
-            self._draw_chip(painter, chip_rect, label, palette)
-            chip_x += chip_width + 10
-        return rect.bottom()
-
     def _draw_metric_cards(
         self, painter: QPainter, x: float, y: float, width: float, metrics: dict[str, str], palette: ThemePalette
     ) -> float:
         keys = ["Characters", "Tokens", "Lexical tokens", "Unique tokens", "Sentences", "Type-token ratio"]
         columns = 6 if width >= 1060 else 3
-        card_gap = 10
+        card_gap = 12
         card_width = (width - card_gap * (columns - 1)) / columns
-        card_height = 96
+        card_height = 100
         for index, key in enumerate(keys):
             row = index // columns
             column = index % columns
             rect = QRectF(x + column * (card_width + card_gap), y + row * (card_height + card_gap), card_width, card_height)
-            self._soft_panel(painter, rect, palette)
-            icon_rect = QRectF(rect.left() + 16, rect.top() + 16, 26, 26)
-            self._draw_metric_icon(painter, icon_rect, key, palette)
-            painter.setPen(QColor(palette.muted))
+            self._dashboard_panel(painter, rect)
+            accent = QColor(self.BAR_COLORS[index % len(self.BAR_COLORS)])
+            painter.setPen(Qt.NoPen)
+            painter.setBrush(accent)
+            painter.drawRoundedRect(QRectF(rect.left(), rect.top(), 4, rect.height()), 2, 2)
+            icon_rect = QRectF(rect.left() + 16, rect.top() + 15, 28, 28)
+            self._draw_metric_icon(painter, icon_rect, key, accent.name())
+            painter.setPen(QColor("#64748B"))
             self._fit_text(painter, QRectF(rect.left() + 52, rect.top() + 16, rect.width() - 68, 22), self._metric_label(key), 10, 8, bold=True)
-            painter.setPen(QColor(palette.text))
-            self._fit_text(painter, QRectF(rect.left() + 16, rect.top() + 42, rect.width() - 32, 34), metrics.get(key, "0"), 25, 15, bold=True)
-            painter.setPen(QColor(palette.muted))
+            painter.setPen(QColor("#111827"))
+            self._fit_text(painter, QRectF(rect.left() + 16, rect.top() + 45, rect.width() - 32, 36), metrics.get(key, "0"), 26, 15, bold=True)
+            painter.setPen(QColor("#94A3B8"))
             self._fit_text(
                 painter,
-                QRectF(rect.left() + 16, rect.top() + 74, rect.width() - 32, 18),
+                QRectF(rect.left() + 16, rect.top() + 81, rect.width() - 32, 18),
                 self._metric_hint(key),
                 9,
                 8,
@@ -619,8 +598,8 @@ class AnalysisDashboard(QWidget):
     def _draw_bar_panel(
         self, painter: QPainter, rect: QRectF, title: str, values: list[tuple[str, int]], palette: ThemePalette
     ) -> None:
-        self._soft_panel(painter, rect, palette)
-        painter.setPen(QColor(palette.text))
+        self._dashboard_panel(painter, rect)
+        painter.setPen(QColor("#111827"))
         self._fit_text(painter, rect.adjusted(16, 12, -16, -250), title, 13, 10, bold=True)
 
         top_values = values[:8]
@@ -628,23 +607,23 @@ class AnalysisDashboard(QWidget):
         y = rect.top() + 52
         for index, (label, value) in enumerate(top_values):
             row_top = y + index * 30
-            painter.setPen(QColor(palette.muted))
+            painter.setPen(QColor("#64748B"))
             self._fit_text(painter, QRectF(rect.left() + 16, row_top, rect.width() - 106, 15), self._metric_label(label), 10, 8)
             bar_rect = QRectF(rect.left() + 16, row_top + 17, rect.width() - 104, 7)
             value_rect = QRectF(bar_rect.right() + 10, row_top + 10, 56, 20)
             painter.setPen(Qt.NoPen)
-            painter.setBrush(QColor(palette.surface))
+            painter.setBrush(QColor("#E9EEF6"))
             painter.drawRoundedRect(bar_rect, 4, 4)
             fill = QRectF(bar_rect)
             fill.setWidth(max(8, bar_rect.width() * value / max_value))
             painter.setBrush(QColor(self.BAR_COLORS[index % len(self.BAR_COLORS)]))
             painter.drawRoundedRect(fill, 4, 4)
-            painter.setPen(QColor(palette.muted))
+            painter.setPen(QColor("#475569"))
             self._fit_text(painter, value_rect, str(value), 11, 9, bold=True, align=Qt.AlignRight | Qt.AlignVCenter)
 
     def _draw_summary_panel(self, painter: QPainter, rect: QRectF, metrics: dict[str, str], palette: ThemePalette) -> None:
-        self._soft_panel(painter, rect, palette)
-        painter.setPen(QColor(palette.text))
+        self._dashboard_panel(painter, rect)
+        painter.setPen(QColor("#111827"))
         self._fit_text(painter, rect.adjusted(16, 12, -16, -158), self._text("text_profile"), 13, 10, bold=True)
         rows = [
             (self._metric_label("Sentences"), metrics.get("Sentences", "0")),
@@ -667,7 +646,8 @@ class AnalysisDashboard(QWidget):
         pos_counts: list[tuple[str, int]],
         palette: ThemePalette,
     ) -> None:
-        self._soft_panel(painter, rect, palette)
+        self._dashboard_panel(painter, rect)
+        painter.setPen(QColor("#111827"))
         self._fit_text(painter, rect.adjusted(16, 12, -16, -158), self._text("more_info"), 13, 10, bold=True)
         lines = [
             (self._text("top_token_type"), self._top_label(token_types)),
@@ -690,17 +670,19 @@ class AnalysisDashboard(QWidget):
         painter.setBrush(QColor(palette.surface))
         painter.drawRoundedRect(rect, 8, 8)
 
-    def _draw_chip(self, painter: QPainter, rect: QRectF, text: str, palette: ThemePalette) -> None:
-        painter.setPen(QPen(QColor(palette.border), 1))
-        painter.setBrush(QColor(palette.surface_alt))
+    def _dashboard_panel(self, painter: QPainter, rect: QRectF) -> None:
+        painter.save()
+        painter.setPen(QPen(QColor("#DDE5F0"), 1))
+        painter.setBrush(QColor("#FFFFFF"))
         painter.drawRoundedRect(rect, 8, 8)
-        painter.setPen(QColor(palette.selected_text if palette.name == "light" else palette.text))
-        self._fit_text(painter, rect.adjusted(10, 0, -10, 0), text, 9, 8, bold=True)
+        painter.restore()
 
-    def _draw_metric_icon(self, painter: QPainter, rect: QRectF, key: str, palette: ThemePalette) -> None:
+    def _draw_metric_icon(self, painter: QPainter, rect: QRectF, key: str, color: str) -> None:
         painter.save()
         painter.setPen(Qt.NoPen)
-        painter.setBrush(QColor(palette.selected))
+        icon_bg = QColor(color)
+        icon_bg.setAlpha(32)
+        painter.setBrush(icon_bg)
         painter.drawRoundedRect(rect, 7, 7)
         glyph = {
             "Characters": "Aa",
@@ -710,17 +692,17 @@ class AnalysisDashboard(QWidget):
             "Sentences": "Ss",
             "Type-token ratio": "Tr",
         }.get(key, "..")
-        painter.setPen(QColor(palette.selected_text))
+        painter.setPen(QColor(color))
         self._fit_text(painter, rect, glyph, 10, 7, bold=True)
         painter.restore()
 
     def _draw_stat_row(self, painter: QPainter, rect: QRectF, label: str, value: str, palette: ThemePalette) -> None:
         painter.setPen(Qt.NoPen)
-        painter.setBrush(QColor(palette.surface_alt))
+        painter.setBrush(QColor("#F8FAFC"))
         painter.drawRoundedRect(rect, 7, 7)
-        painter.setPen(QColor(palette.muted))
+        painter.setPen(QColor("#64748B"))
         self._fit_text(painter, rect.adjusted(10, 0, -96, 0), label, 9, 8, bold=True)
-        painter.setPen(QColor(palette.text))
+        painter.setPen(QColor("#111827"))
         self._fit_text(painter, rect.adjusted(rect.width() - 92, 0, -10, 0), value, 11, 9, bold=True, align=Qt.AlignRight | Qt.AlignVCenter)
 
     def _fit_text(
@@ -746,16 +728,6 @@ class AnalysisDashboard(QWidget):
         font.setBold(bold)
         painter.setFont(font)
         painter.drawText(rect, align, text)
-
-    def _text_width(self, painter: QPainter, text: str, size: int, bold: bool) -> int:
-        font = QFont()
-        font.setPointSize(size)
-        font.setBold(bold)
-        painter.setFont(font)
-        return painter.fontMetrics().horizontalAdvance(text)
-
-    def _dashboard_background(self, palette: ThemePalette) -> str:
-        return "#E8F8FC" if palette.name == "light" else "#163541"
 
     def _sections(self, rows: list[tuple[str, ...]]) -> tuple[dict[str, str], list[tuple[str, int]], list[tuple[str, int]]]:
         metrics: dict[str, str] = {}
@@ -811,13 +783,6 @@ class AnalysisDashboard(QWidget):
             f"{metrics.get('Sentences', '0')} {self._text('sentences')} · "
             f"{metrics.get('Unique tokens', '0')} {self._text('unique_tokens')}"
         )
-
-    def _header_chips(self, metrics: dict[str, str]) -> list[str]:
-        return [
-            f"{metrics.get('Characters', '0')} {self._text('characters')}",
-            f"{metrics.get('Mean token length', '0')} {self._text('average_token_short')}",
-            f"{metrics.get('Type-token ratio', '0')} {self._text('ttr_short')}",
-        ]
 
     def _top_label(self, values: list[tuple[str, int]]) -> str:
         if not values:
@@ -1286,7 +1251,7 @@ class MainWindow(QMainWindow):
         self.dashboard_scroll.setObjectName("DashboardScroll")
         self.dashboard_scroll.setProperty("analysisKind", "dashboard")
         self.dashboard_scroll.setFrameShape(QFrame.NoFrame)
-        self.dashboard_scroll.setWidgetResizable(True)
+        self.dashboard_scroll.setWidgetResizable(False)
         self.dashboard_scroll.setWidget(self.dashboard_view)
         self.table_stack.addWidget(self.dashboard_scroll)
         layout.addWidget(self.table_stack, 1)
@@ -1578,6 +1543,7 @@ class MainWindow(QMainWindow):
             self.concordance_source_result = self.current_raw_result
         self._select_action_tab_for_kind(result.kind)
         self._set_analysis_theme(self._kind_for_tab(self.action_tabs.currentIndex()))
+        self.action_options_stack.setVisible(result.kind != "dashboard")
         self.concordance_back_button.setVisible(result.kind == "concordance")
         if result.kind not in {"frequency", "concordance"}:
             self.concordance_context_panel.setVisible(False)
@@ -2154,6 +2120,7 @@ class MainWindow(QMainWindow):
     def _sync_action_options(self, index: int) -> None:
         self.action_options_stack.setCurrentIndex(index)
         target_kind = self._kind_for_tab(index)
+        self.action_options_stack.setVisible(target_kind != "dashboard")
         self._set_analysis_theme(target_kind)
         text = self.input_text.toPlainText()
         current_tab_kind = "frequency" if self.current_kind == "concordance" else self.current_kind

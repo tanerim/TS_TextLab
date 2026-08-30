@@ -7,7 +7,7 @@ QMainWindow, QWidget {{
 
 #AppHeader {{
     background: #FFFFFF;
-    border-bottom: 1px solid #C9D6E8;
+    border-bottom: 0;
 }}
 
 #AppBody {{
@@ -150,7 +150,7 @@ QComboBox:focus, QLineEdit:focus {{
 QPushButton, QToolButton {{
     background: #252B4D;
     border: 1px solid #434B73;
-    border-radius: 8px;
+    border-radius: 5px;
     padding: 7px 13px;
     color: {text};
     min-height: 34px;
@@ -327,19 +327,19 @@ QToolButton[hideMenuIndicator="true"]::menu-indicator {{
 #ActionOptionsStack {{
     background: #222844;
     border: 1px solid #465079;
-    border-radius: 8px;
+    border-radius: 5px;
 }}
 
 #ActionOptions {{
     background: #222844;
     border: 0;
-    border-radius: 8px;
+    border-radius: 5px;
 }}
 
 #InspectorPanel {{
     background: {surface_alt};
     border: 0;
-    border-radius: 8px;
+    border-radius: 5px;
 }}
 
 QTabWidget::pane {{

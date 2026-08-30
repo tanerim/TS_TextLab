@@ -1,6 +1,7 @@
 # TS TextLab
 
-TS TextLab, Türkçe metinler üzerinde TS Tokenizer ve `ts-postagger` paketindeki spaCy tabanlı TS POSTagger modeliyle çalışan offline masaüstü uygulamasıdır.
+TS TextLab, Türkçe metinler üzerinde TS Tokenizer ve
+`ts-postagger` paketindeki spaCy tabanlı TS POSTagger modeliyle çalışan offline masaüstü uygulamasıdır.
 
 ## PyCharm Geliştirme Kurulumu
 
@@ -13,7 +14,8 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-Not: POS modeli `ts-postagger` paketiyle birlikte gelir. Modeli güncellemek için paketi güncellemeniz yeterlidir.
+Not: POS modeli `ts-postagger` paketiyle birlikte gelir.
+Modeli güncellemek için paketi güncellemeniz yeterlidir.
 
 ## GUI Çalıştırma
 
@@ -21,9 +23,15 @@ Not: POS modeli `ts-postagger` paketiyle birlikte gelir. Modeli güncellemek iç
 python main.py
 ```
 
-Arayüz sistem yereli Türkçe ise Türkçe, diğer durumlarda İngilizce açılır. Settings menüsünden dil tercihi kalıcı olarak değiştirilebilir. Tokenization Mode için `tokenized`, `tagged` ve `lines` çıktı modları seçilebilir.
+Arayüz sistem yereli Türkçe ise Türkçe,
+diğer durumlarda İngilizce açılır.
+Settings menüsünden dil tercihi kalıcı olarak değiştirilebilir.
+Tokenization Mode için `tokenized`, `tagged` ve `lines` çıktı modları seçilebilir.
 
-`lines` modu çok satırlı metinlerde satır ayrımını korur. `tagged` modu tokenizer etiketlerini gösterir; bu etiketler sözcük türü etiketi değildir, verilen dizgenin işlevini tanımlar. POSTag işlemi öncesinde metin TS Tokenizer'dan geçirilir; böylece tokenizer'ın karakter düzeltme ve token sınırı çıktısı POS modeline uygulanır.
+`lines` modu çok satırlı metinlerde satır ayrımını korur.
+`tagged` modu tokenizer etiketlerini gösterir; bu etiketler sözcük türü etiketi değildir,
+verilen dizgenin işlevini tanımlar. POSTag işlemi öncesinde metin TS Tokenizer'dan geçirilir;
+böylece tokenizer'ın karakter düzeltme ve token sınırı çıktısı POS modeline uygulanır.
 
 ## GUI Olmadan Test
 
@@ -57,15 +65,13 @@ python -m pip install -r requirements.txt
 pyinstaller packaging/ts_textlab.spec --clean --noconfirm
 ```
 
-macOS için `.app` çıktısı DMG içine alınabilir. Linux için PyInstaller klasör çıktısı doğrudan arşivlenebilir veya AppImage aracına aktarılabilir.
-
 ## Dosya Yapısı
 
 ```text
 app/
   main_window.py          # PySide6 kullanıcı arayüzü
-  tokenizer_service.py    # TS Tokenizer adaptörü
-  postagger_service.py    # ts-postagger adaptörü ve POS tagging
+  tokenizer_service.py    # TS Tokenizer kütüphanesi
+  postagger_service.py    # TS Postagger kütüphanesi ve POS tagging
   resource_manager.py     # dev/build resource yolları
   logging_config.py       # log kurulumu
 main.py                   # uygulama giriş noktası
@@ -76,6 +82,11 @@ packaging/ts_textlab.spec # PyInstaller ayarları
 
 ## Kaynak
 
-TS Tokenizer PyPI dokümantasyonu paket adını `ts-tokenizer`, import adını `ts_tokenizer`, Python gereksinimini 3.9+ ve çıktı modlarını `tokenized`, `tagged`, `lines`, `tagged_lines` olarak listeler: https://pypi.org/project/ts-tokenizer/
+TS Tokenizer PyPI dokümantasyonu paket adını `ts-tokenizer`,
+import adını `ts_tokenizer`,
+Python gereksinimini 3.9+ ve çıktı modlarını `tokenized`, `tagged`, `lines`, `tagged_lines` olarak listeler:
+https://pypi.org/project/ts-tokenizer/
 
-TS POSTagger PyPI paketi `ts-postagger`, import adı `ts_postagger` ve Python gereksinimi 3.11+ olan paketli POS modelini sağlar: https://pypi.org/project/ts-postagger/
+TS POSTagger PyPI paketi `ts-postagger`,
+import adı `ts_postagger` ve Python gereksinimi 3.11+ olan paketli POS modelini sağlar:
+https://pypi.org/project/ts-postagger/
