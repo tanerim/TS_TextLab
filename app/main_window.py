@@ -50,6 +50,7 @@ from PySide6.QtWidgets import (
     QHeaderView,
     QLabel,
     QLineEdit,
+    QListWidget,
     QMainWindow,
     QMenu,
     QMessageBox,
@@ -57,6 +58,7 @@ from PySide6.QtWidgets import (
     QScrollArea,
     QSizePolicy,
     QPlainTextEdit,
+    QProgressBar,
     QSplitter,
     QStackedWidget,
     QStyle,
@@ -1007,6 +1009,7 @@ class MainWindow(QMainWindow):
         self.current_elapsed_ms: int | None = None
         self.concordance_source_result: TaskResult | None = None
         self._task_started_at = 0.0
+        self._busy = False
         self._enforcing_splitter = False
         self._palette = palette_for("light", "indigo")
         self.logo_pixmap = QPixmap(str(resolve_resource("app", "theme", "TS_Corpus_Logo.png")))
@@ -1174,7 +1177,7 @@ class MainWindow(QMainWindow):
         self.input_hint.setWordWrap(True)
         layout.addWidget(self.input_hint)
 
-        self.input_text = QPlainTextEdit()
+        self.input_text = WatermarkedPlainTextEdit(self.logo_pixmap)
         self.input_text.setObjectName("InputEditor")
         self.input_text.setFrameShape(QFrame.NoFrame)
         self.input_text.setPlaceholderText(self.trn.text("input_placeholder"))
@@ -1210,8 +1213,8 @@ class MainWindow(QMainWindow):
         panel.setMinimumHeight(280)
         panel.setMinimumWidth(420)
         layout = QVBoxLayout(panel)
-        layout.setContentsMargins(20, 16, 20, 16)
-        layout.setSpacing(12)
+        layout.setContentsMargins(18, 14, 18, 14)
+        layout.setSpacing(8)
 
         top = QVBoxLayout()
         top.setSpacing(4)
@@ -1225,6 +1228,30 @@ class MainWindow(QMainWindow):
         top.addWidget(self.results_title)
         top.addWidget(self.results_meta)
         layout.addLayout(top)
+
+        self.result_info = QFrame()
+        self.result_info.setObjectName("ResultInfo")
+        info_layout = QVBoxLayout(self.result_info)
+        info_layout.setContentsMargins(12, 10, 12, 10)
+        info_layout.setSpacing(8)
+        self.analysis_summary_label = QLabel()
+        self.analysis_summary_label.setObjectName("AnalysisSummary")
+        self.analysis_summary_label.setWordWrap(True)
+        info_layout.addWidget(self.analysis_summary_label)
+        self.tagged_note_label = QLabel()
+        self.tagged_note_label.setObjectName("TaggedNote")
+        self.tagged_note_label.setWordWrap(True)
+        info_layout.addWidget(self.tagged_note_label)
+        self.tagged_note_label.hide()
+        self.analysis_progress = QProgressBar()
+        self.analysis_progress.setObjectName("AnalysisProgress")
+        self.analysis_progress.setRange(0, 0)
+        self.analysis_progress.setTextVisible(False)
+        self.analysis_progress.setFixedHeight(6)
+        info_layout.addWidget(self.analysis_progress)
+        self.analysis_progress.hide()
+        layout.addWidget(self.result_info)
+        self.result_info.hide()
 
         self.concordance_context_panel = QFrame()
         self.concordance_context_panel.setObjectName("InspectorPanel")
@@ -1295,6 +1322,7 @@ class MainWindow(QMainWindow):
 
         self.status_label = QLabel("Ready")
         self.status_label.setObjectName("StatusLabel")
+        self.status_label.setWordWrap(True)
         layout.addWidget(self.status_label)
 
         result_actions = QHBoxLayout()
@@ -1381,17 +1409,17 @@ class MainWindow(QMainWindow):
         panel = QFrame()
         panel.setObjectName("ActionOptions")
         panel.setProperty("analysisKind", "ngrams")
-        layout = QVBoxLayout(panel)
+        layout = QHBoxLayout(panel)
         layout.setContentsMargins(14, 10, 14, 10)
         layout.setSpacing(10)
-        toolbar = QHBoxLayout()
-        toolbar.setSpacing(10)
-        filters = QHBoxLayout()
-        filters.setSpacing(14)
+        filters_widget = QWidget()
+        filters = QHBoxLayout(filters_widget)
+        filters.setContentsMargins(0, 0, 0, 0)
+        filters.setSpacing(10)
         self.ngram_n_label = QLabel("n")
         self.ngram_n_label.setObjectName("OptionLabel")
         self.ngram_n_combo = QComboBox()
-        self.ngram_n_combo.setMaximumWidth(90)
+        self.ngram_n_combo.setFixedWidth(84)
         for n in (2, 3, 4, 5):
             self.ngram_n_combo.addItem(str(n), n)
         self.ngram_words_check = QCheckBox("Words")
@@ -1404,11 +1432,8 @@ class MainWindow(QMainWindow):
         self.ngrams_button = QPushButton("N-grams")
         self.ngrams_button.setObjectName("PrimaryButton")
         self.ngrams_button.setProperty("analysisKind", "ngrams")
-        toolbar.addWidget(self.ngram_n_label)
-        toolbar.addWidget(self.ngram_n_combo)
-        toolbar.addStretch(1)
-        toolbar.addWidget(self.ngrams_button)
-        layout.addLayout(toolbar)
+        layout.addWidget(self.ngram_n_label)
+        layout.addWidget(self.ngram_n_combo)
         for checkbox in (
             self.ngram_words_check,
             self.ngram_punctuation_check,
@@ -1419,7 +1444,16 @@ class MainWindow(QMainWindow):
         ):
             filters.addWidget(checkbox)
         filters.addStretch(1)
-        layout.addLayout(filters)
+        self.ngram_filters_scroll = QScrollArea()
+        self.ngram_filters_scroll.setObjectName("NgramFilters")
+        self.ngram_filters_scroll.setFrameShape(QFrame.NoFrame)
+        self.ngram_filters_scroll.setWidgetResizable(True)
+        self.ngram_filters_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.ngram_filters_scroll.setFixedHeight(48)
+        self.ngram_filters_scroll.setMinimumWidth(120)
+        self.ngram_filters_scroll.setWidget(filters_widget)
+        layout.addWidget(self.ngram_filters_scroll, 1)
+        layout.addWidget(self.ngrams_button)
         return panel
 
     def _build_text_analysis_actions(self) -> QWidget:
@@ -1547,10 +1581,12 @@ class MainWindow(QMainWindow):
         return "light"
 
     def _start_task(self, kind: TaskKind) -> None:
+        if self._busy:
+            return
         text = self.input_text.toPlainText()
         self._task_started_at = time.perf_counter()
         self._set_busy(True, kind)
-        self.status_label.setText(self.trn.text("preparing_pos") if kind == "pos" else self.trn.text("processing"))
+        self._set_status(self.trn.text("preparing_pos") if kind == "pos" else self.trn.text("processing"))
         worker = NlpWorker(
             kind,
             text,
@@ -1631,17 +1667,18 @@ class MainWindow(QMainWindow):
         label = self._kind_label(result)
         count_label = self._count_label(result.kind, len(result.rows))
         self.results_meta.setText(self._results_meta_text(label, count_label, result.kind))
-        status = f"{self.trn.text('completed')} · {count_label} · {elapsed_ms} {self.trn.text('milliseconds')}"
-        if result.kind == "tokenize" and result.tokenizer_mode == "tagged":
-            status = f"{status} · {self.trn.text('tokenizer_tag_note')}"
-        self.status_label.setText(status)
+        self._set_status("")
+        self._update_result_info()
         self._set_busy(False)
 
     @Slot(str)
     def _display_error(self, message: str) -> None:
-        self.status_label.setText(message)
+        self._set_status(message)
         self.results_meta.setText(f"{self.trn.text('analysis')} · {self.trn.text('error')}")
         self._set_busy(False)
+        self.result_info.show()
+        self.analysis_summary_label.setText(message)
+        self.tagged_note_label.hide()
 
     @Slot(object)
     def _display_version_result(self, result: VersionCheckResult) -> None:
@@ -1652,9 +1689,13 @@ class MainWindow(QMainWindow):
                 self.trn.text("update_body", latest=result.latest_version, current=APP_VERSION),
             )
         elif result.checked:
-            self.status_label.setText(self.trn.text("up_to_date"))
+            self._set_status(self.trn.text("up_to_date"))
         else:
-            self.status_label.setText(self.trn.text("version_check_failed"))
+            self._set_status(self.trn.text("version_check_failed"))
+
+    def _set_status(self, text: str) -> None:
+        self.status_label.setText(text)
+        self.status_label.setVisible(bool(text))
 
     def _copy_result(self) -> None:
         self._copy_selection_or_result()
@@ -1662,7 +1703,7 @@ class MainWindow(QMainWindow):
     def _export_result_csv(self) -> None:
         result = self.current_raw_result
         if self.current_kind is None or result is None:
-            self.status_label.setText(self.trn.text("no_export_result"))
+            self._set_status(self.trn.text("no_export_result"))
             return
         timestamp = datetime.now().astimezone().strftime("%Y%m%d-%H%M%S-%f")
         default_name = f"ts-textlab-{self._export_kind_name()}-{timestamp}.csv"
@@ -1680,9 +1721,9 @@ class MainWindow(QMainWindow):
             write_tab_csv(target, result.headers, result.rows)
         except (OSError, ValueError) as exc:
             logger.exception("CSV export failed")
-            self.status_label.setText(f"{self.trn.text('operation_failed')}: {exc}")
+            self._set_status(f"{self.trn.text('operation_failed')}: {exc}")
             return
-        self.status_label.setText(self.trn.text("csv_exported", filename=target.name))
+        self._set_status(self.trn.text("csv_exported", filename=target.name))
 
     def _export_kind_name(self) -> str:
         return {
@@ -1698,10 +1739,10 @@ class MainWindow(QMainWindow):
         selected_text = self._selected_rows_text()
         text = selected_text or self.current_copy_text
         if not text:
-            self.status_label.setText(self.trn.text("no_result"))
+            self._set_status(self.trn.text("no_result"))
             return
         QGuiApplication.clipboard().setText(text)
-        self.status_label.setText(self.trn.text("selection_copied") if selected_text else self.trn.text("copied"))
+        self._set_status(self.trn.text("selection_copied") if selected_text else self.trn.text("copied"))
 
     def _selected_rows_text(self) -> str:
         selection = self.results_table.selectionModel()
@@ -1739,13 +1780,16 @@ class MainWindow(QMainWindow):
         self.table_stack.setCurrentWidget(self.empty_state)
         self.concordance_context_panel.setVisible(False)
         self.results_meta.setText(self.trn.text("ready"))
-        self.status_label.setText(status_text or self.trn.text("ready"))
+        self._set_status(status_text or self.trn.text("ready"))
+        self.result_info.hide()
+        self.tagged_note_label.hide()
 
     def _clear_all(self) -> None:
         self.input_text.clear()
         self._clear_result()
 
     def _set_busy(self, busy: bool, kind: TaskKind | None = None) -> None:
+        self._busy = busy
         for button in (
             self.tokenize_button,
             self.pos_button,
@@ -1759,9 +1803,15 @@ class MainWindow(QMainWindow):
         self.copy_button.setDisabled(busy)
         self.export_csv_button.setDisabled(busy)
         self.postagger_output_mode_combo.setDisabled(busy)
+        self.action_tabs.setEnabled(not busy)
+        self.action_options_stack.setEnabled(not busy)
+        self.analysis_progress.setVisible(busy)
         if busy:
             text = self.trn.text("preparing_pos") if kind == "pos" else self.trn.text("processing")
             self.results_meta.setText(f"{self.trn.text('analysis')} · {text}")
+            self.result_info.show()
+            self.analysis_summary_label.setText(text)
+            self.tagged_note_label.hide()
             QApplication.setOverrideCursor(Qt.WaitCursor)
         else:
             QApplication.restoreOverrideCursor()
@@ -1841,12 +1891,13 @@ class MainWindow(QMainWindow):
                     self.current_kind,
                 )
             )
-            self.status_label.setText(self._status_for_current_result())
+            self._set_status("")
+            self._update_result_info()
         if not self.current_copy_text:
-            self.status_label.setText(self.trn.text("ready"))
+            self._set_status(self.trn.text("ready"))
 
     def _start_version_check(self) -> None:
-        self.status_label.setText(self.trn.text("checking_version"))
+        self._set_status(self.trn.text("checking_version"))
         worker = VersionWorker()
         worker.signals.finished.connect(self._display_version_result)
         self._workers.append(worker)
@@ -1928,39 +1979,79 @@ class MainWindow(QMainWindow):
 
     def _show_guide(self) -> None:
         dialog = QDialog(self)
-        dialog.setWindowTitle(self.trn.text("guide"))
-        dialog.setMinimumWidth(460)
+        dialog.setWindowTitle(self.trn.text("help"))
+        dialog.setMinimumSize(760, 500)
+        dialog.resize(920, 680)
         layout = QVBoxLayout(dialog)
-        layout.setContentsMargins(22, 22, 22, 0)
-        layout.setSpacing(14)
-
+        layout.setContentsMargins(24, 24, 24, 0)
+        layout.setSpacing(16)
         title = QLabel(self.trn.text("guide"))
         title.setObjectName("DialogTitle")
         layout.addWidget(title)
+        subtitle = QLabel(self.trn.text("help_intro"))
+        subtitle.setObjectName("DialogMuted")
+        subtitle.setWordWrap(True)
+        layout.addWidget(subtitle)
 
-        card = QFrame()
-        card.setObjectName("DialogCard")
-        grid = QGridLayout(card)
-        grid.setContentsMargins(16, 14, 16, 14)
-        grid.setHorizontalSpacing(12)
-        grid.setVerticalSpacing(10)
-        for row, line in enumerate(self.trn.text("guide_body").splitlines()):
-            number, _, body = line.partition(". ")
-            number_label = QLabel(number)
-            number_label.setObjectName("KbdLabel")
-            body_label = QLabel(body or line)
-            body_label.setObjectName("DialogMuted")
-            body_label.setWordWrap(True)
-            grid.addWidget(number_label, row, 0, Qt.AlignTop)
-            grid.addWidget(body_label, row, 1)
-        grid.setColumnStretch(1, 1)
-        layout.addWidget(card)
+        body = QHBoxLayout()
+        body.setSpacing(18)
+        navigation = QListWidget()
+        navigation.setObjectName("HelpNavigation")
+        navigation.setFixedWidth(210)
+        navigation.setAccessibleName(self.trn.text("help_topics"))
+        pages = QStackedWidget()
+        topics = (
+            ("help_start", "help_start_body"),
+            ("tokenization", "help_tokenization_body"),
+            ("pos_tagging", "help_pos_body"),
+            ("frequency", "help_frequency_body"),
+            ("ngrams", "help_ngrams_body"),
+            ("concordance", "help_concordance_body"),
+            ("text_analysis", "help_analysis_body"),
+            ("export_csv", "help_export_body"),
+            ("settings", "help_settings_body"),
+            ("keyboard_shortcuts", "help_shortcuts_body"),
+        )
+        modifier = "Cmd" if QGuiApplication.platformName() == "cocoa" else "Ctrl"
+        for heading_key, body_key in topics:
+            navigation.addItem(self.trn.text(heading_key))
+            scroll = QScrollArea()
+            scroll.setObjectName("HelpScroll")
+            scroll.setWidgetResizable(True)
+            scroll.setFrameShape(QFrame.NoFrame)
+            scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            page = QWidget()
+            page.setObjectName("HelpPage")
+            page_layout = QVBoxLayout(page)
+            page_layout.setContentsMargins(0, 0, 8, 0)
+            page_layout.setSpacing(14)
+            heading = QLabel(self.trn.text(heading_key))
+            heading.setObjectName("HelpHeading")
+            heading.setWordWrap(True)
+            page_layout.addWidget(heading)
+            for paragraph in self.trn.text(body_key, modifier=modifier).split("\n\n"):
+                card = QFrame()
+                card.setObjectName("DialogCard")
+                card_layout = QVBoxLayout(card)
+                card_layout.setContentsMargins(18, 16, 18, 16)
+                text = QLabel(paragraph)
+                text.setObjectName("HelpBody")
+                text.setWordWrap(True)
+                text.setTextInteractionFlags(Qt.TextSelectableByMouse)
+                card_layout.addWidget(text)
+                page_layout.addWidget(card)
+            page_layout.addStretch(1)
+            scroll.setWidget(page)
+            pages.addWidget(scroll)
+        navigation.currentRowChanged.connect(pages.setCurrentIndex)
+        navigation.setCurrentRow(0)
+        body.addWidget(navigation)
+        body.addWidget(pages, 1)
+        layout.addLayout(body, 1)
 
         buttons = QDialogButtonBox(QDialogButtonBox.Ok)
-        ok_button = buttons.button(QDialogButtonBox.Ok)
-        if ok_button is not None:
-            ok_button.setText(self.trn.text("ok"))
-            ok_button.setObjectName("DialogPrimaryButton")
+        buttons.button(QDialogButtonBox.Ok).setText(self.trn.text("ok"))
+        _style_dialog_buttons(buttons)
         buttons.accepted.connect(dialog.accept)
         layout.addWidget(self._dialog_footer(buttons))
         dialog.exec()
@@ -2072,13 +2163,13 @@ class MainWindow(QMainWindow):
 
     def _start_concordance_from_input(self) -> None:
         if not self.concordance_query_input.text().strip():
-            self.status_label.setText(self.trn.text("no_result"))
+            self._set_status(self.trn.text("no_result"))
             return
         self._start_task("concordance")
 
     def _restore_concordance_source(self) -> None:
         if self.concordance_source_result is None:
-            self.status_label.setText(self.trn.text("no_result"))
+            self._set_status(self.trn.text("no_result"))
             return
         self._task_started_at = time.perf_counter()
         self._display_result(self.concordance_source_result)
@@ -2183,6 +2274,8 @@ class MainWindow(QMainWindow):
             self.active_function_label,
             self.filter_input,
             self.concordance_context_button,
+            self.result_info,
+            self.analysis_progress,
             self.action_tabs,
             self.results_panel,
             self.action_options_stack,
@@ -2390,6 +2483,11 @@ class MainWindow(QMainWindow):
         count_label = self._count_label(self.current_kind or "tokenize", self.result_model.rowCount())
         elapsed_ms = self.current_elapsed_ms if self.current_elapsed_ms is not None else 0
         status = f"{self.trn.text('completed')} · {count_label} · {elapsed_ms} {self.trn.text('milliseconds')}"
-        if self.current_kind == "tokenize" and self.current_tokenizer_mode == "tagged":
-            status = f"{status} · {self.trn.text('tokenizer_tag_note')}"
         return status
+
+    def _update_result_info(self) -> None:
+        self.result_info.setVisible(self.current_kind is not None)
+        self.analysis_summary_label.setText(self._status_for_current_result())
+        tagged = self.current_kind == "tokenize" and self.current_tokenizer_mode == "tagged"
+        self.tagged_note_label.setText(self.trn.text("tokenizer_tag_note"))
+        self.tagged_note_label.setVisible(tagged)

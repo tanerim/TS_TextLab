@@ -173,3 +173,28 @@ QTabBar#ActionTabs[analysisKind="frequency"]::tab:selected:hover {{ background: 
 QTabBar#ActionTabs[analysisKind="ngrams"]::tab:selected:hover {{ background: #6D28D9; color: #FFFFFF; }}
 
 QTabBar#ActionTabs[analysisKind="dashboard"]::tab:selected:hover {{ background: #155E75; color: #FFFFFF; }}
+
+#ResultInfo {{ background: #EFF6FF; border: 1px solid #BFDBFE; border-left: 4px solid #2563EB; border-radius: 8px; }}
+#AnalysisSummary {{ color: #172033; font-size: 13px; font-weight: 700; }}
+#TaggedNote {{ color: #1E3A8A; font-size: 13px; padding: 4px 0; }}
+#StatusLabel {{ color: #334155; font-size: 12px; font-weight: 600; padding: 5px 0; }}
+#AnalysisProgress {{ border: 0; background: #DCE6F2; border-radius: 3px; }}
+#AnalysisProgress::chunk {{ background: #2563EB; border-radius: 3px; }}
+#NgramFilters, #NgramFilters > QWidget > QWidget {{ background: transparent; }}
+#HelpNavigation {{ background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 10px; padding: 6px; outline: 0; }}
+#HelpNavigation::item {{ padding: 12px 10px; border-radius: 6px; margin: 2px 0; color: #334155; }}
+#HelpNavigation::item:selected {{ background: #2563EB; color: white; }}
+#HelpNavigation::item:hover:!selected {{ background: #E2E8F0; }}
+#HelpScroll {{ background: transparent; border: 0; }}
+#HelpHeading {{ font-size: 19px; font-weight: 700; color: #172033; }}
+#HelpBody {{ font-size: 14px; color: #334155; }}
+#ResultInfo[analysisKind="tokenize"] {{ background: #EFF6FF; border-color: #BFDBFE; border-left-color: #2563EB; }}
+#ResultInfo[analysisKind="pos"] {{ background: #ECFDF5; border-color: #A7F3D0; border-left-color: #047857; }}
+#ResultInfo[analysisKind="frequency"] {{ background: #FFF1F2; border-color: #FECDD3; border-left-color: #C43D4D; }}
+#ResultInfo[analysisKind="ngrams"] {{ background: #F5F3FF; border-color: #DDD6FE; border-left-color: #7C3AED; }}
+#ResultInfo[analysisKind="dashboard"] {{ background: #ECFEFF; border-color: #A5F3FC; border-left-color: #0E7490; }}
+#AnalysisProgress[analysisKind="pos"]::chunk {{ background: #047857; }}
+#AnalysisProgress[analysisKind="frequency"]::chunk {{ background: #C43D4D; }}
+#AnalysisProgress[analysisKind="ngrams"]::chunk {{ background: #7C3AED; }}
+#AnalysisProgress[analysisKind="dashboard"]::chunk {{ background: #0E7490; }}
+#HelpPage, #HelpScroll > QWidget {{ background: {background}; }}
