@@ -5,14 +5,13 @@ from __future__ import annotations
 import logging
 import time
 from dataclasses import dataclass
-from html import escape
+from datetime import datetime
 from typing import Literal
 
 from PySide6.QtCore import (
     QAbstractTableModel,
     QModelIndex,
     QObject,
-    QMarginsF,
     QRegularExpression,
     QRunnable,
     QRectF,
@@ -29,15 +28,12 @@ from PySide6.QtGui import (
     QColor,
     QFont,
     QGuiApplication,
+    QIcon,
     QKeySequence,
-    QPageLayout,
-    QPageSize,
     QPainter,
-    QPdfWriter,
     QPen,
     QPixmap,
     QShortcut,
-    QTextDocument,
     QTextCursor,
 )
 from PySide6.QtWidgets import (
@@ -83,6 +79,7 @@ from app.analysis_service import (
 )
 from app.config import APP_NAME, APP_VERSION, DEFAULT_SAMPLE_TEXT, MAX_INPUT_CHARS
 from app.errors import TextLabError
+from app.export_service import timestamped_csv_path, write_tab_csv
 from app.i18n import Translator
 from app.postagger_service import PosTaggerService, PostaggerOutputMode
 from app.resource_manager import resolve_resource
@@ -264,6 +261,10 @@ class ResultTableModel(QAbstractTableModel):
         if role == Qt.DisplayRole:
             if column == 0:
                 return str(row + 1)
+            value_index = column - 1
+            return self.rows[row][value_index] if value_index < len(self.rows[row]) else ""
+
+        if role == Qt.ToolTipRole and column > 0:
             value_index = column - 1
             return self.rows[row][value_index] if value_index < len(self.rows[row]) else ""
 
@@ -490,7 +491,6 @@ class WatermarkedPlainTextEdit(QPlainTextEdit):
 
 
 class AnalysisDashboard(QWidget):
-    REPORT_SIZE = QSize(1080, 940)
     BAR_COLORS = ["#0D6EFD", "#20C997", "#6F42C1", "#FD7E14", "#198754", "#0DCAF0", "#D63384", "#FFC107"]
 
     def __init__(self) -> None:
@@ -498,8 +498,12 @@ class AnalysisDashboard(QWidget):
         self.result: TaskResult | None = None
         self.trn: Translator | None = None
         self.palette: ThemePalette | None = None
-        self.setMinimumSize(self.REPORT_SIZE)
-        self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.setMinimumWidth(300)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.setFixedHeight(self._report_height())
+
+    def _report_height(self) -> int:
+        return 44 + 6 * 68 + 5 * 10 + 18 + 616 + 408
 
     def set_result(self, result: TaskResult | None, trn: Translator, palette: ThemePalette) -> None:
         self.result = result
@@ -507,29 +511,16 @@ class AnalysisDashboard(QWidget):
         self.palette = palette
         self.update()
 
-    def export_pdf(self, path: str) -> None:
-        writer = QPdfWriter(path)
-        writer.setResolution(144)
-        writer.setPageSize(QPageSize(QPageSize.A4))
-        writer.setPageMargins(QMarginsF(16, 16, 16, 16), QPageLayout.Millimeter)
-        painter = QPainter(writer)
+    def paintEvent(self, _event) -> None:  # type: ignore[override]
+        painter = QPainter(self)
         try:
-            page = writer.pageLayout().paintRectPixels(writer.resolution())
-            source = QRectF(0, 0, self.REPORT_SIZE.width(), self.REPORT_SIZE.height())
-            scale = min(page.width() / source.width(), page.height() / source.height())
-            painter.translate(page.x() + (page.width() - source.width() * scale) / 2, page.y())
-            painter.scale(scale, scale)
-            self._paint_report(painter, source, for_pdf=True)
+            painter.setRenderHint(QPainter.Antialiasing)
+            self._paint_report(painter, QRectF(0, 0, self.width(), self.height()))
         finally:
             painter.end()
 
-    def paintEvent(self, _event) -> None:  # type: ignore[override]
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.Antialiasing)
-        self._paint_report(painter, QRectF(0, 0, self.width(), self.height()), for_pdf=False)
-
-    def _paint_report(self, painter: QPainter, rect: QRectF, for_pdf: bool) -> None:
-        palette = LIGHT_PALETTE if for_pdf else (self.palette or LIGHT_PALETTE)
+    def _paint_report(self, painter: QPainter, rect: QRectF) -> None:
+        palette = self.palette or LIGHT_PALETTE
         painter.fillRect(rect, QColor("#F4F7FB"))
         result = self.result
         if result is None:
@@ -544,16 +535,18 @@ class AnalysisDashboard(QWidget):
         y = self._draw_metric_cards(painter, x, y, width, metrics, palette)
         y += 18
         chart_gap = 16
-        chart_width = (width - chart_gap) / 2
+        chart_width = width
         chart_height = 292
         self._draw_bar_panel(painter, QRectF(x, y, chart_width, chart_height), self._text("distribution"), token_types, palette)
-        self._draw_bar_panel(painter, QRectF(x + chart_width + chart_gap, y, chart_width, chart_height), self._text("pos_distribution"), pos_counts, palette)
-        y += chart_height + 16
-        summary_width = width * 0.5 - chart_gap / 2
+        chart_x = x
+        chart_y = y + chart_height + chart_gap
+        self._draw_bar_panel(painter, QRectF(chart_x, chart_y, chart_width, chart_height), self._text("pos_distribution"), pos_counts, palette)
+        y += (chart_height + 16) * 2
+        summary_width = width
         self._draw_summary_panel(painter, QRectF(x, y, summary_width, 196), metrics, palette)
         self._draw_highlights_panel(
             painter,
-            QRectF(x + summary_width + chart_gap, y, width - summary_width - chart_gap, 196),
+            QRectF(x, y + 212, summary_width, 196),
             metrics,
             token_types,
             pos_counts,
@@ -564,36 +557,23 @@ class AnalysisDashboard(QWidget):
         self, painter: QPainter, x: float, y: float, width: float, metrics: dict[str, str], palette: ThemePalette
     ) -> float:
         keys = ["Characters", "Tokens", "Lexical tokens", "Unique tokens", "Sentences", "Type-token ratio"]
-        columns = 6 if width >= 1060 else 3
-        card_gap = 12
-        card_width = (width - card_gap * (columns - 1)) / columns
-        card_height = 100
+        row_height = 68
+        gap = 10
         for index, key in enumerate(keys):
-            row = index // columns
-            column = index % columns
-            rect = QRectF(x + column * (card_width + card_gap), y + row * (card_height + card_gap), card_width, card_height)
+            rect = QRectF(x, y + index * (row_height + gap), width, row_height)
             self._dashboard_panel(painter, rect)
             accent = QColor(self.BAR_COLORS[index % len(self.BAR_COLORS)])
             painter.setPen(Qt.NoPen)
             painter.setBrush(accent)
             painter.drawRoundedRect(QRectF(rect.left(), rect.top(), 4, rect.height()), 2, 2)
-            icon_rect = QRectF(rect.left() + 16, rect.top() + 15, 28, 28)
-            self._draw_metric_icon(painter, icon_rect, key, accent.name())
+            self._draw_metric_icon(painter, QRectF(rect.left() + 16, rect.top() + 20, 28, 28), key, accent.name())
+            painter.setPen(QColor("#334155"))
+            self._fit_text(painter, QRectF(rect.left() + 56, rect.top() + 12, width - 188, 22), self._metric_label(key), 11, 9, bold=True)
             painter.setPen(QColor("#64748B"))
-            self._fit_text(painter, QRectF(rect.left() + 52, rect.top() + 16, rect.width() - 68, 22), self._metric_label(key), 10, 8, bold=True)
+            self._fit_text(painter, QRectF(rect.left() + 56, rect.top() + 36, width - 188, 18), self._metric_hint(key), 9, 8)
             painter.setPen(QColor("#111827"))
-            self._fit_text(painter, QRectF(rect.left() + 16, rect.top() + 45, rect.width() - 32, 36), metrics.get(key, "0"), 26, 15, bold=True)
-            painter.setPen(QColor("#94A3B8"))
-            self._fit_text(
-                painter,
-                QRectF(rect.left() + 16, rect.top() + 81, rect.width() - 32, 18),
-                self._metric_hint(key),
-                9,
-                8,
-                bold=False,
-            )
-        rows = (len(keys) + columns - 1) // columns
-        return y + card_height * rows + card_gap * (rows - 1)
+            self._fit_text(painter, QRectF(rect.right() - 124, rect.top() + 14, 108, 40), metrics.get(key, "0"), 25, 15, bold=True, align=Qt.AlignRight | Qt.AlignVCenter)
+        return y + len(keys) * row_height + (len(keys) - 1) * gap
 
     def _draw_bar_panel(
         self, painter: QPainter, rect: QRectF, title: str, values: list[tuple[str, int]], palette: ThemePalette
@@ -811,19 +791,28 @@ class SettingsDialog(QDialog):
         self.trn = Translator(self.settings.value("language", None, str))
         self.on_appearance_change = on_appearance_change
         self.on_language_change = on_language_change
-        self.setMinimumWidth(500)
+        self.setMinimumWidth(600)
+        self.resize(640, 610)
 
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(18, 18, 18, 0)
-        layout.setSpacing(14)
+        layout.setContentsMargins(28, 26, 28, 0)
+        layout.setSpacing(18)
 
         self.title_label = QLabel()
         self.title_label.setObjectName("DialogTitle")
         layout.addWidget(self.title_label)
 
-        form = QGridLayout()
-        form.setHorizontalSpacing(22)
-        form.setVerticalSpacing(9)
+        self.subtitle = QLabel()
+        self.subtitle.setObjectName("DialogMuted")
+        self.subtitle.setWordWrap(True)
+        layout.addWidget(self.subtitle)
+
+        language_card = QFrame()
+        language_card.setObjectName("DialogCard")
+        form = QGridLayout(language_card)
+        form.setContentsMargins(20, 18, 20, 18)
+        form.setHorizontalSpacing(24)
+        form.setVerticalSpacing(14)
 
         self.language_section_label = _section_label("")
         form.addWidget(self.language_section_label, 0, 0, 1, 2)
@@ -836,32 +825,53 @@ class SettingsDialog(QDialog):
         form.addWidget(self.language_label, 1, 0)
         form.addWidget(self.language_combo, 1, 1)
 
+        form.setColumnStretch(1, 1)
+        layout.addWidget(language_card)
+
+        behavior_card = QFrame()
+        behavior_card.setObjectName("DialogCard")
+        form = QGridLayout(behavior_card)
+        form.setContentsMargins(20, 18, 20, 18)
+        form.setHorizontalSpacing(24)
+        form.setVerticalSpacing(14)
         self.behavior_label = _section_label("")
-        form.addWidget(self.behavior_label, 2, 0, 1, 2)
+        form.addWidget(self.behavior_label, 0, 0, 1, 2)
         self.default_mode_combo = QComboBox()
         self.default_mode_combo.addItem("", "tokenized")
         self.default_mode_combo.addItem("", "tagged")
         self.default_mode_combo.addItem("", "lines")
         _set_combo_data(self.default_mode_combo, self.settings.value("default_tokenizer_mode", "tokenized", str))
         self.default_mode_label = QLabel()
-        form.addWidget(self.default_mode_label, 3, 0)
-        form.addWidget(self.default_mode_combo, 3, 1)
+        self.default_mode_label.setWordWrap(True)
+        form.addWidget(self.default_mode_label, 1, 0)
+        form.addWidget(self.default_mode_combo, 1, 1)
 
         self.remember_layout = QCheckBox()
         self.remember_layout.setChecked(self.settings.value("remember_layout", True, bool))
-        form.addWidget(self.remember_layout, 4, 1)
+        form.addWidget(self.remember_layout, 2, 0, 1, 2)
+        form.setColumnStretch(0, 1)
+        form.setColumnStretch(1, 1)
+        layout.addWidget(behavior_card)
+
+        interface_card = QFrame()
+        interface_card.setObjectName("DialogCard")
+        form = QGridLayout(interface_card)
+        form.setContentsMargins(20, 18, 20, 18)
+        form.setHorizontalSpacing(24)
+        form.setVerticalSpacing(14)
 
         self.interface_label = _section_label("")
-        form.addWidget(self.interface_label, 5, 0, 1, 2)
+        form.addWidget(self.interface_label, 0, 0, 1, 2)
         self.density_combo = QComboBox()
         self.density_combo.addItem("", "comfortable")
         self.density_combo.addItem("", "compact")
         _set_combo_data(self.density_combo, self.settings.value("table_density", "comfortable", str))
         self.density_label = QLabel()
-        form.addWidget(self.density_label, 6, 0)
-        form.addWidget(self.density_combo, 6, 1)
+        form.addWidget(self.density_label, 1, 0)
+        form.addWidget(self.density_combo, 1, 1)
         form.setColumnStretch(1, 1)
-        layout.addLayout(form)
+        layout.addWidget(interface_card)
+        layout.addStretch(1)
 
         self.buttons = QDialogButtonBox(QDialogButtonBox.Cancel | QDialogButtonBox.Ok)
         self.buttons.accepted.connect(self.accept)
@@ -902,6 +912,7 @@ class SettingsDialog(QDialog):
     def _apply_translations(self) -> None:
         self.setWindowTitle(self.trn.text("settings"))
         self.title_label.setText(self.trn.text("settings"))
+        self.subtitle.setText(self.trn.text("settings_hint"))
         self.language_section_label.setText(self.trn.text("language"))
         self.language_label.setText(self.trn.text("language"))
         self.language_combo.setItemText(0, self.trn.text("system"))
@@ -939,6 +950,10 @@ def _style_dialog_buttons(buttons: QDialogButtonBox) -> None:
         ok_button.setObjectName("DialogPrimaryButton")
     if cancel_button is not None:
         cancel_button.setObjectName("DialogSecondaryButton")
+    for button in (ok_button, cancel_button):
+        if button is not None:
+            button.style().unpolish(button)
+            button.style().polish(button)
 
 
 def _set_combo_data(combo: QComboBox, value: object) -> None:
@@ -1007,26 +1022,53 @@ class MainWindow(QMainWindow):
 
     def _build_ui(self) -> None:
         root = QWidget(self)
+        root.setObjectName("Workspace")
         page = QVBoxLayout(root)
         page.setContentsMargins(0, 0, 0, 0)
         page.setSpacing(0)
-        page.addWidget(self._build_header())
+        self.app_header = self._build_header()
+        page.addWidget(self.app_header)
 
         body = QWidget()
         body.setObjectName("AppBody")
         body_layout = QVBoxLayout(body)
-        body_layout.setContentsMargins(0, 0, 0, 0)
-        body_layout.setSpacing(0)
+        body_layout.setContentsMargins(24, 18, 24, 24)
+        body_layout.setSpacing(18)
+
+        self.navigation = QFrame()
+        self.navigation.setObjectName("Navigation")
+        navigation_layout = QVBoxLayout(self.navigation)
+        navigation_layout.setContentsMargins(12, 6, 12, 6)
+        self.action_tabs = QTabBar()
+        self.action_tabs.setObjectName("ActionTabs")
+        self.action_tabs.setExpanding(True)
+        self.action_tabs.setUsesScrollButtons(True)
+        for title in ("Tokenize", "POS Tag", "Frequency", "N-grams", "Text Analysis"):
+            self.action_tabs.addTab(title)
+        self.action_tabs.setIconSize(QSize(18, 18))
+        for index, kind in enumerate(("tokenize", "pos", "frequency", "ngrams", "dashboard")):
+            self.action_tabs.setTabIcon(index, QIcon(str(resolve_resource("app", "theme", f"tool-{kind}.svg"))))
+        navigation_layout.addWidget(self.action_tabs)
+        body_layout.addWidget(self.navigation)
+
+        self.action_options_stack = QStackedWidget()
+        self.action_options_stack.setObjectName("ActionOptionsStack")
+        self.action_options_stack.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        for builder in (self._build_tokenize_actions, self._build_pos_actions,
+                        self._build_frequency_actions, self._build_ngram_actions,
+                        self._build_text_analysis_actions):
+            self.action_options_stack.addWidget(builder())
+        body_layout.addWidget(self.action_options_stack)
 
         self.splitter = QSplitter(Qt.Horizontal)
         self.splitter.setChildrenCollapsible(False)
-        self.splitter.setHandleWidth(1)
+        self.splitter.setHandleWidth(18)
         self.splitter.addWidget(self._build_input_panel())
         self.splitter.addWidget(self._build_results_panel())
         self.splitter.setStretchFactor(0, 1)
         self.splitter.setStretchFactor(1, 1)
         self.splitter.splitterMoved.connect(self._enforce_splitter_limit)
-        body_layout.addWidget(self.splitter)
+        body_layout.addWidget(self.splitter, 1)
         page.addWidget(body, 1)
         self.setCentralWidget(root)
 
@@ -1044,26 +1086,31 @@ class MainWindow(QMainWindow):
     def _build_header(self) -> QWidget:
         header = QFrame()
         header.setObjectName("AppHeader")
-        header.setFixedHeight(44)
+        header.setFixedHeight(82)
         layout = QHBoxLayout(header)
-        layout.setContentsMargins(14, 5, 14, 5)
-        layout.setSpacing(10)
+        layout.setContentsMargins(28, 14, 28, 14)
+        layout.setSpacing(18)
 
-        side_width = 136
+        side_width = 112
         left_side = QWidget()
         left_side.setObjectName("HeaderSide")
         left_side.setFixedWidth(side_width)
         left_layout = QHBoxLayout(left_side)
         left_layout.setContentsMargins(0, 0, 0, 0)
-        left_layout.addWidget(self._logo_label(118, 32, "HeaderLogo"))
+        left_layout.addWidget(self._logo_label(104, 38, "HeaderLogo"))
         left_layout.addStretch(1)
 
         self.title_label = QLabel(APP_NAME)
         self.title_label.setObjectName("TitleLabel")
-        self.title_label.setAlignment(Qt.AlignCenter)
+        self.title_label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         self.subtitle_label = QLabel("Local Turkish NLP")
         self.subtitle_label.setObjectName("SubtitleLabel")
-        self.subtitle_label.setVisible(False)
+        title_layout = QVBoxLayout()
+        title_layout.setSpacing(2)
+        title_layout.addWidget(self.title_label)
+        title_layout.addWidget(self.subtitle_label)
+        self.active_function_label = QLabel()
+        self.active_function_label.setObjectName("ActiveFunction")
 
         right_side = QWidget()
         right_side.setObjectName("HeaderSide")
@@ -1074,13 +1121,14 @@ class MainWindow(QMainWindow):
         right_layout.addWidget(self._build_app_menu_button())
 
         layout.addWidget(left_side)
-        layout.addWidget(self.title_label, 1)
+        layout.addLayout(title_layout, 1)
+        layout.addWidget(self.active_function_label)
         layout.addWidget(right_side)
         return header
 
     def _build_app_menu_button(self) -> QToolButton:
         self.app_menu_button = QToolButton()
-        self.app_menu_button.setIcon(self.style().standardIcon(QStyle.SP_FileDialogDetailedView))
+        self.app_menu_button.setIcon(QIcon(str(resolve_resource("app", "theme", "tool-menu.svg"))))
         self.app_menu_button.setObjectName("HeaderMenuButton")
         self.app_menu_button.setProperty("hideMenuIndicator", True)
         self.app_menu_button.setPopupMode(QToolButton.InstantPopup)
@@ -1104,6 +1152,7 @@ class MainWindow(QMainWindow):
     def _build_input_panel(self) -> QWidget:
         panel = QFrame()
         panel.setObjectName("InputPanel")
+        self.input_panel = panel
         panel.setMinimumHeight(150)
         panel.setMinimumWidth(360)
         layout = QVBoxLayout(panel)
@@ -1120,15 +1169,24 @@ class MainWindow(QMainWindow):
         top.addWidget(self.input_meta)
         layout.addLayout(top)
 
-        self.input_text = WatermarkedPlainTextEdit(self.logo_pixmap)
+        self.input_hint = QLabel()
+        self.input_hint.setObjectName("HintLabel")
+        self.input_hint.setWordWrap(True)
+        layout.addWidget(self.input_hint)
+
+        self.input_text = QPlainTextEdit()
         self.input_text.setObjectName("InputEditor")
         self.input_text.setFrameShape(QFrame.NoFrame)
         self.input_text.setPlaceholderText(self.trn.text("input_placeholder"))
         self.input_text.setPlainText(DEFAULT_SAMPLE_TEXT)
+        self.input_title.setBuddy(self.input_text)
         self.input_text.setMinimumHeight(82)
         layout.addWidget(self.input_text, 1)
 
         utility_row = QHBoxLayout()
+        self.local_label = QLabel()
+        self.local_label.setObjectName("LocalBadge")
+        utility_row.addWidget(self.local_label)
         utility_row.addStretch(1)
         self.clear_button = QToolButton()
         self.clear_button.setText("Clear")
@@ -1155,35 +1213,14 @@ class MainWindow(QMainWindow):
         layout.setContentsMargins(20, 16, 20, 16)
         layout.setSpacing(12)
 
-        self.action_tabs = QTabBar()
-        self.action_tabs.setObjectName("ActionTabs")
-        self.action_tabs.setExpanding(True)
-        self.action_tabs.addTab("Tokenize")
-        self.action_tabs.addTab("POS Tag")
-        self.action_tabs.addTab("Frequency")
-        self.action_tabs.addTab("N-grams")
-        self.action_tabs.addTab("Text Analysis")
-        self.action_tabs.setCurrentIndex(0)
-        self.action_tabs.setProperty("analysisKind", "tokenize")
-        layout.addWidget(self.action_tabs)
-
-        self.action_options_stack = QStackedWidget()
-        self.action_options_stack.setObjectName("ActionOptionsStack")
-        self.action_options_stack.addWidget(self._build_tokenize_actions())
-        self.action_options_stack.addWidget(self._build_pos_actions())
-        self.action_options_stack.addWidget(self._build_frequency_actions())
-        self.action_options_stack.addWidget(self._build_ngram_actions())
-        self.action_options_stack.addWidget(self._build_text_analysis_actions())
-        layout.addWidget(self.action_options_stack)
-
         top = QVBoxLayout()
         top.setSpacing(4)
         self.results_title = QLabel("RESULTS")
         self.results_title.setObjectName("ResultsTitle")
-        self.results_title.setAlignment(Qt.AlignCenter)
+        self.results_title.setAlignment(Qt.AlignLeft)
         self.results_meta = QLabel("Ready")
         self.results_meta.setObjectName("ResultsSubtitle")
-        self.results_meta.setAlignment(Qt.AlignCenter)
+        self.results_meta.setAlignment(Qt.AlignLeft)
         self.results_meta.setWordWrap(True)
         top.addWidget(self.results_title)
         top.addWidget(self.results_meta)
@@ -1251,7 +1288,7 @@ class MainWindow(QMainWindow):
         self.dashboard_scroll.setObjectName("DashboardScroll")
         self.dashboard_scroll.setProperty("analysisKind", "dashboard")
         self.dashboard_scroll.setFrameShape(QFrame.NoFrame)
-        self.dashboard_scroll.setWidgetResizable(False)
+        self.dashboard_scroll.setWidgetResizable(True)
         self.dashboard_scroll.setWidget(self.dashboard_view)
         self.table_stack.addWidget(self.dashboard_scroll)
         layout.addWidget(self.table_stack, 1)
@@ -1262,18 +1299,19 @@ class MainWindow(QMainWindow):
 
         result_actions = QHBoxLayout()
         result_actions.setSpacing(10)
+        result_actions.addStretch(1)
         self.copy_button = QToolButton()
         self.copy_button.setText("Copy")
         self.copy_button.setToolTip("Copy result")
         self.copy_button.setObjectName("SecondaryButton")
-        self.copy_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        result_actions.addWidget(self.copy_button, 1)
-        self.export_pdf_button = QToolButton()
-        self.export_pdf_button.setText("Export PDF")
-        self.export_pdf_button.setToolTip("Export result as PDF")
-        self.export_pdf_button.setObjectName("SecondaryButton")
-        self.export_pdf_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        result_actions.addWidget(self.export_pdf_button, 1)
+        self.copy_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        result_actions.addWidget(self.copy_button)
+        self.export_csv_button = QToolButton()
+        self.export_csv_button.setText("Export CSV")
+        self.export_csv_button.setToolTip("Export tab-delimited CSV")
+        self.export_csv_button.setObjectName("SecondaryButton")
+        self.export_csv_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        result_actions.addWidget(self.export_csv_button)
         layout.addLayout(result_actions)
         self._set_analysis_theme("tokenize")
         return panel
@@ -1343,9 +1381,13 @@ class MainWindow(QMainWindow):
         panel = QFrame()
         panel.setObjectName("ActionOptions")
         panel.setProperty("analysisKind", "ngrams")
-        layout = QHBoxLayout(panel)
-        layout.setContentsMargins(12, 8, 12, 8)
-        layout.setSpacing(14)
+        layout = QVBoxLayout(panel)
+        layout.setContentsMargins(14, 10, 14, 10)
+        layout.setSpacing(10)
+        toolbar = QHBoxLayout()
+        toolbar.setSpacing(10)
+        filters = QHBoxLayout()
+        filters.setSpacing(14)
         self.ngram_n_label = QLabel("n")
         self.ngram_n_label.setObjectName("OptionLabel")
         self.ngram_n_combo = QComboBox()
@@ -1362,8 +1404,11 @@ class MainWindow(QMainWindow):
         self.ngrams_button = QPushButton("N-grams")
         self.ngrams_button.setObjectName("PrimaryButton")
         self.ngrams_button.setProperty("analysisKind", "ngrams")
-        layout.addWidget(self.ngram_n_label)
-        layout.addWidget(self.ngram_n_combo)
+        toolbar.addWidget(self.ngram_n_label)
+        toolbar.addWidget(self.ngram_n_combo)
+        toolbar.addStretch(1)
+        toolbar.addWidget(self.ngrams_button)
+        layout.addLayout(toolbar)
         for checkbox in (
             self.ngram_words_check,
             self.ngram_punctuation_check,
@@ -1372,9 +1417,9 @@ class MainWindow(QMainWindow):
             self.ngram_hashtags_check,
             self.ngram_xml_tags_check,
         ):
-            layout.addWidget(checkbox)
-        layout.addStretch(1)
-        layout.addWidget(self.ngrams_button)
+            filters.addWidget(checkbox)
+        filters.addStretch(1)
+        layout.addLayout(filters)
         return panel
 
     def _build_text_analysis_actions(self) -> QWidget:
@@ -1395,7 +1440,7 @@ class MainWindow(QMainWindow):
         self.concordance_query_input.returnPressed.connect(self._start_concordance_from_input)
         self.concordance_back_button.clicked.connect(self._restore_concordance_source)
         self.copy_button.clicked.connect(self._copy_result)
-        self.export_pdf_button.clicked.connect(self._export_result_pdf)
+        self.export_csv_button.clicked.connect(self._export_result_csv)
         self.clear_input_action.triggered.connect(self.input_text.clear)
         self.clear_result_action.triggered.connect(self._clear_result)
         self.clear_all_action.triggered.connect(self._clear_all)
@@ -1424,19 +1469,19 @@ class MainWindow(QMainWindow):
         if isinstance(app, QApplication):
             self._palette = apply_theme(app, self.settings)
         self._apply_density()
-        self._apply_delegates()
         self._set_analysis_theme(self._kind_for_tab(self.action_tabs.currentIndex()))
+        self._apply_delegates()
         if self.current_raw_result is not None and self.current_kind == "dashboard":
             self.dashboard_view.set_result(self.current_raw_result, self.trn, self._palette)
 
     def _apply_density(self) -> None:
         density = self.settings.value("table_density", "comfortable", str)
-        self.results_table.verticalHeader().setDefaultSectionSize(28 if density == "compact" else 32)
+        self.results_table.verticalHeader().setDefaultSectionSize(32 if density == "compact" else 42)
 
     def _apply_delegates(self) -> None:
         self.results_table.setItemDelegate(QStyledItemDelegate(self.results_table))
-        self.results_table.setItemDelegateForColumn(2, QStyledItemDelegate(self.results_table))
-        self.results_table.setItemDelegateForColumn(3, QStyledItemDelegate(self.results_table))
+        for column in range(max(4, self.result_model.columnCount())):
+            self.results_table.setItemDelegateForColumn(column, None)
         if self.current_kind == "pos":
             pos_column = len(self.result_model.headers)
             self.results_table.setItemDelegateForColumn(
@@ -1552,7 +1597,7 @@ class MainWindow(QMainWindow):
         self.result_model.set_result(result)
         self.proxy_model.invalidateFilter()
         self.filter_input.setVisible(result.kind != "dashboard")
-        self.export_pdf_button.setVisible(True)
+        self.export_csv_button.setVisible(True)
         if result.kind == "dashboard":
             dashboard_source = self.current_raw_result or result
             self.dashboard_view.set_result(dashboard_source, self.trn, self._palette)
@@ -1561,24 +1606,22 @@ class MainWindow(QMainWindow):
         else:
             self.table_stack.setCurrentWidget(self.results_table)
             self.results_table.setSortingEnabled(result.kind in {"frequency", "ngrams"})
-            self.results_table.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
+            header = self.results_table.horizontalHeader()
+            header.setStretchLastSection(False)
+            header.setMinimumSectionSize(44)
+            header.setSectionResizeMode(QHeaderView.Stretch)
+            header.setSectionResizeMode(0, QHeaderView.Fixed)
             self.results_table.setColumnWidth(0, 48)
             if result.kind == "pos":
-                self.results_table.setColumnWidth(1, 230)
-                self.results_table.setColumnWidth(2, 210)
-                self.results_table.setColumnWidth(3, 120)
-            elif result.kind == "ngrams":
-                self.results_table.setColumnWidth(1, 420)
-                self.results_table.setColumnWidth(2, 150)
-            elif result.kind == "frequency":
-                self.results_table.setColumnWidth(1, 340)
-                self.results_table.setColumnWidth(2, 150)
+                pos_column = len(result.headers)
+                header.setSectionResizeMode(pos_column, QHeaderView.Fixed)
+                self.results_table.setColumnWidth(pos_column, 104)
+            elif result.kind in {"frequency", "ngrams"}:
+                header.setSectionResizeMode(2, QHeaderView.Fixed)
+                self.results_table.setColumnWidth(2, 116)
             elif result.kind == "concordance":
-                self.results_table.setColumnWidth(1, 300)
+                header.setSectionResizeMode(2, QHeaderView.Fixed)
                 self.results_table.setColumnWidth(2, 160)
-                self.results_table.setColumnWidth(3, 300)
-            elif result.headers:
-                self.results_table.setColumnWidth(1, 280)
             if result.kind in {"frequency", "ngrams"}:
                 self.results_table.sortByColumn(2, Qt.DescendingOrder)
             else:
@@ -1616,71 +1659,30 @@ class MainWindow(QMainWindow):
     def _copy_result(self) -> None:
         self._copy_selection_or_result()
 
-    def _export_result_pdf(self) -> None:
-        if self.current_kind is None or (not self.current_raw_result and not self.result_model.rowCount()):
-            self.status_label.setText(self.trn.text("no_result"))
+    def _export_result_csv(self) -> None:
+        result = self.current_raw_result
+        if self.current_kind is None or result is None:
+            self.status_label.setText(self.trn.text("no_export_result"))
             return
-        default_name = f"ts-textlab-{self._export_kind_name()}.pdf"
+        timestamp = datetime.now().astimezone().strftime("%Y%m%d-%H%M%S-%f")
+        default_name = f"ts-textlab-{self._export_kind_name()}-{timestamp}.csv"
         path, _ = QFileDialog.getSaveFileName(
             self,
-            self.trn.text("export_pdf"),
+            self.trn.text("export_csv"),
             default_name,
-            "PDF (*.pdf)",
+            self.trn.text("csv_file_filter"),
         )
         if not path:
             return
-        if not path.lower().endswith(".pdf"):
-            path = f"{path}.pdf"
+        target = timestamped_csv_path(path, timestamp)
         try:
-            if self.current_kind == "dashboard" and self.current_raw_result is not None:
-                self.dashboard_view.export_pdf(path)
-            else:
-                self._export_table_pdf(path)
-        except Exception as exc:  # pragma: no cover - QFile/QPainter boundary
-            logger.exception("PDF export failed")
+            # Export the complete result with stable source headers, independent of UI language.
+            write_tab_csv(target, result.headers, result.rows)
+        except (OSError, ValueError) as exc:
+            logger.exception("CSV export failed")
             self.status_label.setText(f"{self.trn.text('operation_failed')}: {exc}")
             return
-        self.status_label.setText(self.trn.text("pdf_exported"))
-
-    def _export_table_pdf(self, path: str) -> None:
-        writer = QPdfWriter(path)
-        writer.setPageSize(QPageSize(QPageSize.A4))
-        writer.setPageMargins(QMarginsF(14, 14, 14, 14), QPageLayout.Millimeter)
-
-        title = escape(self.results_title.text())
-        subtitle = escape(self.results_meta.text())
-        headers = "".join(f"<th>{escape(header)}</th>" for header in ["#"] + self.current_headers)
-        rows = []
-        for index, row in enumerate(self.result_model.rows, start=1):
-            cells = "".join(f"<td>{escape(value)}</td>" for value in (str(index), *row))
-            rows.append(f"<tr>{cells}</tr>")
-
-        document = QTextDocument()
-        document.setHtml(
-            f"""
-            <html>
-            <head>
-              <style>
-                body {{ font-family: sans-serif; color: #111827; }}
-                h1 {{ text-align: center; font-size: 22pt; margin: 0 0 6px 0; }}
-                p {{ text-align: center; color: #4B5563; margin: 0 0 18px 0; }}
-                table {{ border-collapse: collapse; width: 100%; font-size: 9pt; }}
-                th, td {{ border-bottom: 1px solid #D1D5DB; padding: 6px 7px; text-align: left; }}
-                th {{ background: #EEF2FF; font-weight: 700; }}
-              </style>
-            </head>
-            <body>
-              <h1>{title}</h1>
-              <p>{subtitle}</p>
-              <table>
-                <thead><tr>{headers}</tr></thead>
-                <tbody>{''.join(rows)}</tbody>
-              </table>
-            </body>
-            </html>
-            """
-        )
-        document.print_(writer)
+        self.status_label.setText(self.trn.text("csv_exported", filename=target.name))
 
     def _export_kind_name(self) -> str:
         return {
@@ -1732,7 +1734,7 @@ class MainWindow(QMainWindow):
         self.result_model.set_result(None)
         self.filter_input.clear()
         self.filter_input.setVisible(True)
-        self.export_pdf_button.setVisible(True)
+        self.export_csv_button.setVisible(True)
         self.dashboard_view.set_result(None, self.trn, self._palette)
         self.table_stack.setCurrentWidget(self.empty_state)
         self.concordance_context_panel.setVisible(False)
@@ -1755,7 +1757,7 @@ class MainWindow(QMainWindow):
             button.setDisabled(busy)
         self.clear_button.setDisabled(busy)
         self.copy_button.setDisabled(busy)
-        self.export_pdf_button.setDisabled(busy)
+        self.export_csv_button.setDisabled(busy)
         self.postagger_output_mode_combo.setDisabled(busy)
         if busy:
             text = self.trn.text("preparing_pos") if kind == "pos" else self.trn.text("processing")
@@ -1766,6 +1768,9 @@ class MainWindow(QMainWindow):
 
     def _apply_translations(self) -> None:
         self.input_text.setPlaceholderText(self.trn.text("input_placeholder"))
+        self.input_hint.setText(self.trn.text("input_hint"))
+        self.local_label.setText(self.trn.text("local_badge"))
+        self._update_active_function()
         self.subtitle_label.setText(self.trn.text("subtitle"))
         self.input_title.setText(self.trn.text("input"))
         self.results_title.setText(self.trn.text("results"))
@@ -1786,8 +1791,8 @@ class MainWindow(QMainWindow):
         self.concordance_context_label.setText(self.trn.text("concordance"))
         self.concordance_context_button.setText(self.trn.text("concordance"))
         self.concordance_back_button.setText(self.trn.text("back"))
-        self.export_pdf_button.setText(self.trn.text("export_pdf"))
-        self.export_pdf_button.setToolTip(self.trn.text("export_pdf"))
+        self.export_csv_button.setText(self.trn.text("export_csv"))
+        self.export_csv_button.setToolTip(self.trn.text("csv_file_filter"))
         self.action_tabs.setTabText(0, self.trn.text("tokenize"))
         self.action_tabs.setTabText(1, self.trn.text("pos_tag"))
         self.action_tabs.setTabText(2, self.trn.text("frequency"))
@@ -1807,6 +1812,9 @@ class MainWindow(QMainWindow):
         self.ngram_xml_tags_check.setText(self.trn.text("xml_tags"))
         self.concordance_query_input.setPlaceholderText(self.trn.text("token"))
         self.filter_input.setPlaceholderText(self.trn.text("filter_results"))
+        self.input_text.setAccessibleName(self.trn.text("input"))
+        self.filter_input.setAccessibleName(self.trn.text("filter_results"))
+        self.action_tabs.setAccessibleName(self.trn.text("actions"))
         self.app_menu_button.setToolTip(self.trn.text("application_menu"))
         self.settings_action.setText(self.trn.text("settings"))
         self.help_action.setText(self.trn.text("help"))
@@ -1814,6 +1822,7 @@ class MainWindow(QMainWindow):
         self.shortcuts_action.setText(self.trn.text("keyboard_shortcuts"))
         self.check_version_action.setText(self.trn.text("check_version"))
         self.empty_state.apply_translations(self.trn)
+        self._fit_action_options()
         self._update_input_meta()
         if self.current_kind is not None:
             if self.current_raw_result is not None:
@@ -1857,32 +1866,38 @@ class MainWindow(QMainWindow):
         dialog = QDialog(self)
         dialog.setWindowTitle(self.trn.text("about_title"))
         dialog.setMinimumWidth(620)
+        dialog.resize(680, 500)
         layout = QVBoxLayout(dialog)
-        layout.setContentsMargins(22, 22, 22, 0)
-        layout.setSpacing(14)
+        layout.setContentsMargins(28, 28, 28, 0)
+        layout.setSpacing(18)
 
-        layout.addWidget(self._logo_label(220, 84, "AboutLogo"), 0, Qt.AlignHCenter)
-
+        hero = QHBoxLayout()
+        hero.setSpacing(24)
+        hero.addWidget(self._logo_label(136, 70, "AboutLogo"))
+        identity = QVBoxLayout()
+        identity.setSpacing(6)
         title = QLabel(APP_NAME)
         title.setObjectName("DialogTitle")
-        title.setAlignment(Qt.AlignCenter)
-        layout.addWidget(title)
+        identity.addWidget(title)
+        tagline = QLabel(self.trn.text("subtitle"))
+        tagline.setObjectName("DialogMuted")
+        identity.addWidget(tagline)
+        hero.addLayout(identity, 1)
+        layout.addLayout(hero)
 
         meta = self._dialog_card(
-            self.trn.text("version"), f"{self.trn.text('subtitle')} · {APP_VERSION}", align_center=True
+            self.trn.text("version"), APP_VERSION
         )
         links = self._dialog_card(
             self.trn.text("powered_by"),
-            '<a href="https://pypi.org/project/ts-tokenizer/">TS Tokenizer</a><br>'
+            '<a href="https://pypi.org/project/ts-tokenizer/">TS Tokenizer</a> &nbsp;·&nbsp; '
             '<a href="https://pypi.org/project/ts-postagger/">TS PosTagger</a><br>'
             '<a href="https://tscorpus.com/">TS Corpus</a>',
             rich=True,
-            align_center=True,
         )
         privacy = self._dialog_card(
             self.trn.text("local_processing_statement"),
             self.trn.text("no_upload_statement"),
-            align_center=True,
         )
         citation = self._dialog_card(
             "SEZER, T. (2025)",
@@ -1892,12 +1907,15 @@ class MainWindow(QMainWindow):
                 "[Doktora tezi, Hacettepe Üniversitesi]. Ulusal Tez Merkezi, Tez No. 959204"
             ),
             rich=True,
-            align_center=True,
         )
-        layout.addWidget(meta)
-        layout.addWidget(links)
+        details = QHBoxLayout()
+        details.setSpacing(14)
+        details.addWidget(meta, 1)
+        details.addWidget(links, 2)
+        layout.addLayout(details)
         layout.addWidget(privacy)
         layout.addWidget(citation)
+        layout.addStretch(1)
 
         buttons = QDialogButtonBox(QDialogButtonBox.Ok)
         ok_button = buttons.button(QDialogButtonBox.Ok)
@@ -1905,7 +1923,7 @@ class MainWindow(QMainWindow):
             ok_button.setText(self.trn.text("ok"))
             ok_button.setObjectName("DialogPrimaryButton")
         buttons.accepted.connect(dialog.accept)
-        layout.addWidget(self._dialog_footer(buttons, align_center=True))
+        layout.addWidget(self._dialog_footer(buttons))
         dialog.exec()
 
     def _show_guide(self) -> None:
@@ -2002,6 +2020,8 @@ class MainWindow(QMainWindow):
         layout.setSpacing(6)
         title_label = QLabel(title)
         title_label.setObjectName("DialogSection")
+        if rich:
+            body = body.replace('<a ', '<a style="color:#2563EB; text-decoration:none;" ')
         body_label = QLabel(body)
         body_label.setObjectName("DialogMuted")
         body_label.setWordWrap(True)
@@ -2119,6 +2139,7 @@ class MainWindow(QMainWindow):
 
     def _sync_action_options(self, index: int) -> None:
         self.action_options_stack.setCurrentIndex(index)
+        self._fit_action_options()
         target_kind = self._kind_for_tab(index)
         self.action_options_stack.setVisible(target_kind != "dashboard")
         self._set_analysis_theme(target_kind)
@@ -2140,8 +2161,27 @@ class MainWindow(QMainWindow):
             4: "dashboard",
         }.get(index, "tokenize")
 
+    def _fit_action_options(self) -> None:
+        page = self.action_options_stack.currentWidget()
+        if page is not None:
+            self.action_options_stack.setFixedHeight(page.sizeHint().height() + 2)
+
     def _set_analysis_theme(self, kind: str) -> None:
+        # The chosen tool is a workspace state, visible on both sides of the split.
+        kind = "frequency" if kind == "concordance" else kind
+        self._palette = palette_for("light", {
+            "tokenize": "amber", "pos": "emerald", "frequency": "indigo",
+            "ngrams": "violet", "dashboard": "petrol",
+        }.get(kind, "indigo"))
         for widget in (
+            self.app_header,
+            self.navigation,
+            self.input_panel,
+            self.input_text,
+            self.input_title,
+            self.input_meta,
+            self.active_function_label,
+            self.filter_input,
             self.action_tabs,
             self.results_panel,
             self.action_options_stack,
@@ -2154,6 +2194,18 @@ class MainWindow(QMainWindow):
         ):
             widget.setProperty("analysisKind", kind)
             self._refresh_style(widget)
+        self._update_active_function()
+
+    def _update_active_function(self) -> None:
+        selected = self.action_tabs.currentIndex()
+        for index, kind in enumerate(("tokenize", "pos", "frequency", "ngrams", "dashboard")):
+            suffix = "-selected" if index == selected else ""
+            self.action_tabs.setTabIcon(index, QIcon(str(resolve_resource("app", "theme", f"tool-{kind}{suffix}.svg"))))
+        key = {
+            "tokenize": "tokenization", "pos": "pos_tagging", "frequency": "frequency",
+            "ngrams": "ngrams", "dashboard": "text_analysis",
+        }[self._kind_for_tab(self.action_tabs.currentIndex())]
+        self.active_function_label.setText(self.trn.text(key))
 
     def _refresh_style(self, widget: QWidget) -> None:
         style = widget.style()
@@ -2307,6 +2359,8 @@ class MainWindow(QMainWindow):
             return self.trn.text("dashboard")
         if result.kind == "concordance":
             return self.trn.text("concordance")
+        if result.kind == "ngrams":
+            return self.trn.text("ngrams")
         mode = result.tokenizer_mode or "tokenized"
         return {
             "tokenized": self.trn.text("tokenization"),

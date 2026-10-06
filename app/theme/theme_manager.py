@@ -45,14 +45,14 @@ LIGHT_PALETTE = ThemePalette(
     accent_hover="#0B3E80",
     accent_pressed="#092F63",
     focus="#2563EB",
-    background="#E8EEF7",
+    background="#F4F6FA",
     surface="#FFFFFF",
-    surface_alt="#EEF4FF",
+    surface_alt="#F8FAFC",
     panel="#FFFFFF",
-    text="#000000",
-    muted="#1F2937",
-    border="#B9C7DA",
-    border_strong="#6F839F",
+    text="#172033",
+    muted="#475569",
+    border="#E2E8F0",
+    border_strong="#94A3B8",
     hover="#D7E7FF",
     selected="#CFE1FF",
     selected_text="#061E42",
@@ -292,7 +292,11 @@ def palette_for(theme: ThemeName, accent: str = "indigo") -> ThemePalette:
 def load_qss(theme: ThemeName, accent: str = "indigo") -> str:
     palette = palette_for(theme, accent)
     qss_path = Path(__file__).with_name(f"{palette.name}.qss")
-    return qss_path.read_text(encoding="utf-8").format(**palette.__dict__)
+    return qss_path.read_text(encoding="utf-8").format(
+        **palette.__dict__,
+        chevron_path=Path(__file__).with_name("chevron.svg").as_posix(),
+        check_path=Path(__file__).with_name("check.svg").as_posix(),
+    )
 
 
 def apply_theme(app: QApplication, settings: QSettings) -> ThemePalette:

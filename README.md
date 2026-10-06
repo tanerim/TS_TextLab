@@ -28,6 +28,14 @@ diğer durumlarda İngilizce açılır.
 Settings menüsünden dil tercihi kalıcı olarak değiştirilebilir.
 Tokenization Mode için `tokenized`, `tagged` ve `lines` çıktı modları seçilebilir.
 
+Sonuçlar **CSV'ye Aktar** ile UTF-8 kodlamasında, tab (`\t`) ile ayrılmış `.csv`
+dosyalarına kaydedilir. Başlıklar ve tüm analiz satırları dışa aktarılır;
+arayüzdeki filtre dosyanın içeriğini daraltmaz. NLP iş akışlarında tutarlı olması
+için sütun başlıkları arayüz dilinden bağımsızdır. Metin Analizi çıktısı da
+ölçümler ve dağılımlar için aynı tablo biçimini kullanır.
+Dosya adına yerel tarih, saat ve mikrosaniye eklenir:
+`ts-textlab-frequency-20261006-143025-123456.csv`.
+
 `lines` modu çok satırlı metinlerde satır ayrımını korur.
 `tagged` modu tokenizer etiketlerini gösterir; bu etiketler sözcük türü etiketi değildir,
 verilen dizgenin işlevini tanımlar. POSTag işlemi öncesinde metin TS Tokenizer'dan geçirilir;
