@@ -75,20 +75,20 @@ QDialog {{ background: {background}; }}
 #KbdLabel {{ background: {surface_alt}; border: 1px solid {border}; border-radius: 6px; padding: 6px 10px; font-family: monospace; }}
 QToolTip {{ background: #1E293B; color: white; border: 0; padding: 8px; }}
 
-#AppHeader[analysisKind="tokenize"] {{ border-bottom: 3px solid #B45309; }}
-#ActiveFunction[analysisKind="tokenize"], #CounterLabel[analysisKind="tokenize"] {{ color: #B45309; background: #FFE2AD; }}
-#InputPanel[analysisKind="tokenize"], #ResultsPanel[analysisKind="tokenize"] {{ border-top: 3px solid #B45309; }}
-#SectionTitle[analysisKind="tokenize"], #ResultsTitle[analysisKind="tokenize"] {{ color: #B45309; }}
-QTabBar#ActionTabs[analysisKind="tokenize"]::tab:selected {{ background: #B45309; color: #FFFFFF; border-color: #92400E; }}
-#ActionOptionsStack[analysisKind="tokenize"] {{ border-left: 4px solid #B45309; }}
-#PrimaryButton[analysisKind="tokenize"] {{ background: #B45309; border-color: #B45309; }}
-#PrimaryButton[analysisKind="tokenize"]:hover {{ background: #92400E; border-color: #92400E; }}
-#PrimaryButton[analysisKind="tokenize"]:pressed {{ background: #78350F; border-color: #78350F; }}
+#AppHeader[analysisKind="tokenize"] {{ border-bottom: 3px solid #2563EB; }}
+#ActiveFunction[analysisKind="tokenize"], #CounterLabel[analysisKind="tokenize"] {{ color: #2563EB; background: #C7DAFF; }}
+#InputPanel[analysisKind="tokenize"], #ResultsPanel[analysisKind="tokenize"] {{ border-top: 3px solid #2563EB; }}
+#SectionTitle[analysisKind="tokenize"], #ResultsTitle[analysisKind="tokenize"] {{ color: #2563EB; }}
+QTabBar#ActionTabs[analysisKind="tokenize"]::tab:selected {{ background: #2563EB; color: #FFFFFF; border-color: #1D4ED8; }}
+#ActionOptionsStack[analysisKind="tokenize"] {{ border-left: 4px solid #2563EB; }}
+#PrimaryButton[analysisKind="tokenize"] {{ background: #2563EB; border-color: #2563EB; }}
+#PrimaryButton[analysisKind="tokenize"]:hover {{ background: #1D4ED8; border-color: #1D4ED8; }}
+#PrimaryButton[analysisKind="tokenize"]:pressed {{ background: #1E40AF; border-color: #1E40AF; }}
 #PrimaryButton[analysisKind="tokenize"]:disabled {{ background: #E2E8F0; color: #94A3B8; border-color: #E2E8F0; }}
-#InputEditor[analysisKind="tokenize"]:focus, QLineEdit[analysisKind="tokenize"]:focus {{ border-color: #B45309; }}
-#InputEditor[analysisKind="tokenize"], QLineEdit[analysisKind="tokenize"] {{ selection-background-color: #FFE2AD; }}
-QTableView[analysisKind="tokenize"] {{ selection-background-color: #FFE2AD; }}
-QTableView[analysisKind="tokenize"]::item:selected {{ background: #FFE2AD; color: #172033; }}
+#InputEditor[analysisKind="tokenize"]:focus, QLineEdit[analysisKind="tokenize"]:focus {{ border-color: #2563EB; }}
+#InputEditor[analysisKind="tokenize"], QLineEdit[analysisKind="tokenize"] {{ selection-background-color: #C7DAFF; }}
+QTableView[analysisKind="tokenize"] {{ selection-background-color: #C7DAFF; }}
+QTableView[analysisKind="tokenize"]::item:selected {{ background: #C7DAFF; color: #172033; }}
 
 #AppHeader[analysisKind="pos"] {{ border-bottom: 3px solid #047857; }}
 #ActiveFunction[analysisKind="pos"], #CounterLabel[analysisKind="pos"] {{ color: #047857; background: #BAE8D3; }}
@@ -105,20 +105,20 @@ QTabBar#ActionTabs[analysisKind="pos"]::tab:selected {{ background: #047857; col
 QTableView[analysisKind="pos"] {{ selection-background-color: #BAE8D3; }}
 QTableView[analysisKind="pos"]::item:selected {{ background: #BAE8D3; color: #172033; }}
 
-#AppHeader[analysisKind="frequency"] {{ border-bottom: 3px solid #2563EB; }}
-#ActiveFunction[analysisKind="frequency"], #CounterLabel[analysisKind="frequency"] {{ color: #2563EB; background: #C7DAFF; }}
-#InputPanel[analysisKind="frequency"], #ResultsPanel[analysisKind="frequency"] {{ border-top: 3px solid #2563EB; }}
-#SectionTitle[analysisKind="frequency"], #ResultsTitle[analysisKind="frequency"] {{ color: #2563EB; }}
-QTabBar#ActionTabs[analysisKind="frequency"]::tab:selected {{ background: #2563EB; color: #FFFFFF; border-color: #1D4ED8; }}
-#ActionOptionsStack[analysisKind="frequency"] {{ border-left: 4px solid #2563EB; }}
-#PrimaryButton[analysisKind="frequency"] {{ background: #2563EB; border-color: #2563EB; }}
-#PrimaryButton[analysisKind="frequency"]:hover {{ background: #1D4ED8; border-color: #1D4ED8; }}
-#PrimaryButton[analysisKind="frequency"]:pressed {{ background: #1E40AF; border-color: #1E40AF; }}
+#AppHeader[analysisKind="frequency"] {{ border-bottom: 3px solid #C43D4D; }}
+#ActiveFunction[analysisKind="frequency"], #CounterLabel[analysisKind="frequency"] {{ color: #C43D4D; background: #FAD4DA; }}
+#InputPanel[analysisKind="frequency"], #ResultsPanel[analysisKind="frequency"] {{ border-top: 3px solid #C43D4D; }}
+#SectionTitle[analysisKind="frequency"], #ResultsTitle[analysisKind="frequency"] {{ color: #C43D4D; }}
+QTabBar#ActionTabs[analysisKind="frequency"]::tab:selected {{ background: #C43D4D; color: #FFFFFF; border-color: #AC3040; }}
+#ActionOptionsStack[analysisKind="frequency"] {{ border-left: 4px solid #C43D4D; }}
+#PrimaryButton[analysisKind="frequency"] {{ background: #C43D4D; border-color: #C43D4D; }}
+#PrimaryButton[analysisKind="frequency"]:hover {{ background: #AC3040; border-color: #AC3040; }}
+#PrimaryButton[analysisKind="frequency"]:pressed {{ background: #922737; border-color: #922737; }}
 #PrimaryButton[analysisKind="frequency"]:disabled {{ background: #E2E8F0; color: #94A3B8; border-color: #E2E8F0; }}
-#InputEditor[analysisKind="frequency"]:focus, QLineEdit[analysisKind="frequency"]:focus {{ border-color: #2563EB; }}
-#InputEditor[analysisKind="frequency"], QLineEdit[analysisKind="frequency"] {{ selection-background-color: #C7DAFF; }}
-QTableView[analysisKind="frequency"] {{ selection-background-color: #C7DAFF; }}
-QTableView[analysisKind="frequency"]::item:selected {{ background: #C7DAFF; color: #172033; }}
+#InputEditor[analysisKind="frequency"]:focus, QLineEdit[analysisKind="frequency"]:focus {{ border-color: #C43D4D; }}
+#InputEditor[analysisKind="frequency"], QLineEdit[analysisKind="frequency"] {{ selection-background-color: #FAD4DA; }}
+QTableView[analysisKind="frequency"] {{ selection-background-color: #FAD4DA; }}
+QTableView[analysisKind="frequency"]::item:selected {{ background: #FAD4DA; color: #172033; }}
 
 #AppHeader[analysisKind="ngrams"] {{ border-bottom: 3px solid #7C3AED; }}
 #ActiveFunction[analysisKind="ngrams"], #CounterLabel[analysisKind="ngrams"] {{ color: #7C3AED; background: #DECAFF; }}
@@ -149,14 +149,14 @@ QTabBar#ActionTabs[analysisKind="dashboard"]::tab:selected {{ background: #0E749
 #InputEditor[analysisKind="dashboard"], QLineEdit[analysisKind="dashboard"] {{ selection-background-color: #BDE6F2; }}
 QTableView[analysisKind="dashboard"] {{ selection-background-color: #BDE6F2; }}
 QTableView[analysisKind="dashboard"]::item:selected {{ background: #BDE6F2; color: #172033; }}
-#ActionOptions[analysisKind="tokenize"] QComboBox:focus {{ border-color: #B45309; }}
-#ActionOptions[analysisKind="tokenize"] QCheckBox::indicator:checked {{ background: #B45309; border-color: #B45309; }}
+#ActionOptions[analysisKind="tokenize"] QComboBox:focus {{ border-color: #2563EB; }}
+#ActionOptions[analysisKind="tokenize"] QCheckBox::indicator:checked {{ background: #2563EB; border-color: #2563EB; }}
 
 #ActionOptions[analysisKind="pos"] QComboBox:focus {{ border-color: #047857; }}
 #ActionOptions[analysisKind="pos"] QCheckBox::indicator:checked {{ background: #047857; border-color: #047857; }}
 
-#ActionOptions[analysisKind="frequency"] QComboBox:focus {{ border-color: #2563EB; }}
-#ActionOptions[analysisKind="frequency"] QCheckBox::indicator:checked {{ background: #2563EB; border-color: #2563EB; }}
+#ActionOptions[analysisKind="frequency"] QComboBox:focus {{ border-color: #C43D4D; }}
+#ActionOptions[analysisKind="frequency"] QCheckBox::indicator:checked {{ background: #C43D4D; border-color: #C43D4D; }}
 
 #ActionOptions[analysisKind="ngrams"] QComboBox:focus {{ border-color: #7C3AED; }}
 #ActionOptions[analysisKind="ngrams"] QCheckBox::indicator:checked {{ background: #7C3AED; border-color: #7C3AED; }}
@@ -164,11 +164,11 @@ QTableView[analysisKind="dashboard"]::item:selected {{ background: #BDE6F2; colo
 #ActionOptions[analysisKind="dashboard"] QComboBox:focus {{ border-color: #0E7490; }}
 #ActionOptions[analysisKind="dashboard"] QCheckBox::indicator:checked {{ background: #0E7490; border-color: #0E7490; }}
 
-QTabBar#ActionTabs[analysisKind="tokenize"]::tab:selected:hover {{ background: #92400E; color: #FFFFFF; }}
+QTabBar#ActionTabs[analysisKind="tokenize"]::tab:selected:hover {{ background: #1D4ED8; color: #FFFFFF; }}
 
 QTabBar#ActionTabs[analysisKind="pos"]::tab:selected:hover {{ background: #065F46; color: #FFFFFF; }}
 
-QTabBar#ActionTabs[analysisKind="frequency"]::tab:selected:hover {{ background: #1D4ED8; color: #FFFFFF; }}
+QTabBar#ActionTabs[analysisKind="frequency"]::tab:selected:hover {{ background: #AC3040; color: #FFFFFF; }}
 
 QTabBar#ActionTabs[analysisKind="ngrams"]::tab:selected:hover {{ background: #6D28D9; color: #FFFFFF; }}
 

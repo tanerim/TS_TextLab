@@ -1103,7 +1103,7 @@ class MainWindow(QMainWindow):
         self.title_label = QLabel(APP_NAME)
         self.title_label.setObjectName("TitleLabel")
         self.title_label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-        self.subtitle_label = QLabel("Local Turkish NLP")
+        self.subtitle_label = QLabel("Turkish Text Analysis")
         self.subtitle_label.setObjectName("SubtitleLabel")
         title_layout = QVBoxLayout()
         title_layout.setSpacing(2)
@@ -2170,7 +2170,7 @@ class MainWindow(QMainWindow):
         # The chosen tool is a workspace state, visible on both sides of the split.
         kind = "frequency" if kind == "concordance" else kind
         self._palette = palette_for("light", {
-            "tokenize": "amber", "pos": "emerald", "frequency": "indigo",
+            "tokenize": "blue", "pos": "emerald", "frequency": "soft_red",
             "ngrams": "violet", "dashboard": "petrol",
         }.get(kind, "indigo"))
         for widget in (
@@ -2182,6 +2182,7 @@ class MainWindow(QMainWindow):
             self.input_meta,
             self.active_function_label,
             self.filter_input,
+            self.concordance_context_button,
             self.action_tabs,
             self.results_panel,
             self.action_options_stack,

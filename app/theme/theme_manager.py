@@ -65,6 +65,28 @@ LIGHT_PALETTE = ThemePalette(
 )
 
 ACCENTS = {
+    "blue": {
+        "accent": "#2563EB",
+        "accent_hover": "#1D4ED8",
+        "accent_pressed": "#1E40AF",
+        "focus": "#2563EB",
+        "selected": "#C7DAFF",
+        "selected_text": "#172033",
+        "pos_badge_bg": "#C7DAFF",
+        "pos_badge_text": "#1E40AF",
+        "bar_fill": "#AFCBFF",
+    },
+    "soft_red": {
+        "accent": "#C43D4D",
+        "accent_hover": "#AC3040",
+        "accent_pressed": "#922737",
+        "focus": "#C43D4D",
+        "selected": "#FAD4DA",
+        "selected_text": "#172033",
+        "pos_badge_bg": "#FAD4DA",
+        "pos_badge_text": "#922737",
+        "bar_fill": "#EBA1AD",
+    },
     "indigo": {
         "accent": "#0F4C9A",
         "accent_hover": "#0B3E80",
