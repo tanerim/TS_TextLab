@@ -30,7 +30,8 @@ Metin alanının altındaki **Open** düğmesi UTF-8 (BOM dahil) veya UTF-16
 kodlamalı `.txt` dosyalarını açar. Varsayılan maksimum birim sayısı **1.000.000**;
 kabul kontrolü toplam normal boşluk (` `) sayısına dayanır. Karakter sınırı yoktur.
 Ayarlar içindeki maksimum birim sayısı kalıcı olarak değiştirilebilir; 1 milyonun
-üzerine çıkarılırken donanım kapasitesi için onay istenir.
+üzerine çıkarılırken donanım kapasitesi için onay istenir. Kapasite kartındaki
+1, 2 ve 5 milyon düğmeleri hızlı seçim sağlar; sayı alanına özel değer girilebilir.
 
 Birimlendirmede tekrar eden kaynak birimler sınırlı bir önbellekten okunur;
 paragraf bilgisi aynı geçişte oluşturulur. Metin değişmedikçe analiz belgesi yeniden
@@ -64,7 +65,46 @@ python scripts/smoke_test.py
 
 Uygulama çalışma sırasında model indirmez ve dependency kontrolü için internete bağlanmaz. Dağıtım paketinde Python runtime, TS Tokenizer, `ts-postagger`, PySide6 ve gerekli Python bağımlılıkları birlikte paketlenmelidir.
 
-Başlangıçta kısa timeout ile public repo kökündeki `version.txt` dosyasının raw GitHub adresinden sürüm denetimi yapılır. Bağlantı yoksa hata kullanıcıya gösterilmez; dosya mevcut sürümden yeni bir değer dönerse güncelleme uyarısı gösterilir. Girilen metin bu denetime veya başka bir servise gönderilmez.
+Sürüm denetimi açılıştan 3 saniye sonra ve uygulama açıkken her 6 saatte ayrı
+bir arka plan iş parçacığında çalışır. Bağlantı hatasında 15 dakika sonra yeniden
+dener. Otomatik kontrollerde bağlantı hatası pencere açmaz; aynı yeni sürüm için
+uyarı bir kez gösterilir. Menüden **Sürümü Denetle** seçilince sonuç her zaman
+bildirilir. Girilen metin bu denetime veya başka bir servise gönderilmez.
+
+### Güncelleme kaynağını yayına alma
+
+Private GitHub deposundaki raw `version.txt` son kullanıcılar için erişilebilir
+bir kaynak değildir. Önerilen yöntem: yalnızca sürüm verisini taşıyan ayrı bir
+**public** depo veya herkese açık HTTPS sunucusunda `updates.json` yayınlamak;
+uygulama kodu private kalabilir. Örneğin dosya içeriği:
+
+```json
+{
+  "version": "0.1.2",
+  "download_url": "https://YOUR-PUBLIC-HOST/downloads/"
+}
+```
+
+`download_url`, indirilebilir paketleri gösteren sayfa veya doğrudan paket adresi
+olabilir. Platforma göre ayrı paketler için isteğe bağlı `downloads` nesnesinde
+`win32`, `darwin`, `linux` anahtarları kullanılabilir. JSON yerine yalnızca
+`0.1.2` gibi kararlı bir sürüm içeren `version.txt` de desteklenir; bu durumda
+uyarıda indirme düğmesi bulunmaz.
+
+Yayınlanan **gerçek** HTTPS adresini Ayarlar → Güncellemeler alanına girin.
+Dağıtımların bu adresle açılması için `app/config.py` içindeki `VERSION_CHECK_URL`
+varsayılanını bu adresle değiştirin. Geliştirme/çalıştırma ortamında
+`TS_TEXTLAB_UPDATE_URL` değişkeni de kullanılabilir. Adresi boş bırakmak otomatik
+kontrolü kapatır. Varsayılan kaynak adresi boştur; herkese açık kaynak
+ayarlanana kadar otomatik sürüm isteği gönderilmez. Önceki private-repo adresi
+kayıtlı ayarlardan da kaldırılır. Kaynak olmadan elle denetleme seçildiğinde
+kullanıcıya kaynak adresini tanımlaması gerektiği bildirilir.
+
+Her dağıtımda yerel `version.txt` ile paket sürümünü belirleyin. Yeni paketleri
+indirme sunucusuna yükledikten sonra public manifestteki `version` ve bağlantıları
+güncelleyin. Uygulama yalnızca sürümü bildirir ve kullanıcının seçtiği indirme
+bağlantısını tarayıcıda açar; otomatik kurulum yapmaz. Boş/HTML/hatalı yanıtlar
+sürüm olarak kabul edilmez. Paket `--self-test` kontrolü internete bağlanmaz.
 
 ## Linux, macOS ve Windows Dağıtımları
 

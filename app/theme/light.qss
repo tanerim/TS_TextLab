@@ -198,3 +198,19 @@ QTabBar#ActionTabs[analysisKind="dashboard"]::tab:selected:hover {{ background: 
 #AnalysisProgress[analysisKind="ngrams"]::chunk {{ background: #7C3AED; }}
 #AnalysisProgress[analysisKind="dashboard"]::chunk {{ background: #0E7490; }}
 #HelpPage, #HelpScroll > QWidget {{ background: {background}; }}
+
+/* Capacity settings and product dialogs */
+#SettingsScroll, #SettingsScroll > QWidget > QWidget {{ background: {background}; }}
+#CapacityCard {{ background: #EEF4FC; border: 1px solid #CFDDF0; border-radius: 12px; }}
+QSpinBox#CapacityInput {{ background: {surface}; color: #173E70; border: 1px solid #C1D3EB; border-radius: 9px; padding: 10px 14px; min-height: 30px; font-size: 23px; font-weight: 600; selection-background-color: {selected}; }}
+QSpinBox#CapacityInput:focus {{ border: 1px solid {focus}; }}
+#LimitPreset {{ background: {surface}; color: #345579; border: 1px solid #CDDBEC; padding: 4px 12px; min-height: 22px; font-size: 12px; }}
+#LimitPreset:hover {{ border-color: #7DA4D7; background: #E3EDFB; }}
+#LimitPreset:checked {{ color: #FFFFFF; background: #245B9E; border-color: #245B9E; }}
+#DialogEyebrow {{ color: #54759B; font-size: 11px; font-weight: 700; letter-spacing: 2px; }}
+#AboutHero {{ background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #142D50, stop:1 #265E81); border: 0; border-radius: 16px; }}
+#AboutTitle {{ color: #FFFFFF; font-size: 34px; font-weight: 700; background: transparent; }}
+#AboutTagline {{ color: #D9E9F7; font-size: 15px; background: transparent; }}
+#AboutCredit {{ color: #A8C7DE; font-size: 12px; background: transparent; }}
+#AboutVersion {{ color: #E9F4FF; background: #345E80; border: 1px solid #58809E; border-radius: 8px; padding: 5px 12px; font-size: 12px; font-weight: 600; }}
+#AboutMark {{ background: #FFFFFF; border-radius: 8px; padding: 8px 12px; }}

@@ -11,6 +11,7 @@ from typing import Literal
 from PySide6.QtCore import (
     QAbstractTableModel,
     QModelIndex,
+    QLocale,
     QObject,
     QRegularExpression,
     QRunnable,
@@ -38,6 +39,7 @@ from PySide6.QtGui import (
 )
 from PySide6.QtWidgets import (
     QAbstractItemView,
+    QAbstractSpinBox,
     QApplication,
     QCheckBox,
     QComboBox,
@@ -80,7 +82,9 @@ from app.analysis_service import (
     ngram_rows,
     tokenization_rows,
 )
-from app.config import APP_NAME, APP_VERSION, DEFAULT_SAMPLE_TEXT, DEFAULT_MAX_INPUT_UNITS
+from app.config import (APP_NAME, APP_VERSION, DEFAULT_SAMPLE_TEXT, DEFAULT_MAX_INPUT_UNITS,
+                        VERSION_CHECK_URL, VERSION_CHECK_INTERVAL_MS, VERSION_CHECK_RETRY_MS)
+from app.dialogs import AboutDialog, NoticeDialog
 from app.errors import TextLabError
 from app.export_service import timestamped_csv_path, write_tab_csv
 from app.i18n import Translator
@@ -88,7 +92,7 @@ from app.postagger_service import PosTaggerService, PostaggerOutputMode
 from app.resource_manager import resolve_resource
 from app.theme.theme_manager import LIGHT_PALETTE, ThemeName, ThemePalette, apply_theme, palette_for
 from app.tokenizer_service import FrequencyCaseMode, TokenizerMode, TokenizerService
-from app.version_service import VersionCheckResult, check_for_update
+from app.version_service import VersionCheckResult, check_for_update, valid_update_url
 
 logger = logging.getLogger(__name__)
 TaskKind = Literal[
@@ -124,14 +128,15 @@ class VersionSignals(QObject):
 
 
 class VersionWorker(QRunnable):
-    def __init__(self) -> None:
+    def __init__(self, url: str) -> None:
         super().__init__()
         self.setAutoDelete(False)
         self.signals = VersionSignals()
+        self.url = url
 
     @Slot()
     def run(self) -> None:
-        result = check_for_update()
+        result = check_for_update(self.url)
         try:
             self.signals.finished.emit(result)
         except RuntimeError:
@@ -791,10 +796,20 @@ class SettingsDialog(QDialog):
         self.on_appearance_change = on_appearance_change
         self.on_language_change = on_language_change
         self.setMinimumWidth(600)
-        self.resize(640, 610)
+        self.resize(660, 740)
 
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(28, 26, 28, 0)
+        root_layout = QVBoxLayout(self)
+        root_layout.setContentsMargins(0, 0, 0, 0)
+        scroll = QScrollArea()
+        scroll.setObjectName("SettingsScroll")
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QFrame.NoFrame)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        content = QWidget()
+        scroll.setWidget(content)
+        root_layout.addWidget(scroll, 1)
+        layout = QVBoxLayout(content)
+        layout.setContentsMargins(28, 26, 28, 8)
         layout.setSpacing(18)
 
         self.title_label = QLabel()
@@ -848,16 +863,41 @@ class SettingsDialog(QDialog):
         self.remember_layout = QCheckBox()
         self.remember_layout.setChecked(self.settings.value("remember_layout", True, bool))
         form.addWidget(self.remember_layout, 2, 0, 1, 2)
-        self.limit_label = QLabel()
-        self.limit_spin = QSpinBox()
-        self.limit_spin.setRange(1, 2_147_483_647)
-        self.limit_spin.setGroupSeparatorShown(True)
-        self.limit_spin.setValue(self.settings.value("max_input_units", DEFAULT_MAX_INPUT_UNITS, int))
-        form.addWidget(self.limit_label, 3, 0)
-        form.addWidget(self.limit_spin, 3, 1)
         form.setColumnStretch(0, 1)
         form.setColumnStretch(1, 1)
         layout.addWidget(behavior_card)
+
+        capacity_card = QFrame()
+        capacity_card.setObjectName("CapacityCard")
+        capacity = QVBoxLayout(capacity_card)
+        capacity.setContentsMargins(20, 18, 20, 18)
+        capacity.setSpacing(10)
+        self.limit_label = _section_label("")
+        capacity.addWidget(self.limit_label)
+        self.limit_hint = QLabel()
+        self.limit_hint.setObjectName("DialogMuted")
+        self.limit_hint.setWordWrap(True)
+        capacity.addWidget(self.limit_hint)
+        self.limit_spin = QSpinBox()
+        self.limit_spin.setObjectName("CapacityInput")
+        self.limit_spin.setButtonSymbols(QAbstractSpinBox.NoButtons)
+        self.limit_spin.setRange(1, 2_147_483_647)
+        self.limit_spin.setGroupSeparatorShown(True)
+        self.limit_spin.setValue(self.settings.value("max_input_units", DEFAULT_MAX_INPUT_UNITS, int))
+        capacity.addWidget(self.limit_spin)
+        presets = QHBoxLayout()
+        self.limit_presets = []
+        for value in (1_000_000, 2_000_000, 5_000_000):
+            button = QPushButton()
+            button.setObjectName("LimitPreset")
+            button.setCheckable(True)
+            button.clicked.connect(lambda checked=False, selected=value: self._choose_limit(selected))
+            presets.addWidget(button)
+            self.limit_presets.append((value, button))
+        capacity.addLayout(presets)
+        self.limit_spin.valueChanged.connect(self._sync_limit_presets)
+        self._sync_limit_presets()
+        layout.addWidget(capacity_card)
 
         interface_card = QFrame()
         interface_card.setObjectName("DialogCard")
@@ -877,6 +917,22 @@ class SettingsDialog(QDialog):
         form.addWidget(self.density_combo, 1, 1)
         form.setColumnStretch(1, 1)
         layout.addWidget(interface_card)
+
+        updates_card = QFrame()
+        updates_card.setObjectName("DialogCard")
+        updates = QVBoxLayout(updates_card)
+        updates.setContentsMargins(20, 18, 20, 18)
+        updates.setSpacing(10)
+        self.updates_label = _section_label("")
+        self.updates_hint = QLabel()
+        self.updates_hint.setObjectName("DialogMuted")
+        self.updates_hint.setWordWrap(True)
+        self.update_url = QLineEdit(self.settings.value("update_url", VERSION_CHECK_URL, str))
+        self.update_url.setPlaceholderText("https://…/updates.json")
+        updates.addWidget(self.updates_label)
+        updates.addWidget(self.updates_hint)
+        updates.addWidget(self.update_url)
+        layout.addWidget(updates_card)
         layout.addStretch(1)
 
         self.buttons = QDialogButtonBox(QDialogButtonBox.Cancel | QDialogButtonBox.Ok)
@@ -885,19 +941,29 @@ class SettingsDialog(QDialog):
         footer = QFrame()
         footer.setObjectName("DialogFooter")
         footer_layout = QHBoxLayout(footer)
-        footer_layout.setContentsMargins(0, 12, 0, 14)
+        footer_layout.setContentsMargins(28, 12, 28, 14)
         footer_layout.addStretch(1)
         footer_layout.addWidget(self.buttons)
-        layout.addWidget(footer)
+        root_layout.addWidget(footer)
         self._apply_translations()
         self.language_combo.currentIndexChanged.connect(self._apply_language_immediately)
 
     def accept(self) -> None:
+        self.limit_spin.interpretText()
         limit = self.limit_spin.value()
+        url = self.update_url.text().strip()
+        if url and not valid_update_url(url):
+            NoticeDialog(self.trn, self.trn.text("updates"), self.trn.text("update_url_invalid"), self).exec()
+            self.update_url.setFocus()
+            return
         if limit > DEFAULT_MAX_INPUT_UNITS and limit != self.settings.value("max_input_units", DEFAULT_MAX_INPUT_UNITS, int):
-            if QMessageBox.question(self, self.trn.text("settings"), self.trn.text("limit_confirm"),
-                                    QMessageBox.Yes | QMessageBox.No, QMessageBox.No) != QMessageBox.Yes:
+            confirmation = NoticeDialog(self.trn, self.trn.text("limit_confirm_title"),
+                self.trn.text("limit_confirm"), self,
+                detail=self.limit_spin.text() + " " + self.trn.text("units"),
+                confirm=self.trn.text("use_limit"))
+            if confirmation.exec() != QDialog.Accepted:
                 return
+        self.settings.setValue("update_url", url)
         self.settings.setValue("max_input_units", limit)
         self.settings.setValue("theme", "light")
         self.settings.setValue("accent", "indigo")
@@ -906,6 +972,14 @@ class SettingsDialog(QDialog):
         self.settings.setValue("remember_layout", self.remember_layout.isChecked())
         self.settings.setValue("table_density", self.density_combo.currentData())
         super().accept()
+
+    def _choose_limit(self, value: int) -> None:
+        self.limit_spin.setValue(value)
+        self._sync_limit_presets()
+
+    def _sync_limit_presets(self) -> None:
+        for value, button in self.limit_presets:
+            button.setChecked(self.limit_spin.value() == value)
 
     def _apply_language_immediately(self) -> None:
         self._write_language_setting()
@@ -930,7 +1004,15 @@ class SettingsDialog(QDialog):
         self.language_combo.setItemText(0, self.trn.text("system"))
         self.language_combo.setItemText(1, self.trn.text("english"))
         self.language_combo.setItemText(2, self.trn.text("turkish"))
+        self.limit_spin.setLocale(QLocale("tr_TR" if self.trn.language == "tr" else "en_US"))
         self.limit_label.setText(self.trn.text("max_input_units"))
+        self.limit_hint.setText(self.trn.text("limit_hint"))
+        self.limit_spin.setAccessibleName(self.trn.text("max_input_units"))
+        for value, button in self.limit_presets:
+            button.setText(self.trn.text("million_units", count=value // 1_000_000))
+        self.updates_label.setText(self.trn.text("updates"))
+        self.updates_hint.setText(self.trn.text("updates_hint"))
+        self.update_url.setAccessibleName(self.trn.text("update_source"))
         self.behavior_label.setText(self.trn.text("behavior"))
         self.default_mode_label.setText(self.trn.text("default_tokenization_mode"))
         self.default_mode_combo.setItemText(0, self.trn.text("tokenized"))
@@ -1000,14 +1082,24 @@ def _contains_token_query(value: str, query: str) -> bool:
 
 
 class MainWindow(QMainWindow):
-    def __init__(self) -> None:
+    def __init__(self, enable_update_checks: bool = True) -> None:
         super().__init__()
         self.settings = QSettings()
+        if self.settings.value("update_url", "", str) == "https://raw.githubusercontent.com/tanerim/TS_TextLab/master/version.txt":
+            self.settings.remove("update_url")
         self.trn = Translator(self.settings.value("language", None, str))
         self.tokenizer_service = TokenizerService()
         self.postagger_service = PosTaggerService()
         self.thread_pool = QThreadPool.globalInstance()
         self._workers: list[QRunnable] = []
+        self._version_worker = None
+        self._version_manual = False
+        self._updates_enabled = enable_update_checks
+        self.version_pool = QThreadPool(self)
+        self.version_pool.setMaxThreadCount(1)
+        self.version_timer = QTimer(self)
+        self.version_timer.setSingleShot(True)
+        self.version_timer.timeout.connect(lambda: self._start_version_check(manual=False))
         self.current_copy_text = ""
         self.current_headers: list[str] = []
         self.current_kind: TaskKind | None = None
@@ -1034,6 +1126,8 @@ class MainWindow(QMainWindow):
         self._restore_settings()
         self._apply_translations()
         QTimer.singleShot(0, self._initialize_splitter)
+        if enable_update_checks and self.settings.value("update_url", VERSION_CHECK_URL, str):
+            self.version_timer.start(3000)
 
     def _build_ui(self) -> None:
         root = QWidget(self)
@@ -1153,14 +1247,11 @@ class MainWindow(QMainWindow):
         self.help_action = menu.addAction("Help")
         self.about_action = menu.addAction("About TS TextLab")
         menu.addSeparator()
-        self.shortcuts_action = menu.addAction("Keyboard Shortcuts")
-        menu.addSeparator()
         self.check_version_action = menu.addAction("Check Version")
         self.settings_action.triggered.connect(self._show_settings)
         self.help_action.triggered.connect(self._show_guide)
         self.about_action.triggered.connect(self._show_about)
-        self.shortcuts_action.triggered.connect(self._show_shortcuts)
-        self.check_version_action.triggered.connect(self._start_version_check)
+        self.check_version_action.triggered.connect(lambda: self._start_version_check(manual=True))
         self.app_menu_button.setMenu(menu)
         return self.app_menu_button
 
@@ -1592,6 +1683,7 @@ class MainWindow(QMainWindow):
         QTimer.singleShot(0, self._enforce_splitter_limit)
 
     def closeEvent(self, event) -> None:  # type: ignore[override]
+        self.version_timer.stop()
         if self.settings.value("remember_layout", True, bool):
             self.settings.setValue("window_geometry", self.saveGeometry())
             self.settings.setValue("splitter_sizes_horizontal", self.splitter.sizes())
@@ -1724,16 +1816,25 @@ class MainWindow(QMainWindow):
 
     @Slot(object)
     def _display_version_result(self, result: VersionCheckResult) -> None:
+        manual = self._version_manual
+        self.check_version_action.setEnabled(True)
+        self.check_version_action.setText(self.trn.text("check_version"))
+        self._version_worker = None
+        if self._updates_enabled and self.settings.value("update_url", VERSION_CHECK_URL, str):
+            self.version_timer.start(VERSION_CHECK_INTERVAL_MS if result.checked else VERSION_CHECK_RETRY_MS)
+        if result.checked:
+            self.settings.setValue("last_update_check", datetime.now().astimezone().isoformat())
+            self.settings.setValue("latest_version", result.latest_version)
         if result.update_available:
-            QMessageBox.information(
-                self,
-                self.trn.text("update_title"),
-                self.trn.text("update_body", latest=result.latest_version, current=APP_VERSION),
-            )
-        elif result.checked:
-            self._set_status(self.trn.text("up_to_date"))
-        else:
-            self._set_status(self.trn.text("version_check_failed"))
+            if manual or self.settings.value("notified_version", "", str) != result.latest_version:
+                self.settings.setValue("notified_version", result.latest_version)
+                NoticeDialog(self.trn, self.trn.text("update_title"),
+                    self.trn.text("update_body", latest=result.latest_version, current=APP_VERSION), self,
+                    download_url=result.download_url).exec()
+        elif manual:
+            NoticeDialog(self.trn, self.trn.text("updates"),
+                self.trn.text("up_to_date") if result.checked else self.trn.text("version_check_failed"),
+                self, detail=APP_VERSION if result.checked else self.trn.text("update_failure_hint")).exec()
 
     def _set_status(self, text: str) -> None:
         self.status_label.setText(text)
@@ -1916,7 +2017,6 @@ class MainWindow(QMainWindow):
         self.settings_action.setText(self.trn.text("settings"))
         self.help_action.setText(self.trn.text("help"))
         self.about_action.setText(f"{self.trn.text('about')} TS TextLab")
-        self.shortcuts_action.setText(self.trn.text("keyboard_shortcuts"))
         self.check_version_action.setText(self.trn.text("check_version"))
         self.empty_state.apply_translations(self.trn)
         self._fit_action_options()
@@ -1943,17 +2043,33 @@ class MainWindow(QMainWindow):
         if not self.current_copy_text:
             self._set_status(self.trn.text("ready"))
 
-    def _start_version_check(self) -> None:
-        self._set_status(self.trn.text("checking_version"))
-        worker = VersionWorker()
+    def _start_version_check(self, manual: bool = True) -> None:
+        if self._version_worker is not None:
+            self._version_manual = self._version_manual or manual
+            return
+        url = self.settings.value("update_url", VERSION_CHECK_URL, str)
+        if not url:
+            if manual:
+                NoticeDialog(self.trn, self.trn.text("updates"), self.trn.text("update_source_missing"), self).exec()
+            return
+        self._version_manual = manual
+        self.check_version_action.setEnabled(False)
+        if manual:
+            self.check_version_action.setText(self.trn.text("checking_version"))
+        worker = VersionWorker(url)
+        self._version_worker = worker
         worker.signals.finished.connect(self._display_version_result)
         self._workers.append(worker)
-        self.thread_pool.start(worker)
+        self.version_pool.start(worker)
 
     def _show_settings(self) -> None:
         dialog = SettingsDialog(self.settings, self, self._apply_theme, self._apply_language)
         if dialog.exec() == QDialog.Accepted:
             self._apply_theme()
+            if self._updates_enabled:
+                self.version_timer.stop()
+                if self.settings.value("update_url", VERSION_CHECK_URL, str):
+                    self.version_timer.start(1000)
             _set_combo_data(self.tokenizer_mode_combo, self.settings.value("default_tokenizer_mode", "tokenized", str))
 
     def _apply_language(self) -> None:
@@ -1961,68 +2077,7 @@ class MainWindow(QMainWindow):
         self._apply_translations()
 
     def _show_about(self) -> None:
-        dialog = QDialog(self)
-        dialog.setWindowTitle(self.trn.text("about_title"))
-        dialog.setMinimumWidth(620)
-        dialog.resize(680, 500)
-        layout = QVBoxLayout(dialog)
-        layout.setContentsMargins(28, 28, 28, 0)
-        layout.setSpacing(18)
-
-        hero = QHBoxLayout()
-        hero.setSpacing(24)
-        hero.addWidget(self._logo_label(136, 70, "AboutLogo"))
-        identity = QVBoxLayout()
-        identity.setSpacing(6)
-        title = QLabel(APP_NAME)
-        title.setObjectName("DialogTitle")
-        identity.addWidget(title)
-        tagline = QLabel(self.trn.text("subtitle"))
-        tagline.setObjectName("DialogMuted")
-        identity.addWidget(tagline)
-        hero.addLayout(identity, 1)
-        layout.addLayout(hero)
-
-        meta = self._dialog_card(
-            self.trn.text("version"), APP_VERSION
-        )
-        links = self._dialog_card(
-            self.trn.text("powered_by"),
-            '<a href="https://pypi.org/project/ts-tokenizer/">TS Tokenizer</a> &nbsp;·&nbsp; '
-            '<a href="https://pypi.org/project/ts-postagger/">TS PosTagger</a><br>'
-            '<a href="https://tscorpus.com/">TS Corpus</a>',
-            rich=True,
-        )
-        privacy = self._dialog_card(
-            self.trn.text("local_processing_statement"),
-            self.trn.text("no_upload_statement"),
-        )
-        citation = self._dialog_card(
-            "SEZER, T. (2025)",
-            (
-                '<a href="https://tez.yok.gov.tr/UlusalTezMerkezi/TezGoster?key=Xau5rw3KuCgEuy-FuJQtsNVGSOOMCSQba2T5bZaDSDUTfOiTTVCpuBZPjDrUgB0i">'
-                "Dizilerden birimlere: Bilişimsel dilbilim çerçevesinde bir birimlendirici tasarımı</a><br>"
-                "[Doktora tezi, Hacettepe Üniversitesi]. Ulusal Tez Merkezi, Tez No. 959204"
-            ),
-            rich=True,
-        )
-        details = QHBoxLayout()
-        details.setSpacing(14)
-        details.addWidget(meta, 1)
-        details.addWidget(links, 2)
-        layout.addLayout(details)
-        layout.addWidget(privacy)
-        layout.addWidget(citation)
-        layout.addStretch(1)
-
-        buttons = QDialogButtonBox(QDialogButtonBox.Ok)
-        ok_button = buttons.button(QDialogButtonBox.Ok)
-        if ok_button is not None:
-            ok_button.setText(self.trn.text("ok"))
-            ok_button.setObjectName("DialogPrimaryButton")
-        buttons.accepted.connect(dialog.accept)
-        layout.addWidget(self._dialog_footer(buttons))
-        dialog.exec()
+        AboutDialog(self.trn, self.logo_pixmap, self).exec()
 
     def _show_guide(self) -> None:
         dialog = QDialog(self)

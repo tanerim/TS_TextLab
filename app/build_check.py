@@ -28,7 +28,7 @@ def run_self_test(app: QApplication, report_path: str) -> int:
         with tempfile.TemporaryDirectory(prefix="textlab-check-") as folder:
             QSettings.setDefaultFormat(QSettings.IniFormat)
             QSettings.setPath(QSettings.IniFormat, QSettings.UserScope, folder)
-            window = MainWindow()
+            window = MainWindow(enable_update_checks=False)
             window.show()
             app.processEvents()
             assert not window.windowIcon().isNull(), "Window icon is missing"
