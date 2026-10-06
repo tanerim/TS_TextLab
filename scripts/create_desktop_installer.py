@@ -47,9 +47,10 @@ def windows(version: str) -> dict:
     installer = ROOT / "dist" / f"TS-TextLab-{version}-windows-x86_64-Setup.exe"
     with tempfile.TemporaryDirectory(prefix="textlab-install-") as folder:
         install_dir = Path(folder) / "TS TextLab"
-        group = f"TS TextLab test {os.getpid()}"
+        # DisableProgramGroupPage=yes deliberately fixes this to DefaultGroupName.
+        group = "TS TextLab"
         run(installer, "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART", "/SP-",
-            f"/DIR={install_dir}", f"/GROUP={group}", "/TASKS=",
+            f"/DIR={install_dir}", "/TASKS=",
             f"/LOG={ROOT / 'build' / 'windows-install.log'}")
         try:
             shortcut = Path(os.environ["APPDATA"]) / "Microsoft/Windows/Start Menu/Programs" / group / "TS TextLab.lnk"
