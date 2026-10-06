@@ -116,40 +116,29 @@ dener. Otomatik kontrollerde bağlantı hatası pencere açmaz; aynı yeni sür�
 uyarı bir kez gösterilir. Menüden **Sürümü Denetle** seçilince sonuç her zaman
 bildirilir. Girilen metin bu denetime veya başka bir servise gönderilmez.
 
-### Güncelleme kaynağını yayına alma
+### Sürüm güncelleme kaynağı
 
-Private GitHub deposundaki raw `version.txt` son kullanıcılar için erişilebilir
-bir kaynak değildir. Önerilen yöntem: yalnızca sürüm verisini taşıyan ayrı bir
-**public** depo veya herkese açık HTTPS sunucusunda `updates.json` yayınlamak;
-uygulama kodu private kalabilir. Örneğin dosya içeriği:
+[TS_TextLab deposu](https://github.com/tanerim/TS_TextLab) public olarak yayınlanır.
+Sabit sürüm kaynağı, `master` dalındaki
+[version.txt](https://raw.githubusercontent.com/tanerim/TS_TextLab/master/version.txt)
+dosyasıdır. İlk açılışta ek ayar gerektirmeden bu adresten kontrol yapılır.
+About penceresindeki **GitHub ↗** bağlantısı da aynı depoyu tarayıcıda açar.
 
-```json
-{
-  "version": "0.1.2",
-  "download_url": "https://YOUR-PUBLIC-HOST/downloads/"
-}
-```
+Her dağıtımda yerel `version.txt` ile paket sürümünü belirleyin. Yeni paketi
+kullanıcıların indirebileceği yerde yayınladıktan sonra depodaki `version.txt`
+dosyasını güncelleyin. Eski kurulumlar yeni sürümü algılar ve kullanıcıya bildirir.
+Bu dosya yalnızca `0.1.2` gibi bir kararlı sürüm numarası içerir; indirme düğmesi
+olmadan sürüm bildirimi gösterilir.
 
-`download_url`, indirilebilir paketleri gösteren sayfa veya doğrudan paket adresi
-olabilir. Platforma göre ayrı paketler için isteğe bağlı `downloads` nesnesinde
-`win32`, `darwin`, `linux` anahtarları kullanılabilir. JSON yerine yalnızca
-`0.1.2` gibi kararlı bir sürüm içeren `version.txt` de desteklenir; bu durumda
-uyarıda indirme düğmesi bulunmaz.
-
-Yayınlanan **gerçek** HTTPS adresini Ayarlar → Güncellemeler alanına girin.
-Dağıtımların bu adresle açılması için `app/config.py` içindeki `VERSION_CHECK_URL`
-varsayılanını bu adresle değiştirin. Geliştirme/çalıştırma ortamında
-`TS_TEXTLAB_UPDATE_URL` değişkeni de kullanılabilir. Adresi boş bırakmak otomatik
-kontrolü kapatır. Varsayılan kaynak adresi boştur; herkese açık kaynak
-ayarlanana kadar otomatik sürüm isteği gönderilmez. Önceki private-repo adresi
-kayıtlı ayarlardan da kaldırılır. Kaynak olmadan elle denetleme seçildiğinde
-kullanıcıya kaynak adresini tanımlaması gerektiği bildirilir.
-
-Her dağıtımda yerel `version.txt` ile paket sürümünü belirleyin. Yeni paketleri
-indirme sunucusuna yükledikten sonra public manifestteki `version` ve bağlantıları
-güncelleyin. Uygulama yalnızca sürümü bildirir ve kullanıcının seçtiği indirme
-bağlantısını tarayıcıda açar; otomatik kurulum yapmaz. Boş/HTML/hatalı yanıtlar
-sürüm olarak kabul edilmez. Paket `--self-test` kontrolü internete bağlanmaz.
+Sürüm kaynağı kullanıcıdan adres girmesini istemeden otomatik kullanılır.
+GitHub üzerindeki
+[version.txt sayfasının](https://github.com/tanerim/TS_TextLab/blob/master/version.txt)
+ham içeriği `https://raw.githubusercontent.com/tanerim/TS_TextLab/master/version.txt`
+adresinden okunur. Ayarlarda güncelleme adresi alanı bulunmaz; önceki kayıtlı
+adresler ve `TS_TEXTLAB_UPDATE_URL` ortam değişkeni kaynak seçimini etkilemez.
+Menüdeki **Sürümü Denetle** aynı dosyayı elle kontrol eder. Uygulama güncellemeyi
+bildirir; otomatik kurulum yapmaz. Boş/HTML/hatalı yanıtlar sürüm olarak kabul
+edilmez. Paket `--self-test` kontrolü internete bağlanmaz.
 
 ## Linux, macOS ve Windows Dağıtımları
 
@@ -161,10 +150,9 @@ toparlanma açısından sınanır. Windows kurulum ve kaldırma, macOS disk imaj
 çalıştırma testleri de yapılır. İş akışı yalnızca `master` üzerinden çalışır;
 test sonuçları Git notes olarak saklanır, yeni branch oluşturulmaz.
 
-Bu repo **private** olduğu için Actions çıktıları yalnızca geliştirici içindir.
-Son kullanıcıya dağıtılacak `.exe` ve `.dmg` dosyaları, herkese açık bir indirme
-sunucusuna yüklenmelidir. Kullanıcıların GitHub hesabına veya Python kurulumuna
-ihtiyacı olmamalıdır.
+Bu repo **public** olarak yayınlanır. Son kullanıcıya dağıtılacak `.exe` ve `.dmg`
+dosyaları GitHub Releases veya herkese açık bir indirme sunucusunda yayınlanmalıdır.
+Kullanıcıların GitHub hesabına veya Python kurulumuna ihtiyacı olmamalıdır.
 
 Yerel derleme ve paket kontrolü:
 

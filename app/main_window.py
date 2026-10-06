@@ -92,7 +92,7 @@ from app.postagger_service import PosTaggerService, PostaggerOutputMode
 from app.resource_manager import resolve_resource
 from app.theme.theme_manager import LIGHT_PALETTE, ThemeName, ThemePalette, apply_theme, palette_for
 from app.tokenizer_service import FrequencyCaseMode, TokenizerMode, TokenizerService
-from app.version_service import VersionCheckResult, check_for_update, valid_update_url
+from app.version_service import VersionCheckResult, check_for_update
 
 logger = logging.getLogger(__name__)
 TaskKind = Literal[
@@ -910,21 +910,6 @@ class SettingsDialog(ContentDialog):
         form.setColumnStretch(1, 1)
         self.settings_cards.append(interface_card)
 
-        updates_card = QFrame()
-        updates_card.setObjectName("DialogCard")
-        updates = QVBoxLayout(updates_card)
-        updates.setContentsMargins(20, 18, 20, 18)
-        updates.setSpacing(10)
-        self.updates_label = _section_label("")
-        self.updates_hint = QLabel()
-        self.updates_hint.setObjectName("DialogMuted")
-        self.updates_hint.setWordWrap(True)
-        self.update_url = QLineEdit(self.settings.value("update_url", VERSION_CHECK_URL, str))
-        self.update_url.setPlaceholderText("https://…/updates.json")
-        updates.addWidget(self.updates_label)
-        updates.addWidget(self.updates_hint)
-        updates.addWidget(self.update_url)
-        self.settings_cards.append(updates_card)
         layout.addLayout(self.cards_grid)
 
         self.buttons = QDialogButtonBox(QDialogButtonBox.Cancel | QDialogButtonBox.Ok)
@@ -946,7 +931,7 @@ class SettingsDialog(ContentDialog):
         self._cards_two_columns = two_columns
         self.cards_grid.setColumnStretch(0, 1)
         self.cards_grid.setColumnStretch(1, 1 if two_columns else 0)
-        placements = ((0, 0, 1), (2, 0, 1), (0, 1, 2), (1, 0, 1), (2, 1, 1))
+        placements = ((0, 0, 1), (0, 1, 1), (1, 1, 1), (1, 0, 1))
         for index, widget in enumerate(self.settings_cards):
             self.cards_grid.removeWidget(widget)
             row, column, span = placements[index] if two_columns else (index, 0, 1)
@@ -967,11 +952,6 @@ class SettingsDialog(ContentDialog):
     def accept(self) -> None:
         self.limit_spin.interpretText()
         limit = self.limit_spin.value()
-        url = self.update_url.text().strip()
-        if url and not valid_update_url(url):
-            NoticeDialog(self.trn, self.trn.text("updates"), self.trn.text("update_url_invalid"), self).exec()
-            self.update_url.setFocus()
-            return
         if limit > DEFAULT_MAX_INPUT_UNITS and limit != self.settings.value("max_input_units", DEFAULT_MAX_INPUT_UNITS, int):
             confirmation = NoticeDialog(self.trn, self.trn.text("limit_confirm_title"),
                 self.trn.text("limit_confirm"), self,
@@ -979,7 +959,6 @@ class SettingsDialog(ContentDialog):
                 confirm=self.trn.text("use_limit"))
             if confirmation.exec() != QDialog.Accepted:
                 return
-        self.settings.setValue("update_url", url)
         self.settings.setValue("max_input_units", limit)
         self.settings.setValue("theme", "light")
         self.settings.setValue("accent", "indigo")
@@ -1026,9 +1005,6 @@ class SettingsDialog(ContentDialog):
         self.limit_spin.setAccessibleName(self.trn.text("max_input_units"))
         for value, button in self.limit_presets:
             button.setText(self.trn.text("million_units", count=value // 1_000_000))
-        self.updates_label.setText(self.trn.text("updates"))
-        self.updates_hint.setText(self.trn.text("updates_hint"))
-        self.update_url.setAccessibleName(self.trn.text("update_source"))
         self.behavior_label.setText(self.trn.text("behavior"))
         self.default_mode_label.setText(self.trn.text("default_tokenization_mode"))
         self.default_mode_combo.setItemText(0, self.trn.text("tokenized"))
@@ -1102,8 +1078,6 @@ class MainWindow(QMainWindow):
     def __init__(self, enable_update_checks: bool = True) -> None:
         super().__init__()
         self.settings = QSettings()
-        if self.settings.value("update_url", "", str) == "https://raw.githubusercontent.com/tanerim/TS_TextLab/master/version.txt":
-            self.settings.remove("update_url")
         self.trn = Translator(self.settings.value("language", None, str))
         self.tokenizer_service = TokenizerService()
         self.postagger_service = PosTaggerService()
@@ -1143,7 +1117,7 @@ class MainWindow(QMainWindow):
         self._restore_settings()
         self._apply_translations()
         QTimer.singleShot(0, self._initialize_splitter)
-        if enable_update_checks and self.settings.value("update_url", VERSION_CHECK_URL, str):
+        if enable_update_checks:
             self.version_timer.start(3000)
 
     def _build_ui(self) -> None:
@@ -1841,7 +1815,7 @@ class MainWindow(QMainWindow):
         self.check_version_action.setEnabled(True)
         self.check_version_action.setText(self.trn.text("check_version"))
         self._version_worker = None
-        if self._updates_enabled and self.settings.value("update_url", VERSION_CHECK_URL, str):
+        if self._updates_enabled:
             self.version_timer.start(VERSION_CHECK_INTERVAL_MS if result.checked else VERSION_CHECK_RETRY_MS)
         if result.checked:
             self.settings.setValue("last_update_check", datetime.now().astimezone().isoformat())
@@ -2068,16 +2042,11 @@ class MainWindow(QMainWindow):
         if self._version_worker is not None:
             self._version_manual = self._version_manual or manual
             return
-        url = self.settings.value("update_url", VERSION_CHECK_URL, str)
-        if not url:
-            if manual:
-                NoticeDialog(self.trn, self.trn.text("updates"), self.trn.text("update_source_missing"), self).exec()
-            return
         self._version_manual = manual
         self.check_version_action.setEnabled(False)
         if manual:
             self.check_version_action.setText(self.trn.text("checking_version"))
-        worker = VersionWorker(url)
+        worker = VersionWorker(VERSION_CHECK_URL)
         self._version_worker = worker
         worker.signals.finished.connect(self._display_version_result)
         self._workers.append(worker)
@@ -2087,10 +2056,6 @@ class MainWindow(QMainWindow):
         dialog = SettingsDialog(self.settings, self, self._apply_theme, self._apply_language)
         if dialog.exec() == QDialog.Accepted:
             self._apply_theme()
-            if self._updates_enabled:
-                self.version_timer.stop()
-                if self.settings.value("update_url", VERSION_CHECK_URL, str):
-                    self.version_timer.start(1000)
             _set_combo_data(self.tokenizer_mode_combo, self.settings.value("default_tokenizer_mode", "tokenized", str))
 
     def _apply_language(self) -> None:

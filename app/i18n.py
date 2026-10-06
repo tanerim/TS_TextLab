@@ -7,7 +7,6 @@ import locale
 
 TRANSLATIONS = {
     "tr": {
-        "update_source_missing": "Güncelleme kaynağı henüz tanımlanmadı. Ayarlar → Güncellemeler bölümüne herkese açık bir HTTPS sürüm adresi girin.",
         'limit_eyebrow': 'İŞLEME KAPASİTESİ',
         'limit_confirm_title': 'İşleme limitini yükselt',
         'selected_limit': 'Seçilen kapasite',
@@ -19,10 +18,7 @@ TRANSLATIONS = {
         'scientific_reference': 'Bilimsel kaynak',
         'close': 'Kapat',
         'updates': 'Güncellemeler',
-        'update_source': 'Güncelleme kaynağı',
-        'updates_hint': 'Açılışta ve her 6 saatte otomatik denetlenir. Herkese açık bir HTTPS sürüm adresi kullanın. Otomatik kontrolü kapatmak için adresi boş bırakın.',
-        'update_url_invalid': 'Güncelleme adresi herkese açık bir HTTPS bağlantısı olmalıdır.',
-        'update_failure_hint': 'İnternet bağlantısını ve Ayarlar içindeki güncelleme adresini kontrol edin. Uygulama çevrimdışı kullanılabilir.',
+        'update_failure_hint': 'İnternet bağlantınızı kontrol edin. Sürüm bilgisi GitHub deposundan alınamadı. Uygulama çevrimdışı kullanılabilir.',
         'download_update': 'Yeni sürümü indir',
         "open": "Open",
         "open_error": "Dosya açılamadı. UTF-8 veya UTF-16 kodlamalı bir .txt dosyası seçin.\n{error}",
@@ -241,7 +237,6 @@ TRANSLATIONS = {
         "cancel": "İptal",
     },
     "en": {
-        "update_source_missing": "No update source has been configured. Enter a public HTTPS version URL in Settings → Updates.",
         'limit_eyebrow': 'PROCESSING CAPACITY',
         'limit_confirm_title': 'Increase processing capacity',
         'selected_limit': 'Selected capacity',
@@ -253,10 +248,7 @@ TRANSLATIONS = {
         'scientific_reference': 'Scientific reference',
         'close': 'Close',
         'updates': 'Updates',
-        'update_source': 'Update source',
-        'updates_hint': 'Checked automatically at startup and every 6 hours. Use a public HTTPS version address. Leave blank to turn off automatic checks.',
-        'update_url_invalid': 'The update address must be a public HTTPS URL.',
-        'update_failure_hint': 'Check your internet connection and the update address in Settings. The app remains available offline.',
+        'update_failure_hint': 'Check your internet connection. The version could not be retrieved from GitHub. The app remains available offline.',
         'download_update': 'Download update',
         "open": "Open",
         "open_error": "Could not open file. Select a UTF-8 or UTF-16 .txt file.\n{error}",

@@ -8,7 +8,7 @@ from PySide6.QtWidgets import (
     QPushButton, QScrollArea, QSizePolicy, QVBoxLayout, QWidget,
 )
 
-from app.config import APP_AUTHOR, APP_NAME, APP_VERSION
+from app.config import APP_AUTHOR, APP_NAME, APP_VERSION, APP_REPOSITORY_URL
 from app.i18n import Translator
 
 
@@ -198,6 +198,11 @@ class AboutDialog(ContentDialog):
         website.setTextFormat(Qt.RichText)
         website.setOpenExternalLinks(True)
         footer.addWidget(website)
+        repository = label(f'<a style="color:#245B9E; text-decoration:none;" href="{APP_REPOSITORY_URL}">GitHub ↗</a>')
+        repository.setObjectName('RepositoryLink')
+        repository.setTextFormat(Qt.RichText)
+        repository.setOpenExternalLinks(True)
+        footer.addWidget(repository)
         footer.addStretch(1)
         close = QPushButton(trn.text('close'))
         close.setObjectName('DialogPrimaryButton')
