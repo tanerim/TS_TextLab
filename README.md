@@ -26,6 +26,19 @@ python -X utf8 main.py
 Arayüz sistem yereli Türkçe ise Türkçe,
 diğer durumlarda İngilizce açılır.
 Settings menüsünden dil tercihi kalıcı olarak değiştirilebilir.
+Metin alanının altındaki **Open** düğmesi UTF-8 (BOM dahil) veya UTF-16
+kodlamalı `.txt` dosyalarını açar. Varsayılan maksimum birim sayısı **1.000.000**;
+kabul kontrolü toplam normal boşluk (` `) sayısına dayanır. Karakter sınırı yoktur.
+Ayarlar içindeki maksimum birim sayısı kalıcı olarak değiştirilebilir; 1 milyonun
+üzerine çıkarılırken donanım kapasitesi için onay istenir.
+
+Birimlendirmede tekrar eden kaynak birimler sınırlı bir önbellekten okunur;
+paragraf bilgisi aynı geçişte oluşturulur. Metin değişmedikçe analiz belgesi yeniden
+kullanılır. POS sonuçları son metin için önbelleğe alınır. Büyük POS girdileri,
+modelin ara bellek kullanımını sınırlamak için yaklaşık 32.000 karakterlik
+parçalarda işlenir; öncelikle cümle/satır, ardından boşluk sınırları seçilir.
+Parça sınırlarındaki bağlam değişikliği POS etiketlerini etkileyebilir.
+
 Tokenization Mode için `tokenized`, `tagged` ve `lines` çıktı modları seçilebilir.
 
 Sonuçlar **CSV'ye Aktar** ile UTF-8 kodlamasında, tab (`\t`) ile ayrılmış `.csv`

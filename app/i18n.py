@@ -7,6 +7,11 @@ import locale
 
 TRANSLATIONS = {
     "tr": {
+        "open": "Open",
+        "open_error": "Dosya açılamadı. UTF-8 veya UTF-16 kodlamalı bir .txt dosyası seçin.\n{error}",
+        "max_input_units": "Maksimum birim sayısı (boşluk sayısı)",
+        "limit_confirm": "Bu limit seçimi bilgisayarınızın donanım kapasitesine bağımlıdır. Emin misiniz?",
+        "input_limit": "Maksimum birim sayısı {limit} birimdir. Metindeki toplam boşluk sayısı: {count}. Limiti Ayarlar bölümünden değiştirebilirsiniz.",
         "help_intro": "Soldan bir konu seçin. İşlevleri, seçenekleri ve çıktıların nasıl kullanılacağını öğrenin.",
         "help_topics": "Yardım konuları",
         "help_start": "Başlarken",
@@ -219,6 +224,11 @@ TRANSLATIONS = {
         "cancel": "İptal",
     },
     "en": {
+        "open": "Open",
+        "open_error": "Could not open file. Select a UTF-8 or UTF-16 .txt file.\n{error}",
+        "max_input_units": "Maximum units (space count)",
+        "limit_confirm": "This limit depends on your computer's hardware capacity. Are you sure?",
+        "input_limit": "The maximum unit count is {limit}. Total spaces in the text: {count}. You can change the limit in Settings.",
         "help_intro": "Choose a topic on the left to learn about tools, options and working with results.",
         "help_topics": "Help topics",
         "help_start": "Getting started",

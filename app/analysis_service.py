@@ -14,7 +14,7 @@ LEXICAL_TAGS = frozenset({"", "Valid_Word", "Apostrophed", "OOV", "One_Char_Fixe
 PUNCTUATION_CHARS = frozenset(".!?;:,-()[]{}\"'`…")
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class TokenInfo:
     surface: str
     position: int
@@ -75,16 +75,15 @@ class AnalysisService:
         if include_pos:
             return self._build_postagger_document(analysis_text)
 
-        tagged = self.tokenizer_service.tokenize(analysis_text, "tagged_lines")
-        pairs = [(row[0], row[1] if len(row) > 1 else "") for row in tagged.rows if row and row[0].strip()]
-        pos_by_position: list[str] = ["-"] * len(pairs)
-
-        paragraph_sequence = self._paragraph_sequence(analysis_text)
         tokens: list[TokenInfo] = []
-        for position, ((surface, tokenizer_tag), pos) in enumerate(zip(pairs, pos_by_position, strict=True), start=1):
-            tag = normalize_tokenizer_tag(surface, tokenizer_tag)
-            paragraph = paragraph_sequence[position - 1] if position - 1 < len(paragraph_sequence) else 1
-            tokens.append(TokenInfo(surface=surface, position=position, tokenizer=tag, pos=pos, paragraph=paragraph))
+        for paragraph, line in enumerate(analysis_text.splitlines(), start=1):
+            if not line.strip():
+                continue
+            for row in self.tokenizer_service.tokenize(line, "tagged_lines").rows:
+                if row and row[0].strip():
+                    surface = row[0]
+                    tag = normalize_tokenizer_tag(surface, row[1] if len(row) > 1 else "")
+                    tokens.append(TokenInfo(surface, len(tokens) + 1, tag, paragraph=paragraph))
         return AnalysisDocument(tokens=tokens, sentence_count=_sentence_count(analysis_text))
 
     def _build_postagger_document(self, text: str) -> AnalysisDocument:

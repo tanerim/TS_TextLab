@@ -13,4 +13,4 @@ VERSION_CHECK_TIMEOUT_SECONDS = 2.5
 
 DEFAULT_SAMPLE_TEXT = "Doğal dil, insan zihninin çok katmanlı ve kaotik bir ürünüdür.\nHer sözcük bir birimdir ancak her birim bir sözcük değildir."
 
-MAX_INPUT_CHARS = 250_000
+DEFAULT_MAX_INPUT_UNITS = 1_000_000

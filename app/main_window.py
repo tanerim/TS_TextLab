@@ -60,6 +60,7 @@ from PySide6.QtWidgets import (
     QPlainTextEdit,
     QProgressBar,
     QSplitter,
+    QSpinBox,
     QStackedWidget,
     QStyle,
     QStyledItemDelegate,
@@ -79,7 +80,7 @@ from app.analysis_service import (
     ngram_rows,
     tokenization_rows,
 )
-from app.config import APP_NAME, APP_VERSION, DEFAULT_SAMPLE_TEXT, MAX_INPUT_CHARS
+from app.config import APP_NAME, APP_VERSION, DEFAULT_SAMPLE_TEXT, DEFAULT_MAX_INPUT_UNITS
 from app.errors import TextLabError
 from app.export_service import timestamped_csv_path, write_tab_csv
 from app.i18n import Translator
@@ -173,10 +174,6 @@ class NlpWorker(QRunnable):
     @Slot()
     def run(self) -> None:
         try:
-            if len(self.text) > MAX_INPUT_CHARS:
-                raise TextLabError(
-                    f"Metin çok uzun. İlk sürümde en fazla {MAX_INPUT_CHARS:,} karakter işlenebilir."
-                )
             if self.kind == "pos":
                 headers, rows, copy_text = self.postagger_service.format_output(self.text, self.postagger_output_mode)
                 result = TaskResult(
@@ -191,9 +188,7 @@ class NlpWorker(QRunnable):
                 return
 
             include_pos = self.kind == "dashboard"
-            if self.kind == "tokenize":
-                document = self.analysis_service.build_document(self.text)
-            elif include_pos:
+            if include_pos:
                 document = self.analysis_service.build_document(self.text, include_pos=True)
             elif self.existing_document is not None:
                 document = self.existing_document
@@ -225,6 +220,9 @@ class NlpWorker(QRunnable):
         except Exception as exc:  # pragma: no cover - GUI boundary guard
             logger.exception("Unexpected NLP task failure")
             self.signals.failed.emit(f"Beklenmeyen bir hata oluştu: {exc}")
+        finally:
+            self.text = ""
+            self.existing_document = None
 
 
 class ResultTableModel(QAbstractTableModel):
@@ -233,6 +231,7 @@ class ResultTableModel(QAbstractTableModel):
         self.kind: TaskKind | None = None
         self.headers: list[str] = []
         self.rows: list[tuple[str, ...]] = []
+        self.frequency_max = 1.0
 
     def set_result(self, result: TaskResult | None) -> None:
         self.beginResetModel()
@@ -244,6 +243,7 @@ class ResultTableModel(QAbstractTableModel):
             self.kind = result.kind
             self.headers = result.headers
             self.rows = result.rows
+        self.frequency_max = max((float(row[1]) for row in self.rows if len(row) > 1), default=1.0) if self.kind in {"frequency", "ngrams"} else 1.0
         self.endResetModel()
 
     def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:
@@ -421,11 +421,8 @@ class FrequencyBarDelegate(QStyledItemDelegate):
             return
 
         model = index.model()
-        max_value = 1.0
-        for row in range(model.rowCount()):
-            value = _numeric_value(str(model.index(row, index.column()).data(Qt.DisplayRole) or ""))
-            if value is not None:
-                max_value = max(max_value, float(value))
+        source = model.sourceModel() if isinstance(model, QSortFilterProxyModel) else model
+        max_value = max(1.0, source.frequency_max)
 
         painter.save()
         if option.state & QStyle.State_Selected:
@@ -851,6 +848,13 @@ class SettingsDialog(QDialog):
         self.remember_layout = QCheckBox()
         self.remember_layout.setChecked(self.settings.value("remember_layout", True, bool))
         form.addWidget(self.remember_layout, 2, 0, 1, 2)
+        self.limit_label = QLabel()
+        self.limit_spin = QSpinBox()
+        self.limit_spin.setRange(1, 2_147_483_647)
+        self.limit_spin.setGroupSeparatorShown(True)
+        self.limit_spin.setValue(self.settings.value("max_input_units", DEFAULT_MAX_INPUT_UNITS, int))
+        form.addWidget(self.limit_label, 3, 0)
+        form.addWidget(self.limit_spin, 3, 1)
         form.setColumnStretch(0, 1)
         form.setColumnStretch(1, 1)
         layout.addWidget(behavior_card)
@@ -889,6 +893,12 @@ class SettingsDialog(QDialog):
         self.language_combo.currentIndexChanged.connect(self._apply_language_immediately)
 
     def accept(self) -> None:
+        limit = self.limit_spin.value()
+        if limit > DEFAULT_MAX_INPUT_UNITS and limit != self.settings.value("max_input_units", DEFAULT_MAX_INPUT_UNITS, int):
+            if QMessageBox.question(self, self.trn.text("settings"), self.trn.text("limit_confirm"),
+                                    QMessageBox.Yes | QMessageBox.No, QMessageBox.No) != QMessageBox.Yes:
+                return
+        self.settings.setValue("max_input_units", limit)
         self.settings.setValue("theme", "light")
         self.settings.setValue("accent", "indigo")
         self._write_language_setting()
@@ -920,6 +930,7 @@ class SettingsDialog(QDialog):
         self.language_combo.setItemText(0, self.trn.text("system"))
         self.language_combo.setItemText(1, self.trn.text("english"))
         self.language_combo.setItemText(2, self.trn.text("turkish"))
+        self.limit_label.setText(self.trn.text("max_input_units"))
         self.behavior_label.setText(self.trn.text("behavior"))
         self.default_mode_label.setText(self.trn.text("default_tokenization_mode"))
         self.default_mode_combo.setItemText(0, self.trn.text("tokenized"))
@@ -1188,6 +1199,10 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.input_text, 1)
 
         utility_row = QHBoxLayout()
+        self.open_button = QPushButton()
+        self.open_button.setObjectName("SecondaryButton")
+        self.open_button.clicked.connect(self._open_text_file)
+        utility_row.addWidget(self.open_button)
         self.local_label = QLabel()
         self.local_label.setObjectName("LocalBadge")
         utility_row.addWidget(self.local_label)
@@ -1479,7 +1494,11 @@ class MainWindow(QMainWindow):
         self.clear_input_action.triggered.connect(self.input_text.clear)
         self.clear_result_action.triggered.connect(self._clear_result)
         self.clear_all_action.triggered.connect(self._clear_all)
-        self.input_text.textChanged.connect(self._update_input_meta)
+        self._input_meta_timer = QTimer(self)
+        self._input_meta_timer.setSingleShot(True)
+        self._input_meta_timer.setInterval(200)
+        self._input_meta_timer.timeout.connect(self._update_input_meta)
+        self.input_text.textChanged.connect(lambda: self._input_meta_timer.start())
         self.tokenizer_mode_combo.currentIndexChanged.connect(self._save_tokenizer_mode)
         self.postagger_output_mode_combo.currentIndexChanged.connect(self._save_postagger_output_mode)
         self.frequency_case_combo.currentIndexChanged.connect(self._save_frequency_case_mode)
@@ -1581,10 +1600,31 @@ class MainWindow(QMainWindow):
     def _theme_setting(self) -> ThemeName:
         return "light"
 
+    def _open_text_file(self) -> None:
+        path, _ = QFileDialog.getOpenFileName(self, self.trn.text("open"), "", "Text files (*.txt)")
+        if not path:
+            return
+        from pathlib import Path
+        try:
+            data = Path(path).read_bytes()
+            text = data.decode("utf-16") if data.startswith((b"\xff\xfe", b"\xfe\xff")) else data.decode("utf-8-sig")
+        except (OSError, UnicodeError) as exc:
+            QMessageBox.warning(self, self.trn.text("error"), self.trn.text("open_error", error=str(exc)))
+            return
+        limit = self.settings.value("max_input_units", DEFAULT_MAX_INPUT_UNITS, int)
+        if text.count(" ") > limit:
+            QMessageBox.warning(self, self.trn.text("error"), self.trn.text("input_limit", limit=f"{limit:,}", count=f"{text.count(' '):,}"))
+            return
+        self.input_text.setPlainText(text)
+
     def _start_task(self, kind: TaskKind) -> None:
         if self._busy:
             return
         text = self.input_text.toPlainText()
+        limit = self.settings.value("max_input_units", DEFAULT_MAX_INPUT_UNITS, int)
+        if text.count(" ") > limit:
+            QMessageBox.warning(self, self.trn.text("error"), self.trn.text("input_limit", limit=f"{limit:,}", count=f"{text.count(' '):,}"))
+            return
         self._task_started_at = time.perf_counter()
         self._set_busy(True, kind)
         self._set_status(self.trn.text("preparing_pos") if kind == "pos" else self.trn.text("processing"))
@@ -1615,8 +1655,9 @@ class MainWindow(QMainWindow):
         self.current_copy_text = result.copy_text
         self.current_headers = result.headers
         self.current_kind = result.kind
-        self.current_document = result.document
-        self.current_document_text = self.input_text.toPlainText()
+        if result.document is not None:
+            self.current_document = result.document
+            self.current_document_text = self.input_text.toPlainText()
         self.current_tokenizer_mode = result.tokenizer_mode
         self.current_postagger_output_mode = result.postagger_output_mode
         self.current_frequency_case_mode = result.frequency_case_mode
@@ -1766,8 +1807,6 @@ class MainWindow(QMainWindow):
         self.current_headers = []
         self.current_kind = None
         self.current_raw_result = None
-        self.current_document = None
-        self.current_document_text = ""
         self.current_tokenizer_mode = None
         self.current_postagger_output_mode = None
         self.current_frequency_case_mode = None
@@ -1786,6 +1825,10 @@ class MainWindow(QMainWindow):
         self.tagged_note_label.hide()
 
     def _clear_all(self) -> None:
+        self.current_document = None
+        self.current_document_text = ""
+        self.postagger_service._cached_text = None
+        self.postagger_service._cached_tokens = None
         self.input_text.clear()
         self._clear_result()
 
@@ -1800,6 +1843,8 @@ class MainWindow(QMainWindow):
             self.concordance_back_button,
         ):
             button.setDisabled(busy)
+        self.input_text.setReadOnly(busy)
+        self.open_button.setDisabled(busy)
         self.clear_button.setDisabled(busy)
         self.copy_button.setDisabled(busy)
         self.export_csv_button.setDisabled(busy)
@@ -1818,6 +1863,7 @@ class MainWindow(QMainWindow):
             QApplication.restoreOverrideCursor()
 
     def _apply_translations(self) -> None:
+        self.open_button.setText(self.trn.text("open"))
         self.input_text.setPlaceholderText(self.trn.text("input_placeholder"))
         self.input_hint.setText(self.trn.text("input_hint"))
         self.local_label.setText(self.trn.text("local_badge"))
@@ -2321,7 +2367,7 @@ class MainWindow(QMainWindow):
             self.action_tabs.setCurrentIndex(tab)
 
     def _localized_result(self, result: TaskResult) -> TaskResult:
-        rows = [self._localized_row(result.kind, row) for row in result.rows]
+        rows = result.rows
         return TaskResult(
             kind=result.kind,
             headers=[self._header_label(header) for header in result.headers],

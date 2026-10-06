@@ -5,6 +5,7 @@ from __future__ import annotations
 import re
 from collections import Counter
 from dataclasses import dataclass
+from functools import lru_cache
 from typing import Iterable, Literal
 
 from app.errors import DependencyUnavailableError, EmptyInputError, TextLabError
@@ -34,6 +35,10 @@ class TokenizerService:
             ) from exc
         self._tokenize = tokenize
         self._char_fix = CharFix
+        # TS Tokenizer classifies whitespace-separated units independently.
+        self._cached_unit = lru_cache(maxsize=65_536)(
+            lambda unit: tuple(self._normalize_pairs(self._tokenize(unit, "tagged_lines")))
+        )
 
     def tokenize(self, text: str, mode: TokenizerMode = "tokenized") -> TokenizerResult:
         cleaned = text.strip()
@@ -41,8 +46,18 @@ class TokenizerService:
             raise EmptyInputError("Lütfen işlenecek bir metin girin.")
 
         try:
-            if mode in {"tokenized", "tagged", "tagged_lines"} and XML_TAG_PATTERN.search(cleaned):
-                return self._tokenize_preserving_xml(cleaned, mode)
+            if mode in {"tokenized", "tagged", "tagged_lines"}:
+                rows = []
+                for piece, is_xml in self._xml_segments(cleaned):
+                    if is_xml:
+                        rows.append((piece, "XML_Tag"))
+                    else:
+                        for unit in piece.replace("\u200b", "").replace("\ufeff", "").split():
+                            rows.extend(self._cached_unit(unit))
+                if mode == "tokenized":
+                    rows = [(row[0],) for row in rows]
+                return TokenizerResult(mode, ["Token"] if mode == "tokenized" else ["Token", "Tag"],
+                                       rows, "\n".join("\t".join(row) for row in rows))
             if mode in {"lines", "tagged_lines"}:
                 return self._tokenize_by_line(cleaned, mode)
             result = self._tokenize(cleaned, mode)
