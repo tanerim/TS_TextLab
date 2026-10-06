@@ -184,13 +184,7 @@ Sözcük türü modeli bağımlılıklarla birlikte kurulur; ayrıca model indir
 
 ## Bilimsel kaynak ve atıf
 
-About / Hakkında menüsündeki tez:
-
-**Sezer, T. (2025).** *Dizilerden birimlere: Bilişimsel dilbilim çerçevesinde bir birimlendirici tasarımı* [Doktora tezi, Hacettepe Üniversitesi]. Ulusal Tez Merkezi. Tez No. 959204.
-
-[Tezi Ulusal Tez Merkezi'nde açın](https://tez.yok.gov.tr/UlusalTezMerkezi/TezGoster?key=Xau5rw3KuCgEuy-FuJQtsNVGSOOMCSQba2T5bZaDSDUTfOiTTVCpuBZPjDrUgB0i). Doğrudan bağlantı açılmazsa Ulusal Tez Merkezi'nde **959204** tez numarasıyla arayabilirsiniz.
-
-Teze metin içinde **(Sezer, 2025)** biçiminde atıf verebilir, kaynakçada yukarıdaki künyeyi kullanabilirsiniz.
+**Sezer, T. (2025).** *[Dizilerden birimlere: Bilişimsel dilbilim çerçevesinde bir birimlendirici tasarımı](https://tez.yok.gov.tr/UlusalTezMerkezi/TezGoster?key=Xau5rw3KuCgEuy-FuJQtsNVGSOOMCSQba2T5bZaDSDUTfOiTTVCpuBZPjDrUgB0i)* [Doktora tezi, Hacettepe Üniversitesi]. Ulusal Tez Merkezi. Tez No. 959204.
 
 TS TextLab'ı kullandığınız bir çalışmada yazılımı ayrıca belirtmek için önerilen künye:
 
@@ -198,4 +192,4 @@ TS TextLab'ı kullandığınız bir çalışmada yazılımı ayrıca belirtmek i
 
 Çalışmanızda kullandığınız sürüm farklıysa künyedeki sürüm numarasını değiştirin. Yöntem bölümünde örneğin “Türkçe metinlerin birimlendirilmesi ve sıklık analizi TS TextLab (sürüm 0.1.1) kullanılarak gerçekleştirilmiştir.” ifadesine yer verebilirsiniz. Yazılım künyesi öneridir; kurumunuzun veya derginizin kaynak gösterme kurallarına göre uyarlayın.
 
-Daha fazla bilgi: [TS Corpus](https://tscorpus.com/) · [TS TextLab proje sayfası](https://github.com/tanerim/TS_TextLab)
+Daha fazla bilgi: [TS Corpus](https://tscorpus.com/)
