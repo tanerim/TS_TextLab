@@ -1,0 +1,92 @@
+{
+  "commit": "3a856b4843ab28058c2bb656a80b25c4ce3d3ab1",
+  "platform": "windows-x86_64",
+  "status": "failure",
+  "url": "https://github.com/tanerim/TS_TextLab/actions/runs/37465267743",
+  "artifact": "TS-TextLab-windows-x86_64",
+  "steps": {
+    "dependencies": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "unit": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "source": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "build": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "packaged": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "installer": {
+      "outputs": {},
+      "outcome": "failure",
+      "conclusion": "failure"
+    },
+    "upload": {
+      "outputs": {
+        "artifact-id": "11414695630",
+        "artifact-digest": "e81d255f25b8628de89bba46305b70436120182e918b7c6c19ec48f0daeb12cc",
+        "artifact-url": "https://github.com/tanerim/TS_TextLab/actions/runs/37465267743/artifacts/11414695630"
+      },
+      "outcome": "success",
+      "conclusion": "success"
+    }
+  },
+  "source-test": {
+    "version": "0.1.1",
+    "platform": "Windows-2022Server-10.0.20348-SP0",
+    "utf8_mode": 1,
+    "checks": [
+      "window, icon, logo, packaged assets",
+      "tokenize: 23 rows, CSV round trip",
+      "pos: 23 rows, CSV round trip",
+      "frequency: 16 rows, CSV round trip",
+      "ngrams: 19 rows, CSV round trip",
+      "dashboard: 16 rows, CSV round trip",
+      "frequency: 16 rows, CSV round trip",
+      "concordance: 3 rows, CSV round trip",
+      "filter, concordance and back",
+      "Turkish/English, two window sizes, settings and ten help pages",
+      "clear and error recovery"
+    ],
+    "passed": true
+  },
+  "packaged-test": {
+    "version": "0.1.1",
+    "platform": "Windows-2022Server-10.0.20348-SP0",
+    "utf8_mode": 1,
+    "checks": [
+      "window, icon, logo, packaged assets",
+      "tokenize: 23 rows, CSV round trip",
+      "pos: 23 rows, CSV round trip",
+      "frequency: 16 rows, CSV round trip",
+      "ngrams: 19 rows, CSV round trip",
+      "dashboard: 16 rows, CSV round trip",
+      "frequency: 16 rows, CSV round trip",
+      "concordance: 3 rows, CSV round trip",
+      "filter, concordance and back",
+      "Turkish/English, two window sizes, settings and ten help pages",
+      "clear and error recovery"
+    ],
+    "passed": true
+  },
+  "installer-test": {
+    "version": "0.1.1",
+    "platform": "Windows-2022Server-10.0.20348-SP0",
+    "passed": false,
+    "error": "Start menu shortcut is missing"
+  }
+}
