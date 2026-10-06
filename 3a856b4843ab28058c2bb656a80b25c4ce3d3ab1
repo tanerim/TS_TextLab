@@ -1,0 +1,136 @@
+{
+  "commit": "3a856b4843ab28058c2bb656a80b25c4ce3d3ab1",
+  "platform": "macos-arm64",
+  "status": "success",
+  "url": "https://github.com/tanerim/TS_TextLab/actions/runs/37465267743",
+  "artifact": "TS-TextLab-macos-arm64",
+  "steps": {
+    "dependencies": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "unit": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "source": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "build": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "packaged": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "installer": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "upload": {
+      "outputs": {
+        "artifact-id": "11414572428",
+        "artifact-digest": "d2ea975030ee75a5f7294468933be5ac6efb1c73101e763b4b9992162a93ae5f",
+        "artifact-url": "https://github.com/tanerim/TS_TextLab/actions/runs/37465267743/artifacts/11414572428"
+      },
+      "outcome": "success",
+      "conclusion": "success"
+    }
+  },
+  "source-test": {
+    "version": "0.1.1",
+    "platform": "macOS-14.8.9-arm64-arm-64bit-Mach-O",
+    "utf8_mode": 1,
+    "checks": [
+      "window, icon, logo, packaged assets",
+      "tokenize: 23 rows, CSV round trip",
+      "pos: 23 rows, CSV round trip",
+      "frequency: 16 rows, CSV round trip",
+      "ngrams: 19 rows, CSV round trip",
+      "dashboard: 16 rows, CSV round trip",
+      "frequency: 16 rows, CSV round trip",
+      "concordance: 3 rows, CSV round trip",
+      "filter, concordance and back",
+      "Turkish/English, two window sizes, settings and ten help pages",
+      "clear and error recovery"
+    ],
+    "passed": true
+  },
+  "packaged-test": {
+    "version": "0.1.1",
+    "platform": "macOS-14.8.9-arm64-arm-64bit-Mach-O",
+    "utf8_mode": 1,
+    "checks": [
+      "window, icon, logo, packaged assets",
+      "tokenize: 23 rows, CSV round trip",
+      "pos: 23 rows, CSV round trip",
+      "frequency: 16 rows, CSV round trip",
+      "ngrams: 19 rows, CSV round trip",
+      "dashboard: 16 rows, CSV round trip",
+      "frequency: 16 rows, CSV round trip",
+      "concordance: 3 rows, CSV round trip",
+      "filter, concordance and back",
+      "Turkish/English, two window sizes, settings and ten help pages",
+      "clear and error recovery"
+    ],
+    "passed": true
+  },
+  "installer-test": {
+    "version": "0.1.1",
+    "platform": "macOS-14.8.9-arm64-arm-64bit-Mach-O",
+    "passed": true,
+    "file": "TS-TextLab-0.1.1-macos-arm64-unsigned.dmg",
+    "checks": [
+      "disk image mount",
+      "Applications link",
+      "application launched from read-only image: 11 checks"
+    ],
+    "app_test": {
+      "version": "0.1.1",
+      "platform": "macOS-14.8.9-arm64-arm-64bit-Mach-O",
+      "utf8_mode": 1,
+      "checks": [
+        "window, icon, logo, packaged assets",
+        "tokenize: 23 rows, CSV round trip",
+        "pos: 23 rows, CSV round trip",
+        "frequency: 16 rows, CSV round trip",
+        "ngrams: 19 rows, CSV round trip",
+        "dashboard: 16 rows, CSV round trip",
+        "frequency: 16 rows, CSV round trip",
+        "concordance: 3 rows, CSV round trip",
+        "filter, concordance and back",
+        "Turkish/English, two window sizes, settings and ten help pages",
+        "clear and error recovery"
+      ],
+      "passed": true
+    },
+    "signed_and_notarized": false
+  },
+  "installed-test": {
+    "version": "0.1.1",
+    "platform": "macOS-14.8.9-arm64-arm-64bit-Mach-O",
+    "utf8_mode": 1,
+    "checks": [
+      "window, icon, logo, packaged assets",
+      "tokenize: 23 rows, CSV round trip",
+      "pos: 23 rows, CSV round trip",
+      "frequency: 16 rows, CSV round trip",
+      "ngrams: 19 rows, CSV round trip",
+      "dashboard: 16 rows, CSV round trip",
+      "frequency: 16 rows, CSV round trip",
+      "concordance: 3 rows, CSV round trip",
+      "filter, concordance and back",
+      "Turkish/English, two window sizes, settings and ten help pages",
+      "clear and error recovery"
+    ],
+    "passed": true
+  }
+}
