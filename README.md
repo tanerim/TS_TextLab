@@ -20,7 +20,7 @@ Modeli güncellemek için paketi güncellemeniz yeterlidir.
 ## GUI Çalıştırma
 
 ```bash
-python main.py
+python -X utf8 main.py
 ```
 
 Arayüz sistem yereli Türkçe ise Türkçe,
@@ -53,25 +53,54 @@ Uygulama çalışma sırasında model indirmez ve dependency kontrolü için int
 
 Başlangıçta kısa timeout ile public repo kökündeki `version.txt` dosyasının raw GitHub adresinden sürüm denetimi yapılır. Bağlantı yoksa hata kullanıcıya gösterilmez; dosya mevcut sürümden yeni bir değer dönerse güncelleme uyarısı gösterilir. Girilen metin bu denetime veya başka bir servise gönderilmez.
 
-## Windows Build
+## Linux, macOS ve Windows Dağıtımları
 
-Windows build işlemini Windows makinede çalıştırın:
+Üç platformun derleme ve paket testleri `.github/workflows/desktop-build.yml`
+iş akışında çalışır. Her platform Python 3.13 ve `requirements-build.txt` ile
+kendi işletim sisteminde derlenir. Paketlenmiş uygulama `--self-test` ile tüm
+NLP işlevleri, CSV çıktıları, kaynaklar, iki dil, ayarlar, yardım ve hata sonrası
+toparlanma açısından sınanır. Windows kurulum ve kaldırma, macOS disk imajından
+çalıştırma testleri de yapılır. İş akışı yalnızca `master` üzerinden çalışır;
+test sonuçları Git notes olarak saklanır, yeni branch oluşturulmaz.
+
+Bu repo **private** olduğu için Actions çıktıları yalnızca geliştirici içindir.
+Son kullanıcıya dağıtılacak `.exe` ve `.dmg` dosyaları, herkese açık bir indirme
+sunucusuna yüklenmelidir. Kullanıcıların GitHub hesabına veya Python kurulumuna
+ihtiyacı olmamalıdır.
+
+Yerel derleme ve paket kontrolü:
 
 ```bash
-python -m pip install -r requirements.txt
-pyinstaller packaging/ts_textlab.spec --clean --noconfirm
+python -m pip install -r requirements-build.txt
+python -m PyInstaller packaging/ts_textlab.spec --clean --noconfirm
+python scripts/check_distribution.py
+# Windows/macOS üzerinde ayrıca:
+python scripts/create_desktop_installer.py
 ```
 
-Çıktı `dist/TS TextLab/TS TextLab.exe` altında oluşur.
+Windows dağıtımı `TS-TextLab-<sürüm>-windows-x86_64-Setup.exe` dosyasıdır.
+Kullanıcı çift tıklayarak kurar; Başlat menüsü ve masaüstü kısayolundan uygulamayı
+açar. Kurulum kullanıcı hesabına yapılır, yönetici yetkisi veya Python istemez.
+Kurulum aracı Inno Setup 6'dır.
 
-## macOS ve Linux
+macOS dağıtımı `.dmg` dosyasıdır. Kullanıcı çift tıklayarak açar, TS TextLab'ı
+Applications'a sürükler ve uygulamayı çift tıklayarak çalıştırır. ARM64 paketi
+Apple Silicon içindir. İmzasız test imajlarının adında `-unsigned` bulunur.
+İnternetten indirilen bir uygulamanın Gatekeeper tarafından kabul edilmesi için
+Developer ID imzası ve Apple notarization gereklidir. Bunlar olmadan normal
+indir/çift tıkla/çalıştır deneyimi tamamlanmış sayılmaz.
 
-Her işletim sistemi için build'i aynı işletim sisteminde üretin:
+Linux çıktısı `.tar.gz` arşividir. Paket adları sürümü, işletim sistemini ve işlemci mimarisini içerir.
+Linux'ta arşivi kalıcı bir klasöre açıp `install-linux.sh` betiğini çalıştırmak,
+TS Corpus simgesiyle uygulama menüsüne kısayol ekler. Betik yönetici yetkisi istemez.
+Uygulamanın sürümü `version.txt` üzerinden okunur; paketleme aynı dosyayı içerir.
 
-```bash
-python -m pip install -r requirements.txt
-pyinstaller packaging/ts_textlab.spec --clean --noconfirm
-```
+Windows çıktısı `dist/TS TextLab/TS TextLab.exe`, Linux çıktısı
+`dist/TS TextLab/TS TextLab`, macOS çıktısı `dist/TS TextLab.app` altında oluşur.
+Paketlenmiş uygulamalar, tokenizer veri dosyalarının Windows'ta da doğru
+okunması için UTF-8 modunda başlar.
+
+macOS imzalama kurulumu için [dağıtım notlarına](packaging/DISTRIBUTION.md) bakın.
 
 ## Dosya Yapısı
 

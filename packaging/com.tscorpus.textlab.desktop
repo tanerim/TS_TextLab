@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=TS TextLab
+Comment=Turkish text analysis with TS Corpus
+Exec="TS TextLab"
+Icon=com.tscorpus.textlab
+Terminal=false
+Categories=Education;Science;
+StartupWMClass=TS TextLab

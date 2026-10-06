@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+from app.resource_manager import resolve_resource
+
 APP_NAME = "TS TextLab"
-APP_VERSION = "0.1.1"
+APP_VERSION = resolve_resource("version.txt").read_text(encoding="utf-8").strip()
 APP_AUTHOR = "Taner Sezer"
 ORGANIZATION_NAME = "TS Corpus"
 VERSION_CHECK_URL = "https://raw.githubusercontent.com/tanerim/TS_TextLab/master/version.txt"

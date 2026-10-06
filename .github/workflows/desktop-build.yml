@@ -1,0 +1,112 @@
+name: Desktop builds and tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      require_macos_signing:
+        description: Require signed and notarized macOS distribution
+        type: boolean
+        default: false
+  pull_request:
+  push:
+    branches: ["master"]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            platform: linux-x86_64
+          - os: macos-14
+            platform: macos-arm64
+          - os: windows-2022
+            platform: windows-x86_64
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    env:
+      QT_QPA_PLATFORM: offscreen
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-build.txt
+      - name: Install Linux Qt libraries
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libegl1 libopengl0
+      - name: Install build dependencies
+        id: dependencies
+        run: python -m pip install -r requirements-build.txt
+      - name: Unit tests
+        id: unit
+        run: python -m unittest discover -s tests -v
+      - name: Source application smoke test
+        id: source
+        run: python -X utf8 main.py --self-test build/source-test.json
+      - name: Configure macOS Developer ID signing
+        if: runner.os == 'macOS'
+        env:
+          MACOS_CERTIFICATE_BASE64: ${{ secrets.MACOS_CERTIFICATE_BASE64 }}
+          MACOS_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+          TEXTLAB_MACOS_SIGN_IDENTITY: ${{ vars.TEXTLAB_MACOS_SIGN_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
+        run: bash scripts/configure_macos_signing.sh
+      - name: Build native application
+        id: build
+        env:
+          TEXTLAB_MACOS_SIGN_IDENTITY: ${{ vars.TEXTLAB_MACOS_SIGN_IDENTITY }}
+        run: python -m PyInstaller packaging/ts_textlab.spec --clean --noconfirm
+      - name: Test packaged application and archive
+        id: packaged
+        run: python scripts/check_distribution.py
+      - name: Install Windows packaging tool
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          if (!(Test-Path "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe")) {
+            choco install innosetup --yes --no-progress
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
+      - name: Create and test desktop installer
+        id: installer
+        if: runner.os != 'Linux'
+        env:
+          TEXTLAB_MACOS_SIGN_IDENTITY: ${{ vars.TEXTLAB_MACOS_SIGN_IDENTITY }}
+          REQUIRE_MACOS_SIGNING: ${{ inputs.require_macos_signing }}
+        run: python scripts/create_desktop_installer.py
+      - name: Remove temporary macOS signing keychain
+        if: always() && runner.os == 'macOS'
+        run: |
+          if [ -n "${TEXTLAB_NOTARY_KEYCHAIN:-}" ]; then
+            security delete-keychain "$TEXTLAB_NOTARY_KEYCHAIN"
+          fi
+      - name: Upload application and test reports
+        id: upload
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TS-TextLab-${{ matrix.platform }}
+          path: |
+            dist/*.zip
+            dist/*.tar.gz
+            dist/*-Setup.exe
+            dist/*.dmg
+            build/*test.json
+          if-no-files-found: error
+      - name: Save build result for SSH access
+        if: always() && github.event_name != 'pull_request'
+        env:
+          BUILD_PLATFORM: ${{ matrix.platform }}
+          BUILD_STATUS: ${{ job.status }}
+          BUILD_STEPS: ${{ toJSON(steps) }}
+        run: python scripts/publish_build_report.py

@@ -1,0 +1,6 @@
+-r requirements.txt
+pyinstaller==6.22.0
+PySide6==6.11.1
+ts-tokenizer==0.2.7
+ts-postagger==0.1.1
+spacy==3.8.15

@@ -1015,6 +1015,7 @@ class MainWindow(QMainWindow):
         self.logo_pixmap = QPixmap(str(resolve_resource("app", "theme", "TS_Corpus_Logo.png")))
 
         self.setWindowTitle(APP_NAME)
+        self.setWindowIcon(QIcon(str(resolve_resource("app", "theme", "app-icon.png"))))
         self.setMinimumSize(980, 640)
         self.resize(1280, 800)
         self._build_ui()
