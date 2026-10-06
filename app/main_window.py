@@ -84,7 +84,7 @@ from app.analysis_service import (
 )
 from app.config import (APP_NAME, APP_VERSION, DEFAULT_SAMPLE_TEXT, DEFAULT_MAX_INPUT_UNITS,
                         VERSION_CHECK_URL, VERSION_CHECK_INTERVAL_MS, VERSION_CHECK_RETRY_MS)
-from app.dialogs import AboutDialog, NoticeDialog
+from app.dialogs import AboutDialog, ContentDialog, NoticeDialog
 from app.errors import TextLabError
 from app.export_service import timestamped_csv_path, write_tab_csv
 from app.i18n import Translator
@@ -782,7 +782,7 @@ class AnalysisDashboard(QWidget):
         return f"{(numerator / denominator) * 100:.1f}%"
 
 
-class SettingsDialog(QDialog):
+class SettingsDialog(ContentDialog):
     def __init__(
         self,
         settings: QSettings,
@@ -790,27 +790,19 @@ class SettingsDialog(QDialog):
         on_appearance_change=None,
         on_language_change=None,
     ) -> None:
-        super().__init__(parent)
+        super().__init__(parent, preferred_width=940)
         self.settings = settings
         self.trn = Translator(self.settings.value("language", None, str))
         self.on_appearance_change = on_appearance_change
         self.on_language_change = on_language_change
-        self.setMinimumWidth(600)
-        self.resize(660, 740)
-
-        root_layout = QVBoxLayout(self)
-        root_layout.setContentsMargins(0, 0, 0, 0)
-        scroll = QScrollArea()
-        scroll.setObjectName("SettingsScroll")
-        scroll.setWidgetResizable(True)
-        scroll.setFrameShape(QFrame.NoFrame)
-        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        content = QWidget()
-        scroll.setWidget(content)
-        root_layout.addWidget(scroll, 1)
-        layout = QVBoxLayout(content)
-        layout.setContentsMargins(28, 26, 28, 8)
+        self.body_scroll.setObjectName("SettingsScroll")
+        layout = self.body_layout
+        layout.setContentsMargins(28, 26, 28, 16)
         layout.setSpacing(18)
+        self.cards_grid = QGridLayout()
+        self.cards_grid.setSpacing(18)
+        self.settings_cards = []
+        self._cards_two_columns = None
 
         self.title_label = QLabel()
         self.title_label.setObjectName("DialogTitle")
@@ -840,7 +832,7 @@ class SettingsDialog(QDialog):
         form.addWidget(self.language_combo, 1, 1)
 
         form.setColumnStretch(1, 1)
-        layout.addWidget(language_card)
+        self.settings_cards.append(language_card)
 
         behavior_card = QFrame()
         behavior_card.setObjectName("DialogCard")
@@ -865,7 +857,7 @@ class SettingsDialog(QDialog):
         form.addWidget(self.remember_layout, 2, 0, 1, 2)
         form.setColumnStretch(0, 1)
         form.setColumnStretch(1, 1)
-        layout.addWidget(behavior_card)
+        self.settings_cards.append(behavior_card)
 
         capacity_card = QFrame()
         capacity_card.setObjectName("CapacityCard")
@@ -897,7 +889,7 @@ class SettingsDialog(QDialog):
         capacity.addLayout(presets)
         self.limit_spin.valueChanged.connect(self._sync_limit_presets)
         self._sync_limit_presets()
-        layout.addWidget(capacity_card)
+        self.settings_cards.append(capacity_card)
 
         interface_card = QFrame()
         interface_card.setObjectName("DialogCard")
@@ -916,7 +908,7 @@ class SettingsDialog(QDialog):
         form.addWidget(self.density_label, 1, 0)
         form.addWidget(self.density_combo, 1, 1)
         form.setColumnStretch(1, 1)
-        layout.addWidget(interface_card)
+        self.settings_cards.append(interface_card)
 
         updates_card = QFrame()
         updates_card.setObjectName("DialogCard")
@@ -932,21 +924,45 @@ class SettingsDialog(QDialog):
         updates.addWidget(self.updates_label)
         updates.addWidget(self.updates_hint)
         updates.addWidget(self.update_url)
-        layout.addWidget(updates_card)
-        layout.addStretch(1)
+        self.settings_cards.append(updates_card)
+        layout.addLayout(self.cards_grid)
 
         self.buttons = QDialogButtonBox(QDialogButtonBox.Cancel | QDialogButtonBox.Ok)
         self.buttons.accepted.connect(self.accept)
         self.buttons.rejected.connect(self.reject)
-        footer = QFrame()
-        footer.setObjectName("DialogFooter")
-        footer_layout = QHBoxLayout(footer)
-        footer_layout.setContentsMargins(28, 12, 28, 14)
-        footer_layout.addStretch(1)
-        footer_layout.addWidget(self.buttons)
-        root_layout.addWidget(footer)
+        self.footer_layout.addStretch(1)
+        self.footer_layout.addWidget(self.buttons)
+        self._arrange_cards()
         self._apply_translations()
         self.language_combo.currentIndexChanged.connect(self._apply_language_immediately)
+
+    def _arrange_cards(self, width: int | None = None) -> None:
+        available_width = self.screen().availableGeometry().width() - 32
+        target_width = min(940, available_width) if width is None else width
+        two_columns = target_width >= 900
+        self.preferred_width = 940 if two_columns else 760
+        if self._cards_two_columns == two_columns:
+            return
+        self._cards_two_columns = two_columns
+        self.cards_grid.setColumnStretch(0, 1)
+        self.cards_grid.setColumnStretch(1, 1 if two_columns else 0)
+        placements = ((0, 0, 1), (2, 0, 1), (0, 1, 2), (1, 0, 1), (2, 1, 1))
+        for index, widget in enumerate(self.settings_cards):
+            self.cards_grid.removeWidget(widget)
+            row, column, span = placements[index] if two_columns else (index, 0, 1)
+            self.cards_grid.addWidget(widget, row, column, span, 1, Qt.AlignTop)
+
+    def showEvent(self, event) -> None:  # type: ignore[override]
+        self._arrange_cards()
+        super().showEvent(event)
+
+    def resizeEvent(self, event) -> None:  # type: ignore[override]
+        super().resizeEvent(event)
+        if hasattr(self, "settings_cards"):
+            self._arrange_cards(self.width())
+            self.body_layout.invalidate()
+            self.body_layout.activate()
+            self._sync_body_height()
 
     def accept(self) -> None:
         self.limit_spin.interpretText()
@@ -1030,6 +1046,7 @@ class SettingsDialog(QDialog):
         if cancel_button is not None:
             cancel_button.setText(self.trn.text("cancel"))
         _style_dialog_buttons(self.buttons)
+        self.fit_to_content()
 
 
 def _section_label(text: str) -> QLabel:

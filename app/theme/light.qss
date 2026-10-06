@@ -200,7 +200,7 @@ QTabBar#ActionTabs[analysisKind="dashboard"]::tab:selected:hover {{ background: 
 #HelpPage, #HelpScroll > QWidget {{ background: {background}; }}
 
 /* Capacity settings and product dialogs */
-#SettingsScroll, #SettingsScroll > QWidget > QWidget {{ background: {background}; }}
+#SettingsScroll, #DialogScroll, #DialogBody, #SettingsScroll > QWidget > QWidget {{ background: {background}; }}
 #CapacityCard {{ background: #EEF4FC; border: 1px solid #CFDDF0; border-radius: 12px; }}
 QSpinBox#CapacityInput {{ background: {surface}; color: #173E70; border: 1px solid #C1D3EB; border-radius: 9px; padding: 10px 14px; min-height: 30px; font-size: 23px; font-weight: 600; selection-background-color: {selected}; }}
 QSpinBox#CapacityInput:focus {{ border: 1px solid {focus}; }}

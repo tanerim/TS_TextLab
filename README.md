@@ -26,6 +26,11 @@ python -X utf8 main.py
 Arayüz sistem yereli Türkçe ise Türkçe,
 diğer durumlarda İngilizce açılır.
 Settings menüsünden dil tercihi kalıcı olarak değiştirilebilir.
+Settings, About ve onay pencereleri içerik yüksekliğine ve kullanılabilir ekran
+alanına göre açılır. Settings geniş pencerelerde iki, dar pencerelerde tek sütun
+kullanır. Küçük ekranlarda içerik kaydırılır; alt düğmeler görünür kalır.
+About logosunun oranı ve tamamı korunur; yüksek ekran ölçeklerinde de uygun
+çözünürlükte çizilir.
 Metin alanının altındaki **Open** düğmesi UTF-8 (BOM dahil) veya UTF-16
 kodlamalı `.txt` dosyalarını açar. Varsayılan maksimum birim sayısı **1.000.000**;
 kabul kontrolü toplam normal boşluk (` `) sayısına dayanır. Karakter sınırı yoktur.
