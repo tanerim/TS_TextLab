@@ -1,0 +1,86 @@
+{
+  "commit": "29a25cc8526ef6383775853f83ad2347da908d2b",
+  "platform": "linux-x86_64",
+  "status": "success",
+  "url": "https://github.com/tanerim/TS_TextLab/actions/runs/37466195924",
+  "artifact": "TS-TextLab-linux-x86_64",
+  "steps": {
+    "dependencies": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "unit": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "source": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "build": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "packaged": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "installer": {
+      "outputs": {},
+      "outcome": "skipped",
+      "conclusion": "skipped"
+    },
+    "upload": {
+      "outputs": {
+        "artifact-id": "11414965930",
+        "artifact-digest": "7ac400e4800da8136abae500c3dd9bd1f1609f04c9067eba0522e9a2d9a0eeec",
+        "artifact-url": "https://github.com/tanerim/TS_TextLab/actions/runs/37466195924/artifacts/11414965930"
+      },
+      "outcome": "success",
+      "conclusion": "success"
+    }
+  },
+  "source-test": {
+    "version": "0.1.1",
+    "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+    "utf8_mode": 1,
+    "checks": [
+      "window, icon, logo, packaged assets",
+      "tokenize: 23 rows, CSV round trip",
+      "pos: 23 rows, CSV round trip",
+      "frequency: 16 rows, CSV round trip",
+      "ngrams: 19 rows, CSV round trip",
+      "dashboard: 16 rows, CSV round trip",
+      "frequency: 16 rows, CSV round trip",
+      "concordance: 3 rows, CSV round trip",
+      "filter, concordance and back",
+      "Turkish/English, two window sizes, settings and ten help pages",
+      "clear and error recovery"
+    ],
+    "passed": true
+  },
+  "packaged-test": {
+    "version": "0.1.1",
+    "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+    "utf8_mode": 1,
+    "checks": [
+      "window, icon, logo, packaged assets",
+      "tokenize: 23 rows, CSV round trip",
+      "pos: 23 rows, CSV round trip",
+      "frequency: 16 rows, CSV round trip",
+      "ngrams: 19 rows, CSV round trip",
+      "dashboard: 16 rows, CSV round trip",
+      "frequency: 16 rows, CSV round trip",
+      "concordance: 3 rows, CSV round trip",
+      "filter, concordance and back",
+      "Turkish/English, two window sizes, settings and ten help pages",
+      "clear and error recovery"
+    ],
+    "passed": true
+  }
+}
