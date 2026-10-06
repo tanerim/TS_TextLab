@@ -76,6 +76,20 @@ coll = COLLECT(
     name="TS TextLab",
 )
 
+# A Windows user can also launch this single file directly without installation.
+if sys.platform == "win32":
+    portable = EXE(
+        pyz,
+        a.scripts,
+        a.binaries,
+        a.datas,
+        [('X utf8=1', None, 'OPTION')],
+        name=f"TS-TextLab-{version}-windows-x86_64",
+        console=False,
+        icon=str(project_root / "app" / "theme" / "app-icon.ico"),
+        upx=False,
+    )
+
 if sys.platform == "darwin":
     app = BUNDLE(
         coll,

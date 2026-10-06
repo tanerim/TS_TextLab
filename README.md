@@ -78,7 +78,11 @@ python scripts/check_distribution.py
 python scripts/create_desktop_installer.py
 ```
 
-Windows dağıtımı `TS-TextLab-<sürüm>-windows-x86_64-Setup.exe` dosyasıdır.
+Windows'ta `TS-TextLab-<sürüm>-windows-x86_64.exe` tek dosyadır:
+indirip çift tıklamak uygulamayı açar, kurulum veya ZIP açma gerektirmez.
+Model ve bağımlılıklar açılış sırasında geçici klasöre çıkartıldığı için
+başlangıç klasör dağıtımına göre daha uzun sürebilir.
+Alternatif olarak `TS-TextLab-<sürüm>-windows-x86_64-Setup.exe` kurulum dosyasıdır.
 Kullanıcı çift tıklayarak kurar; Başlat menüsü ve masaüstü kısayolundan uygulamayı
 açar. Kurulum kullanıcı hesabına yapılır, yönetici yetkisi veya Python istemez.
 Kurulum aracı Inno Setup 6'dır.

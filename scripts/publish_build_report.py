@@ -22,7 +22,7 @@ report = {
     "artifact": f"TS-TextLab-{platform_name}",
     "steps": json.loads(os.environ["BUILD_STEPS"]),
 }
-for name in ("source-test", "packaged-test", "installer-test", "installed-test"):
+for name in ("source-test", "packaged-test", "installer-test", "installed-test", "portable-test"):
     path = root / "build" / f"{name}.json"
     if path.exists():
         report[name] = json.loads(path.read_text(encoding="utf-8"))

@@ -30,6 +30,8 @@ def check_app(executable: Path, report: Path) -> dict:
 
 
 def windows(version: str) -> dict:
+    portable = ROOT / "dist" / f"TS-TextLab-{version}-windows-x86_64.exe"
+    portable_result = check_app(portable, ROOT / "build" / "portable-test.json")
     compiler = shutil.which("ISCC")
     if not compiler:
         for variable in ("ProgramFiles(x86)", "ProgramFiles"):
@@ -56,7 +58,7 @@ def windows(version: str) -> dict:
         finally:
             run(install_dir / "unins000.exe", "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART")
         assert not (install_dir / "TS TextLab.exe").exists(), "Uninstaller left the application installed"
-    return {"file": installer.name, "checks": ["silent installation", "Start menu shortcut", "installed application: 11 checks", "uninstall"], "app_test": result, "signed": False}
+    return {"file": installer.name, "portable_file": portable.name, "checks": ["single-file portable application: 11 checks", "silent installation", "Start menu shortcut", "installed application: 11 checks", "uninstall"], "app_test": result, "portable_test": portable_result, "signed": False}
 
 
 def macos(version: str, require_signing: bool) -> dict:

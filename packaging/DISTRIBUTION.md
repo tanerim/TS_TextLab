@@ -7,6 +7,11 @@ Sunucu adresi ve erişimi henüz yapılandırılmadığı için otomatik yayın 
 
 ## Windows
 
+`TS-TextLab-<sürüm>-windows-x86_64.exe` tek dosyalı, kurulumsuz uygulamadır.
+İndirip çift tıklamak yeterlidir. Python veya ayrıca bir klasör gerekmez.
+Modelin geçici klasöre çıkarılması nedeniyle açılış daha uzun sürebilir.
+CI bu dosyayı klasör dağıtımından bağımsız olarak çalıştırıp test eder.
+
 `TS-TextLab-<sürüm>-windows-x86_64-Setup.exe` dosyasını dağıtın.
 Çift tıklama kurulum sihirbazını açar, uygulama kullanıcı hesabına kurulur.
 Masaüstü ve Başlat menüsü kısayolları eklenir. Python kurulumu gerekmez.

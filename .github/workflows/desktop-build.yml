@@ -99,7 +99,7 @@ jobs:
           path: |
             dist/*.zip
             dist/*.tar.gz
-            dist/*-Setup.exe
+            dist/*.exe
             dist/*.dmg
             build/*test.json
           if-no-files-found: error
