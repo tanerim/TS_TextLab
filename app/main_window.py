@@ -1764,6 +1764,10 @@ class MainWindow(QMainWindow):
             self.concordance_context_panel.setVisible(False)
         elif result.kind == "frequency":
             self.concordance_context_panel.setVisible(True)
+        # Reset the previous sort before replacing rows: token/POS/KWIC outputs
+        # already have source order, and frequency results are sorted by the worker.
+        self.results_table.setSortingEnabled(False)
+        self.proxy_model.sort(-1)
         self.result_model.set_result(result)
         self.proxy_model.invalidateFilter()
         self.filter_input.setVisible(result.kind != "dashboard")
@@ -1795,7 +1799,7 @@ class MainWindow(QMainWindow):
             if result.kind in {"frequency", "ngrams"}:
                 self.results_table.sortByColumn(2, Qt.DescendingOrder)
             else:
-                self.proxy_model.sort(0, Qt.AscendingOrder)
+                self.proxy_model.sort(-1)
         self._apply_delegates()
 
         label = self._kind_label(result)

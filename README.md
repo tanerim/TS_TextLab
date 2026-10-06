@@ -61,6 +61,46 @@ böylece tokenizer'ın karakter düzeltme ve token sınırı çıktısı POS mod
 python scripts/smoke_test.py
 ```
 
+## Performans doğrulaması
+
+Sonuç tablosunda birimlendirme, POS ve concordance kayıtları zaten kaynak
+sırasındadır. Bu kayıtları yeniden sıralamak kaldırıldı; sıklık ve n-gram
+sonuçlarında kullanıcı sıralaması korunur. Yeni sonuç yüklenmeden önce önceki
+analizin sıralaması sıfırlanır; eski sütun üzerinden gereksiz sıralama yapılmaz.
+
+Sıklık hesabında geçici birim listeleri azaltıldı. Tekrarlı girdilerde Türkçe
+küçük harf dönüşümü tekil yüzey biçimleri üzerinde yapılır ve birleşen biçimlerin
+sayıları toplanır. Çoğunlukla tekil girdiler küçük bir örnekle ayırt edilir ve
+tek geçişli sayım kullanılır. Metin analizi özetinde birim türü ve tekil biçimler
+tekrar hesaplanmaz. POS modeline, parça sınırlarına ve n-gram hesabına yeni bir
+müdahale yapılmadı.
+
+Geliştirme ortamında üç çalıştırmanın medyanı ile yapılan karşılaştırma:
+
+| İşlem | Önce | Sonra |
+| --- | ---: | ---: |
+| 30.000 satırın tabloya aktarılması | 6,361 sn | 0,041 sn |
+| 1.000.000 birimde sıklık hesabı | 0,419 sn | 0,185 sn |
+| 1.000.000 birimde analiz özeti | 0,764 sn | 0,507 sn |
+
+Bu sentetik ölçümlerde analiz belgesi önceden hazırlanmıştır; birimlendirme,
+POS modeli, dosya okuma ve ekran boyama süreleri tabloya dahil değildir.
+Başlıklar, tüm analiz satırları ve kopyalama metinleri önceki uygulamayla birebir
+karşılaştırıldı. 100.000 tekil biçimde sıklık süresi yaklaşık 0,079 sn ile aynı
+kaldı. Gerçek derlem ve donanıma göre süreler değişir.
+
+Ölçümü tekrar çalıştırmak için:
+
+```bash
+python scripts/benchmark_performance.py --tokens 1000000 --table-rows 30000 --repeats 3 --output benchmark.json
+python -m unittest discover -s tests
+```
+
+İsteğe bağlı `--reference-analysis` ve `--reference-window` seçenekleri, güvenilir
+önceki `analysis_service.py` / `main_window.py` kopyalarıyla aynı girdileri
+karşılaştırır; çıktı farklıysa ölçüm başarısız olur. Arayüz ölçümü geçici ayarlar
+kullanır ve güncelleme isteği göndermez.
+
 ## Offline Çalışma
 
 Uygulama çalışma sırasında model indirmez ve dependency kontrolü için internete bağlanmaz. Dağıtım paketinde Python runtime, TS Tokenizer, `ts-postagger`, PySide6 ve gerekli Python bağımlılıkları birlikte paketlenmelidir.

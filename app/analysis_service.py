@@ -128,11 +128,21 @@ def tokenization_rows(document: AnalysisDocument, mode: TokenizerMode) -> tuple[
 def frequency_rows(
     document: AnalysisDocument, case_mode: FrequencyCaseMode, lowercase_func=None
 ) -> tuple[list[str], list[tuple[str, ...]], str]:
-    values = [token.surface for token in document.lexical_tokens]
     if case_mode == "insensitive":
-        lower = lowercase_func or (lambda value: value.casefold())
-        values = [lower(value) for value in values]
-    counts = Counter(values)
+        lower = lowercase_func or str.casefold
+        sample = [token.surface for token in document.tokens[:2048]]
+        if len(set(sample)) < len(sample) / 2:
+            # Repeated inputs benefit from lowering distinct forms only. A small
+            # sample avoids the extra dictionary pass for mostly unique inputs.
+            counts = Counter(token.surface for token in document.tokens if is_lexical(token))
+            normalized = Counter()
+            for surface, count in counts.items():
+                normalized[lower(surface)] += count
+            counts = normalized
+        else:
+            counts = Counter(lower(token.surface) for token in document.tokens if is_lexical(token))
+    else:
+        counts = Counter(token.surface for token in document.tokens if is_lexical(token))
     rows = [(token, str(count)) for token, count in _sorted_counts(counts)]
     return ["Token", "Count"], rows, "\n".join("\t".join(row) for row in rows)
 
@@ -140,20 +150,21 @@ def frequency_rows(
 def dashboard_rows(text: str, document: AnalysisDocument) -> tuple[list[str], list[tuple[str, ...]], str]:
     lexical = document.lexical_tokens
     token_lengths = [token.length for token in lexical]
-    type_counts = Counter(token_type(token) for token in document.tokens if token_type(token) != "XML_Tag")
+    type_counts = Counter(kind for token in document.tokens if (kind := token_type(token)) != "XML_Tag")
     pos_counts = Counter(
         token.pos
         for token in document.tokens
         if token.tokenizer != "XML_Tag" and token.pos and token.pos != "-"
     )
+    unique_count = len({token.surface.casefold() for token in lexical})
     metric_rows = [
         ("Metric", "Characters", str(len(text))),
-        ("Metric", "Tokens", str(len([token for token in document.tokens if token.tokenizer != "XML_Tag"]))),
+        ("Metric", "Tokens", str(sum(1 for token in document.tokens if token.tokenizer != "XML_Tag"))),
         ("Metric", "Lexical tokens", str(len(lexical))),
-        ("Metric", "Unique tokens", str(len({token.surface.casefold() for token in lexical}))),
+        ("Metric", "Unique tokens", str(unique_count)),
         ("Metric", "Sentences", str(document.sentence_count)),
         ("Metric", "Mean token length", _mean(token_lengths)),
-        ("Metric", "Type-token ratio", _ratio(len({token.surface.casefold() for token in lexical}), len(lexical))),
+        ("Metric", "Type-token ratio", _ratio(unique_count, len(lexical))),
     ]
     type_rows = [("Token Type", name, str(count)) for name, count in _sorted_counts(type_counts)]
     pos_rows = [("POS", name, str(count)) for name, count in _sorted_counts(pos_counts)]
