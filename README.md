@@ -8,15 +8,16 @@ Metinler bilgisayarınızda işlenir ve başka bir servise gönderilmez. Analizl
 
 ## İndir ve çalıştır
 
-**Güncel paket sürümü: 0.1.1.** İşletim sisteminize uygun bağlantıyı seçin:
+**Güncel paket sürümü: 0.1.1.** GitHub hesabı veya Python kurulumu gerekmez. İşletim sisteminize uygun paketi doğrudan indirebilirsiniz:
 
-| İşletim sistemi | İndirme bağlantısı | Paketin içeriği |
+| İşletim sistemi | İndirme bağlantısı | Paket |
 | --- | --- | --- |
-| Windows — Intel/AMD 64 bit | [Windows paketini indir](https://github.com/tanerim/TS_TextLab/actions/runs/37524370177/artifacts/11441478142) | Doğrudan açılan `.exe` ve kurulum için `-Setup.exe` |
-| macOS — Apple Silicon (M serisi) | [macOS paketini indir](https://github.com/tanerim/TS_TextLab/actions/runs/37524370177/artifacts/11441162954) | `.dmg` disk imajı ve `.app` uygulaması |
-| Linux — Intel/AMD 64 bit | [Linux paketini indir](https://github.com/tanerim/TS_TextLab/actions/runs/37524370177/artifacts/11442231016) | `.tar.gz` uygulama arşivi |
+| Windows — Intel/AMD 64 bit | [Kurulum paketini indir](/tanerim/TS_TextLab/releases/latest/download/TS-TextLab-windows-x86_64-Setup.exe) | Önerilen kurulum paketi |
+| Windows — Intel/AMD 64 bit | [Taşınabilir sürümü indir](/tanerim/TS_TextLab/releases/latest/download/TS-TextLab-windows-x86_64.exe) | Kurulum gerektirmeyen taşınabilir sürüm |
+| macOS — Apple Silicon (M serisi) | [macOS paketini indir](/tanerim/TS_TextLab/releases/latest/download/TS-TextLab-macos-arm64-unsigned.dmg) | DMG disk imajı |
+| Linux — Intel/AMD 64 bit | [Linux paketini indir](/tanerim/TS_TextLab/releases/latest/download/TS-TextLab-linux-x86_64.tar.gz) | TAR.GZ uygulama arşivi |
 
-Bu bağlantılar GitHub üzerindeki paketlere gider ve **indirmek için GitHub hesabınızla oturum açmanız gerekir**. İndirilen ZIP dosyasını önce açın; içinden aşağıda belirtilen uygulama paketini seçin. GitHub paketleri süreli saklandığından bağlantı kullanılamıyorsa [derlemeler sayfasındaki](https://github.com/tanerim/TS_TextLab/actions/workflows/desktop-build.yml) son başarılı çalışmanın **Artifacts** bölümüne bakın.
+Tüm yayımlanmış sürümler [Releases](/tanerim/TS_TextLab/releases) sayfasında yer alır. Yukarıdaki bağlantılar en güncel sürümün dosyalarına gider.
 
 ### Windows
 
