@@ -1,0 +1,67 @@
+{
+  "commit": "8f5d9a64ab7705a96cb8d771cca36440fc41b338",
+  "platform": "windows-x86_64",
+  "status": "cancelled",
+  "url": "https://github.com/tanerim/TS_TextLab/actions/runs/37589264719",
+  "artifact": "TS-TextLab-windows-x86_64",
+  "steps": {
+    "dependencies": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "unit": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "source": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "build": {
+      "outputs": {},
+      "outcome": "cancelled",
+      "conclusion": "cancelled"
+    },
+    "packaged": {
+      "outputs": {},
+      "outcome": "skipped",
+      "conclusion": "skipped"
+    },
+    "installer": {
+      "outputs": {},
+      "outcome": "skipped",
+      "conclusion": "skipped"
+    },
+    "upload": {
+      "outputs": {
+        "artifact-id": "11467792881",
+        "artifact-digest": "b0f366cfc7442958e98acfa0b69aa447625ad12e02ad4d0382b3b5f3192492ff",
+        "artifact-url": "https://github.com/tanerim/TS_TextLab/actions/runs/37589264719/artifacts/11467792881"
+      },
+      "outcome": "success",
+      "conclusion": "success"
+    }
+  },
+  "source-test": {
+    "version": "0.1.1",
+    "platform": "Windows-2022Server-10.0.20348-SP0",
+    "utf8_mode": 1,
+    "checks": [
+      "window, icon, logo, packaged assets",
+      "tokenize: 23 rows, CSV round trip",
+      "pos: 23 rows, CSV round trip",
+      "frequency: 16 rows, CSV round trip",
+      "ngrams: 19 rows, CSV round trip",
+      "dashboard: 16 rows, CSV round trip",
+      "frequency: 16 rows, CSV round trip",
+      "concordance: 3 rows, CSV round trip",
+      "filter, concordance and back",
+      "Turkish/English, two window sizes, settings and ten help pages",
+      "clear and error recovery"
+    ],
+    "passed": true
+  }
+}
