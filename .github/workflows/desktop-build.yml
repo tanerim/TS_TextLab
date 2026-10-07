@@ -14,6 +14,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: desktop-build-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     strategy:
@@ -110,3 +114,89 @@ jobs:
           BUILD_STATUS: ${{ job.status }}
           BUILD_STEPS: ${{ toJSON(steps) }}
         run: python scripts/publish_build_report.py
+
+  release:
+    name: Publish public download release
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read application version
+        id: version
+        shell: bash
+        run: |
+          VERSION="$(tr -d '\r\n' < version.txt)"
+          test -n "$VERSION"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Check whether this version is already released
+        id: existing
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+        shell: bash
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Download successful build artifacts
+        if: steps.existing.outputs.exists != 'true'
+        uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+
+      - name: Prepare stable public download filenames
+        if: steps.existing.outputs.exists != 'true'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p public-downloads
+
+          copy_one() {
+            local pattern="$1"
+            local target="$2"
+            local source
+            source="$(find release-assets -type f -name "$pattern" -print -quit)"
+            if [ -z "$source" ]; then
+              echo "Missing release asset matching: $pattern" >&2
+              exit 1
+            fi
+            cp "$source" "public-downloads/$target"
+          }
+
+          copy_one "TS-TextLab-$VERSION-windows-x86_64-Setup.exe" "TS-TextLab-windows-x86_64-Setup.exe"
+          copy_one "TS-TextLab-$VERSION-windows-x86_64.exe" "TS-TextLab-windows-x86_64.exe"
+          copy_one "TS-TextLab-$VERSION-macos-arm64*.dmg" "TS-TextLab-macos-arm64-unsigned.dmg"
+          copy_one "TS-TextLab-$VERSION-linux-x86_64.tar.gz" "TS-TextLab-linux-x86_64.tar.gz"
+
+          ls -lh public-downloads
+
+      - name: Create GitHub Release
+        if: steps.existing.outputs.exists != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+          VERSION: ${{ steps.version.outputs.version }}
+        shell: bash
+        run: |
+          gh release create "$TAG" public-downloads/* \
+            --target "$GITHUB_SHA" \
+            --title "TS TextLab $VERSION" \
+            --generate-notes \
+            --latest
+
+      - name: Release already exists
+        if: steps.existing.outputs.exists == 'true'
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+        run: echo "$TAG already exists; public release assets were left unchanged."
