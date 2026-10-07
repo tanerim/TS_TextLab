@@ -12,10 +12,11 @@ Metinler bilgisayarınızda işlenir ve başka bir servise gönderilmez. Analizl
 
 | İşletim sistemi | İndirme bağlantısı | Paket |
 | --- | --- | --- |
-| Windows — Intel/AMD 64 bit | [Kurulum paketini indir](/tanerim/TS_TextLab/releases/latest/download/TS-TextLab-windows-x86_64-Setup.exe) | Önerilen kurulum paketi |
-| Windows — Intel/AMD 64 bit | [Taşınabilir sürümü indir](/tanerim/TS_TextLab/releases/latest/download/TS-TextLab-windows-x86_64.exe) | Kurulum gerektirmeyen taşınabilir sürüm |
-| macOS — Apple Silicon (M serisi) | [macOS paketini indir](/tanerim/TS_TextLab/releases/latest/download/TS-TextLab-macos-arm64-unsigned.dmg) | DMG disk imajı |
-| Linux — Intel/AMD 64 bit | [Linux paketini indir](/tanerim/TS_TextLab/releases/latest/download/TS-TextLab-linux-x86_64.tar.gz) | TAR.GZ uygulama arşivi |
+| Windows — Intel/AMD 64 bit | [Kurulum paketini indir](https://github.com/tanerim/TS_TextLab/releases/download/v0.1.1/TS-TextLab-windows-x86_64-Setup.exe) | Önerilen kurulum paketi |
+| Windows — Intel/AMD 64 bit | [Taşınabilir sürümü indir](https://github.com/tanerim/TS_TextLab/releases/download/v0.1.1/TS-TextLab-windows-x86_64.exe) | Kurulum gerektirmeyen taşınabilir sürüm |
+| macOS — Apple Silicon (M serisi) | [macOS paketini indir](https://github.com/tanerim/TS_TextLab/releases/download/v0.1.1/TS-TextLab-macos-arm64-unsigned.dmg) | DMG disk imajı |
+| Linux — Intel/AMD 64 bit | [Linux paketini indir](https://github.com/tanerim/TS_TextLab/releases/download/v0.1.1/TS-TextLab-linux-x86_64.tar.gz) | TAR.GZ uygulama arşivi |
+
 
 Tüm yayımlanmış sürümler [Releases](https://github.com/tanerim/TS_TextLab/releases) sayfasında yer alır. Yukarıdaki bağlantılar en güncel sürümün dosyalarına gider.
 
