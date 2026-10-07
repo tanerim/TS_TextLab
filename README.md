@@ -17,7 +17,7 @@ Metinler bilgisayarınızda işlenir ve başka bir servise gönderilmez. Analizl
 | macOS — Apple Silicon (M serisi) | [macOS paketini indir](/tanerim/TS_TextLab/releases/latest/download/TS-TextLab-macos-arm64-unsigned.dmg) | DMG disk imajı |
 | Linux — Intel/AMD 64 bit | [Linux paketini indir](/tanerim/TS_TextLab/releases/latest/download/TS-TextLab-linux-x86_64.tar.gz) | TAR.GZ uygulama arşivi |
 
-Tüm yayımlanmış sürümler [Releases]([/tanerim/TS_TextLab/releases](https://github.com/tanerim/TS_TextLab/releases)) sayfasında yer alır. Yukarıdaki bağlantılar en güncel sürümün dosyalarına gider.
+Tüm yayımlanmış sürümler [Releases](https://github.com/tanerim/TS_TextLab/releases) sayfasında yer alır. Yukarıdaki bağlantılar en güncel sürümün dosyalarına gider.
 
 ### Windows
 
