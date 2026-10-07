@@ -20,13 +20,14 @@ Metinler bilgisayarınızda işlenir ve başka bir servise gönderilmez. Analizl
 
 Tüm yayımlanmış sürümler [Releases](https://github.com/tanerim/TS_TextLab/releases) sayfasında yer alır. Yukarıdaki bağlantılar en güncel sürümün dosyalarına gider.
 
-### Windows
 
-1. İndirilen ZIP dosyasını açın.
-2. Kurulum yapmadan kullanmak için `TS-TextLab-0.1.1-windows-x86_64.exe` dosyasına çift tıklayın.
-3. Kurulum ve kısayollar için `TS-TextLab-0.1.1-windows-x86_64-Setup.exe` dosyasını açıp adımları izleyin. Ardından uygulamayı Başlat menüsünden veya masaüstü kısayolundan açabilirsiniz.
+### Linux
 
-Python kurulumu gerekmez. Taşınabilir uygulamanın ilk açılışı, içerdiği model hazırlanırken biraz uzun sürebilir. Paket imzasız olduğu için Windows SmartScreen uyarısı gösterebilir.
+1. İndirilen ZIP dosyasını, ardından içindeki `.tar.gz` arşivini açın.
+2. Oluşan **TS TextLab** klasörünü kalıcı olarak tutacağınız bir yere taşıyın.
+3. Klasördeki **TS TextLab** çalıştırılabilir dosyasına çift tıklayın. `_internal` klasörü uygulamayla birlikte kalmalıdır.
+
+İsterseniz aynı klasördeki `install-linux.sh` betiğini çalıştırarak uygulama menüsüne kısayol ekleyebilirsiniz; yönetici yetkisi gerekmez. Linux paketi Ubuntu 24.04 üzerinde hazırlanmıştır; tüm Linux dağıtımlarında uyumluluk doğrulanmamıştır. Dosya yöneticiniz çalıştırma izni isterse dosyanın özelliklerinden bu izni etkinleştirin.
 
 ### macOS
 
@@ -37,13 +38,14 @@ Python kurulumu gerekmez. Taşınabilir uygulamanın ilk açılışı, içerdiğ
 
 Mevcut paket **Apple Silicon içindir; Intel Mac paketi yoktur**. Dosya adındaki `-unsigned`, paketin Apple geliştirici imzası ve noter onayı taşımadığını belirtir. macOS bu paketi engelleyebilir; mevcut sürüm her Mac'te uyarısız çift tıklamayla açılacak bir dağıtım değildir.
 
-### Linux
 
-1. İndirilen ZIP dosyasını, ardından içindeki `.tar.gz` arşivini açın.
-2. Oluşan **TS TextLab** klasörünü kalıcı olarak tutacağınız bir yere taşıyın.
-3. Klasördeki **TS TextLab** çalıştırılabilir dosyasına çift tıklayın. `_internal` klasörü uygulamayla birlikte kalmalıdır.
+### Windows
 
-İsterseniz aynı klasördeki `install-linux.sh` betiğini çalıştırarak uygulama menüsüne kısayol ekleyebilirsiniz; yönetici yetkisi gerekmez. Linux paketi Ubuntu 24.04 üzerinde hazırlanmıştır; tüm Linux dağıtımlarında uyumluluk doğrulanmamıştır. Dosya yöneticiniz çalıştırma izni isterse dosyanın özelliklerinden bu izni etkinleştirin.
+1. İndirilen ZIP dosyasını açın.
+2. Kurulum yapmadan kullanmak için `TS-TextLab-0.1.1-windows-x86_64.exe` dosyasına çift tıklayın.
+3. Kurulum ve kısayollar için `TS-TextLab-0.1.1-windows-x86_64-Setup.exe` dosyasını açıp adımları izleyin. Ardından uygulamayı Başlat menüsünden veya masaüstü kısayolundan açabilirsiniz.
+
+Python kurulumu gerekmez. Taşınabilir uygulamanın ilk açılışı, içerdiği model hazırlanırken biraz uzun sürebilir. Paket imzasız olduğu için Windows SmartScreen uyarısı gösterebilir.
 
 ## Kullanma kılavuzu
 
