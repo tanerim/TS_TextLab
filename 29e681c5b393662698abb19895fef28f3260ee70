@@ -1,0 +1,67 @@
+{
+  "commit": "29e681c5b393662698abb19895fef28f3260ee70",
+  "platform": "macos-arm64",
+  "status": "cancelled",
+  "url": "https://github.com/tanerim/TS_TextLab/actions/runs/37585697069",
+  "artifact": "TS-TextLab-macos-arm64",
+  "steps": {
+    "dependencies": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "unit": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "source": {
+      "outputs": {},
+      "outcome": "cancelled",
+      "conclusion": "cancelled"
+    },
+    "build": {
+      "outputs": {},
+      "outcome": "skipped",
+      "conclusion": "skipped"
+    },
+    "packaged": {
+      "outputs": {},
+      "outcome": "skipped",
+      "conclusion": "skipped"
+    },
+    "installer": {
+      "outputs": {},
+      "outcome": "skipped",
+      "conclusion": "skipped"
+    },
+    "upload": {
+      "outputs": {
+        "artifact-id": "11466755293",
+        "artifact-digest": "fa23285df40325ff8453bf8d480bd732a13aaee8e0c61ddd70257c5d36054f88",
+        "artifact-url": "https://github.com/tanerim/TS_TextLab/actions/runs/37585697069/artifacts/11466755293"
+      },
+      "outcome": "success",
+      "conclusion": "success"
+    }
+  },
+  "source-test": {
+    "version": "0.1.1",
+    "platform": "macOS-14.8.9-arm64-arm-64bit-Mach-O",
+    "utf8_mode": 1,
+    "checks": [
+      "window, icon, logo, packaged assets",
+      "tokenize: 23 rows, CSV round trip",
+      "pos: 23 rows, CSV round trip",
+      "frequency: 16 rows, CSV round trip",
+      "ngrams: 19 rows, CSV round trip",
+      "dashboard: 16 rows, CSV round trip",
+      "frequency: 16 rows, CSV round trip",
+      "concordance: 3 rows, CSV round trip",
+      "filter, concordance and back",
+      "Turkish/English, two window sizes, settings and ten help pages",
+      "clear and error recovery"
+    ],
+    "passed": true
+  }
+}
