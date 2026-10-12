@@ -1,0 +1,96 @@
+{
+  "commit": "262df11646016d10961cd762fe0ab772107be485",
+  "platform": "linux-x86_64",
+  "status": "success",
+  "url": "https://github.com/tanerim/TS_TextLab/actions/runs/38307455533",
+  "artifact": "TS-TextLab-linux-x86_64",
+  "steps": {
+    "dependencies": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "unit": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "source": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "windows_signing": {
+      "outputs": {},
+      "outcome": "skipped",
+      "conclusion": "skipped"
+    },
+    "build": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "windows_binaries": {
+      "outputs": {},
+      "outcome": "skipped",
+      "conclusion": "skipped"
+    },
+    "packaged": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "installer": {
+      "outputs": {},
+      "outcome": "skipped",
+      "conclusion": "skipped"
+    },
+    "upload": {
+      "outputs": {
+        "artifact-id": "11773093820",
+        "artifact-digest": "467fc75ab18f747b2a1adc22f338c4e72d46993168f17c3a9725cacf8bc95627",
+        "artifact-url": "https://github.com/tanerim/TS_TextLab/actions/runs/38307455533/artifacts/11773093820"
+      },
+      "outcome": "success",
+      "conclusion": "success"
+    }
+  },
+  "source-test": {
+    "version": "0.1.1",
+    "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+    "utf8_mode": 1,
+    "checks": [
+      "window, icon, logo, packaged assets",
+      "tokenize: 23 rows, CSV round trip",
+      "pos: 23 rows, CSV round trip",
+      "frequency: 16 rows, CSV round trip",
+      "ngrams: 19 rows, CSV round trip",
+      "dashboard: 16 rows, CSV round trip",
+      "frequency: 16 rows, CSV round trip",
+      "concordance: 3 rows, CSV round trip",
+      "filter, concordance and back",
+      "Turkish/English, two window sizes, settings and ten help pages",
+      "clear and error recovery"
+    ],
+    "passed": true
+  },
+  "packaged-test": {
+    "version": "0.1.1",
+    "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+    "utf8_mode": 1,
+    "checks": [
+      "window, icon, logo, packaged assets",
+      "tokenize: 23 rows, CSV round trip",
+      "pos: 23 rows, CSV round trip",
+      "frequency: 16 rows, CSV round trip",
+      "ngrams: 19 rows, CSV round trip",
+      "dashboard: 16 rows, CSV round trip",
+      "frequency: 16 rows, CSV round trip",
+      "concordance: 3 rows, CSV round trip",
+      "filter, concordance and back",
+      "Turkish/English, two window sizes, settings and ten help pages",
+      "clear and error recovery"
+    ],
+    "passed": true
+  }
+}
