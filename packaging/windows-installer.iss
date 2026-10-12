@@ -3,6 +3,11 @@
 #endif
 
 [Setup]
+#ifdef WindowsSigning
+SignTool=textlab
+SignedUninstaller=yes
+SignedUninstallerDir={#ProjectDir}\build\signed-uninstaller
+#endif
 AppId={{A43106CB-C87D-4296-BCEB-7CBFA57D5639}
 AppName=TS TextLab
 AppVersion={#AppVersion}

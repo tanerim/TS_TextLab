@@ -29,8 +29,18 @@ def check_app(executable: Path, report: Path) -> dict:
     return result
 
 
-def windows(version: str) -> dict:
+def windows_signature_check(path: Path, report: str) -> None:
+    mode = "Verify" if os.environ.get("TEXTLAB_WINDOWS_SIGNING_ENABLED") == "true" else "Inventory"
+    run("pwsh", "-NoProfile", "-File", ROOT / "scripts" / "sign_windows.ps1",
+        "-Path", path, "-Mode", mode, "-Report", ROOT / "build" / report)
+
+
+def windows(version: str, require_signing: bool = False) -> dict:
+    signed = os.environ.get("TEXTLAB_WINDOWS_SIGNING_ENABLED") == "true"
+    if require_signing and not signed:
+        raise RuntimeError("Windows distribution requires configured code signing")
     portable = ROOT / "dist" / f"TS-TextLab-{version}-windows-x86_64.exe"
+    windows_signature_check(portable, "windows-portable-signing.json")
     portable_result = check_app(portable, ROOT / "build" / "portable-test.json")
     compiler = shutil.which("ISCC")
     if not compiler:
@@ -41,10 +51,16 @@ def windows(version: str) -> dict:
                 break
     if not compiler:
         raise RuntimeError("Install Inno Setup 6 before creating the Windows installer")
-    run(compiler, f"/DAppVersion={version}", f"/DOutputDir={ROOT / 'dist'}",
+    signing_args = []
+    if signed:
+        signing_script = ROOT / "scripts" / "sign_windows.ps1"
+        signing_args = ["/DWindowsSigning=1",
+                        f'/Stextlab=pwsh -NoProfile -File $q{signing_script}$q -Path $f']
+    run(compiler, *signing_args, f"/DAppVersion={version}", f"/DOutputDir={ROOT / 'dist'}",
         f"/DProjectDir={ROOT}", f"/DBundleDir={ROOT / 'dist' / 'TS TextLab'}",
         ROOT / "packaging" / "windows-installer.iss")
     installer = ROOT / "dist" / f"TS-TextLab-{version}-windows-x86_64-Setup.exe"
+    windows_signature_check(installer, "windows-installer-signing.json")
     with tempfile.TemporaryDirectory(prefix="textlab-install-") as folder:
         install_dir = Path(folder) / "TS TextLab"
         # DisableProgramGroupPage=yes deliberately fixes this to DefaultGroupName.
@@ -53,13 +69,14 @@ def windows(version: str) -> dict:
             f"/DIR={install_dir}", "/TASKS=",
             f"/LOG={ROOT / 'build' / 'windows-install.log'}")
         try:
+            windows_signature_check(install_dir, "windows-installed-signing.json")
             shortcut = Path(os.environ["APPDATA"]) / "Microsoft/Windows/Start Menu/Programs" / group / "TS TextLab.lnk"
             assert shortcut.is_file(), "Start menu shortcut is missing"
             result = check_app(install_dir / "TS TextLab.exe", ROOT / "build" / "installed-test.json")
         finally:
             run(install_dir / "unins000.exe", "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART")
         assert not (install_dir / "TS TextLab.exe").exists(), "Uninstaller left the application installed"
-    return {"file": installer.name, "portable_file": portable.name, "checks": ["single-file portable application: 11 checks", "silent installation", "Start menu shortcut", "installed application: 11 checks", "uninstall"], "app_test": result, "portable_test": portable_result, "signed": False}
+    return {"file": installer.name, "portable_file": portable.name, "checks": ["single-file portable application: 11 checks", "silent installation", "Start menu shortcut", "installed application: 11 checks", "uninstall"], "app_test": result, "portable_test": portable_result, "signed": signed}
 
 
 def macos(version: str, require_signing: bool) -> dict:
@@ -112,7 +129,7 @@ def main() -> None:
     report = {"version": version, "platform": platform.platform(), "passed": False}
     try:
         if sys.platform == "win32":
-            report.update(windows(version))
+            report.update(windows(version, args.require_signing or os.environ.get("REQUIRE_WINDOWS_SIGNING") == "true"))
         elif sys.platform == "darwin":
             report.update(macos(version, args.require_signing or os.environ.get("REQUIRE_MACOS_SIGNING") == "true"))
         else:

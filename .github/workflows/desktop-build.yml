@@ -3,6 +3,10 @@ name: Desktop builds and tests
 on:
   workflow_dispatch:
     inputs:
+      require_windows_signing:
+        description: Require signed Windows distribution
+        type: boolean
+        default: true
       require_macos_signing:
         description: Require signed and notarized macOS distribution
         type: boolean
@@ -31,9 +35,12 @@ jobs:
           - os: windows-2022
             platform: windows-x86_64
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 40
+    timeout-minutes: 60
     env:
       QT_QPA_PLATFORM: offscreen
+      REQUIRE_WINDOWS_SIGNING: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/master') || inputs.require_windows_signing }}
+      TEXTLAB_WINDOWS_TIMESTAMP_URL: ${{ vars.TEXTLAB_WINDOWS_TIMESTAMP_URL || 'http://timestamp.digicert.com' }}
+      TEXTLAB_WINDOWS_SIGN_ARGS_JSON: ${{ vars.TEXTLAB_WINDOWS_SIGN_ARGS_JSON }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -52,6 +59,10 @@ jobs:
       - name: Unit tests
         id: unit
         run: python -m unittest discover -s tests -v
+      - name: Windows signing trust checks
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./tests/test_windows_signing.ps1
       - name: Source application smoke test
         id: source
         run: python -X utf8 main.py --self-test build/source-test.json
@@ -65,11 +76,34 @@ jobs:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
         run: bash scripts/configure_macos_signing.sh
+      - name: Configure Windows code signing
+        id: windows_signing
+        if: runner.os == 'Windows' && github.event_name != 'pull_request'
+        shell: pwsh
+        env:
+          WINDOWS_CERTIFICATE_BASE64: ${{ secrets.WINDOWS_CERTIFICATE_BASE64 }}
+          WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
+          TEXTLAB_WINDOWS_CERT_THUMBPRINT: ${{ vars.TEXTLAB_WINDOWS_CERT_THUMBPRINT }}
+          TEXTLAB_WINDOWS_SIGN_ARGS_JSON: ${{ vars.TEXTLAB_WINDOWS_SIGN_ARGS_JSON }}
+        run: ./scripts/configure_windows_signing.ps1
       - name: Build native application
         id: build
         env:
           TEXTLAB_MACOS_SIGN_IDENTITY: ${{ vars.TEXTLAB_MACOS_SIGN_IDENTITY }}
         run: python -m PyInstaller packaging/ts_textlab.spec --clean --noconfirm
+      - name: Sign Windows applications and inventory packaged binaries
+        id: windows_binaries
+        if: runner.os == 'Windows'
+        shell: pwsh
+        env:
+          TEXTLAB_WINDOWS_SIGN_ARGS_JSON: ${{ vars.TEXTLAB_WINDOWS_SIGN_ARGS_JSON }}
+        run: |
+          $mode = if ($env:TEXTLAB_WINDOWS_SIGNING_ENABLED -eq 'true') { 'Sign' } else { 'Inventory' }
+          ./scripts/sign_windows.ps1 -Path 'dist/TS TextLab' -Mode $mode -Report 'build/windows-bundle-signing.json'
+          if ($env:TEXTLAB_WINDOWS_SIGNING_ENABLED -eq 'true') {
+            $version = (Get-Content version.txt -Raw).Trim()
+            ./scripts/sign_windows.ps1 -Path "dist/TS-TextLab-$version-windows-x86_64.exe"
+          }
       - name: Test packaged application and archive
         id: packaged
         run: python scripts/check_distribution.py
@@ -87,7 +121,16 @@ jobs:
         env:
           TEXTLAB_MACOS_SIGN_IDENTITY: ${{ vars.TEXTLAB_MACOS_SIGN_IDENTITY }}
           REQUIRE_MACOS_SIGNING: ${{ inputs.require_macos_signing }}
+          TEXTLAB_WINDOWS_SIGN_ARGS_JSON: ${{ vars.TEXTLAB_WINDOWS_SIGN_ARGS_JSON }}
         run: python scripts/create_desktop_installer.py
+      - name: Remove temporary Windows signing certificate
+        if: always() && runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          if ($env:TEXTLAB_WINDOWS_IMPORTED_CERT) {
+            Remove-Item "Cert:\CurrentUser\My\$env:TEXTLAB_WINDOWS_IMPORTED_CERT" -DeleteKey -ErrorAction Stop
+          }
+          Remove-Item "$env:RUNNER_TEMP/textlab-signing.pfx" -Force -ErrorAction SilentlyContinue
       - name: Remove temporary macOS signing keychain
         if: always() && runner.os == 'macOS'
         run: |
@@ -106,6 +149,7 @@ jobs:
             dist/*.exe
             dist/*.dmg
             build/*test.json
+            build/windows-*-signing.json
           if-no-files-found: error
       - name: Save build result for SSH access
         if: always() && github.event_name != 'pull_request'

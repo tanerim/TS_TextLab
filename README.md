@@ -45,7 +45,9 @@ Mevcut paket **Apple Silicon içindir; Intel Mac paketi yoktur**. Dosya adındak
 2. Kurulum yapmadan kullanmak için `TS-TextLab-0.1.1-windows-x86_64.exe` dosyasına çift tıklayın.
 3. Kurulum ve kısayollar için `TS-TextLab-0.1.1-windows-x86_64-Setup.exe` dosyasını açıp adımları izleyin. Ardından uygulamayı Başlat menüsünden veya masaüstü kısayolundan açabilirsiniz.
 
-Python kurulumu gerekmez. Taşınabilir uygulamanın ilk açılışı, içerdiği model hazırlanırken biraz uzun sürebilir. Paket imzasız olduğu için Windows SmartScreen uyarısı gösterebilir.
+Python kurulumu gerekmez. Taşınabilir uygulamanın ilk açılışı, içerdiği model hazırlanırken biraz uzun sürebilir. Mevcut v0.1.1 paketi imzasız olduğu için Windows SmartScreen uyarısı gösterebilir.
+
+Build envanteri, sertifika ayarları ve yeni sürümlerin imzalama akışı: [Windows signing pipeline](docs/windows-signing.md).
 
 ## Kullanma kılavuzu
 

@@ -22,10 +22,12 @@ report = {
     "artifact": f"TS-TextLab-{platform_name}",
     "steps": json.loads(os.environ["BUILD_STEPS"]),
 }
-for name in ("source-test", "packaged-test", "installer-test", "installed-test", "portable-test"):
+for name in ("source-test", "packaged-test", "installer-test", "installed-test", "portable-test",
+             "windows-dependencies-signing", "windows-bundle-signing", "windows-portable-signing",
+             "windows-installer-signing", "windows-installed-signing"):
     path = root / "build" / f"{name}.json"
     if path.exists():
-        report[name] = json.loads(path.read_text(encoding="utf-8"))
+        report[name] = json.loads(path.read_text(encoding="utf-8-sig"))
 git("config", "user.name", "github-actions[bot]")
 git("config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com")
 notes_ref = f"refs/notes/desktop-build/{platform_name}"

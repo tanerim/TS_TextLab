@@ -46,6 +46,11 @@ a = Analysis(
     noarchive=False,
     optimize=0,
 )
+if sys.platform == "win32" and os.environ.get("TEXTLAB_WINDOWS_SIGNING_ENABLED") == "true":
+    sys.path.insert(0, str(project_root / "scripts"))
+    from stage_windows_binaries import stage_and_sign
+    a.binaries, a.datas = stage_and_sign((a.binaries, a.datas), project_root)
+
 pyz = PYZ(a.pure)
 
 exe = EXE(
@@ -88,6 +93,7 @@ if sys.platform == "win32":
         console=False,
         icon=str(project_root / "app" / "theme" / "app-icon.ico"),
         upx=False,
+        strip=False,
     )
 
 if sys.platform == "darwin":
