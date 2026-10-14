@@ -60,6 +60,8 @@ Build envanteri, sertifika ayarları ve yeni sürümlerin imzalama akışı: [Wi
 
 Örneğin, “Bugün güzel bir gün. Yarın da güzel olacak.” metnini yapıştırıp **Sıklık** işlemini çalıştırdığınızda “güzel” biriminin iki kez geçtiğini görebilirsiniz. Bu birimin satırına tıklayıp **Concordance** ile metindeki kullanımlarını bağlamlarıyla inceleyebilirsiniz.
 
+Tüm sonuç tablolarında filtre alanının yanındaki **− / +** düğmeleriyle yazı boyutunu değiştirebilirsiniz. Seçilen boyut kaydedilir; satır yüksekliği ve numara sütununun genişliği buna göre ayarlanır.
+
 İşlem sırasında hareketli ilerleme çubuğu görünür. Bu çubuk işlemin sürdüğünü gösterir; yüzde veya kalan süre tahmini vermez. Sonuçların üstündeki bilgi alanında işlenen kayıt sayısı ve geçen süre yer alır. Büyük metinler ve sözcük türü etiketleme daha uzun sürebilir.
 
 ### Birimlendirme
@@ -85,7 +87,7 @@ Bu işlem, birimlere bağlama göre dilbilgisel tür atar. Çıktı biçimini se
 
 ### Sıklık
 
-**Sıklık**, sözcük benzeri birimlerin metinde kaç kez geçtiğini sayar. Noktalama gibi sözlüksel olmayan birimler bu hesaba katılmaz.
+**Sıklık**, TS Tokenizer çıktısındaki tüm birimlerin metinde kaç kez geçtiğini sayar; hashtag, emoji ve noktalama da hesaba katılır. Harf duyarlı mod tokenizer çıktısını korur. Harf duyarsız modda metin önce TS Tokenizer'ın `tr_lowercase` fonksiyonuyla küçük harfe dönüştürülür, ardından tokenize edilerek sayılır.
 
 - **Harf duyarsız:** Büyük/küçük harf biçimleri Türkçeye uygun küçük harf dönüşümüyle birleştirilir.
 - **Harf duyarlı:** Farklı büyük/küçük harf biçimleri ayrı sayılır.

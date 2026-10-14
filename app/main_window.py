@@ -78,7 +78,6 @@ from app.analysis_service import (
     AnalysisService,
     concordance_rows,
     dashboard_rows,
-    frequency_rows,
     ngram_rows,
     tokenization_rows,
 )
@@ -203,10 +202,11 @@ class NlpWorker(QRunnable):
                 headers, rows, copy_text = tokenization_rows(document, self.tokenizer_mode)
                 result = TaskResult(self.kind, headers, rows, copy_text, document, self.tokenizer_mode)
             elif self.kind == "frequency":
-                headers, rows, copy_text = frequency_rows(
-                    document, self.frequency_case_mode, self.tokenizer_service._char_fix.tr_lowercase
+                frequency = self.tokenizer_service.frequency(self.text, self.frequency_case_mode)
+                result = TaskResult(
+                    self.kind, frequency.headers, frequency.rows, frequency.copy_text,
+                    document, frequency_case_mode=self.frequency_case_mode,
                 )
-                result = TaskResult(self.kind, headers, rows, copy_text, document, frequency_case_mode=self.frequency_case_mode)
             elif self.kind == "ngrams":
                 headers, rows, copy_text = ngram_rows(document, self.ngram_n, self.ngram_types)
                 result = TaskResult(self.kind, headers, rows, copy_text, document)
@@ -278,6 +278,8 @@ class ResultTableModel(QAbstractTableModel):
         if role == Qt.TextAlignmentRole:
             value_index = column - 1
             value = self.rows[row][value_index] if value_index < len(self.rows[row]) else ""
+            if column == 0 or _is_number_like(value):
+                return int(Qt.AlignLeft | Qt.AlignVCenter)
             if self.kind == "concordance":
                 if column == 1:
                     return int(Qt.AlignRight | Qt.AlignVCenter)
@@ -285,8 +287,6 @@ class ResultTableModel(QAbstractTableModel):
                     return int(Qt.AlignCenter)
                 if column == 3:
                     return int(Qt.AlignLeft | Qt.AlignVCenter)
-            if column == 0 or _is_number_like(value):
-                return int(Qt.AlignRight | Qt.AlignVCenter)
             return int(Qt.AlignLeft | Qt.AlignVCenter)
 
         if role == Qt.UserRole:
@@ -393,6 +393,7 @@ class PosBadgeDelegate(QStyledItemDelegate):
             return
 
         painter.save()
+        painter.setFont(option.font)
         if option.state & QStyle.State_Selected:
             painter.fillRect(option.rect, option.palette.highlight())
         text = str(index.data(Qt.DisplayRole) or "")
@@ -430,11 +431,13 @@ class FrequencyBarDelegate(QStyledItemDelegate):
         max_value = max(1.0, source.frequency_max)
 
         painter.save()
+        painter.setFont(option.font)
         if option.state & QStyle.State_Selected:
             painter.fillRect(option.rect, option.palette.highlight())
         display_text = str(index.data(Qt.DisplayRole) or "")
         value = _numeric_value(display_text) or 0
-        track = option.rect.adjusted(10, 14, -62, -14)
+        text_width = option.fontMetrics.horizontalAdvance(display_text)
+        track = option.rect.adjusted(text_width + 22, 14, -10, -14)
         if track.width() > 24:
             fill = QRectF(track)
             fill.setWidth(max(3, track.width() * float(value) / max_value))
@@ -443,7 +446,7 @@ class FrequencyBarDelegate(QStyledItemDelegate):
             painter.setBrush(QColor(self.palette.bar_fill))
             painter.drawRoundedRect(fill, 3, 3)
         painter.setPen(QPen(QColor(self.palette.text)))
-        painter.drawText(option.rect.adjusted(0, 0, -14, 0), Qt.AlignRight | Qt.AlignVCenter, display_text)
+        painter.drawText(option.rect.adjusted(10, 0, -10, 0), Qt.AlignLeft | Qt.AlignVCenter, display_text)
         painter.restore()
 
 
@@ -1106,6 +1109,7 @@ class MainWindow(QMainWindow):
         self._busy = False
         self._enforcing_splitter = False
         self._palette = palette_for("light", "indigo")
+        self.table_font_size = max(9, min(28, self.settings.value("table_font_size", 13, int)))
         self.logo_pixmap = QPixmap(str(resolve_resource("app", "theme", "TS_Corpus_Logo.png")))
 
         self.setWindowTitle(APP_NAME)
@@ -1211,19 +1215,12 @@ class MainWindow(QMainWindow):
         title_layout.addWidget(self.subtitle_label)
         self.active_function_label = QLabel()
         self.active_function_label.setObjectName("ActiveFunction")
-
-        right_side = QWidget()
-        right_side.setObjectName("HeaderSide")
-        right_side.setFixedWidth(side_width)
-        right_layout = QHBoxLayout(right_side)
-        right_layout.setContentsMargins(0, 0, 0, 0)
-        right_layout.addStretch(1)
-        right_layout.addWidget(self._build_app_menu_button())
+        self.active_function_label.setAlignment(Qt.AlignCenter)
 
         layout.addWidget(left_side)
         layout.addLayout(title_layout, 1)
         layout.addWidget(self.active_function_label)
-        layout.addWidget(right_side)
+        layout.addWidget(self._build_app_menu_button())
         return header
 
     def _build_app_menu_button(self) -> QToolButton:
@@ -1381,6 +1378,22 @@ class MainWindow(QMainWindow):
         self.filter_input.setClearButtonEnabled(True)
         self.filter_input.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         filter_row.addWidget(self.filter_input, 1)
+        self.table_font_decrease_button = QToolButton()
+        self.table_font_decrease_button.setText("−")
+        self.table_font_decrease_button.clicked.connect(lambda: self._change_table_font_size(-1))
+        self.table_font_size_label = QLabel()
+        self.table_font_size_label.setAlignment(Qt.AlignCenter)
+        self.table_font_increase_button = QToolButton()
+        self.table_font_increase_button.setText("+")
+        self.table_font_increase_button.clicked.connect(lambda: self._change_table_font_size(1))
+        self.table_font_controls = QWidget()
+        font_controls_layout = QHBoxLayout(self.table_font_controls)
+        font_controls_layout.setContentsMargins(0, 0, 0, 0)
+        font_controls_layout.setSpacing(4)
+        font_controls_layout.addWidget(self.table_font_decrease_button)
+        font_controls_layout.addWidget(self.table_font_size_label)
+        font_controls_layout.addWidget(self.table_font_increase_button)
+        filter_row.addWidget(self.table_font_controls)
         layout.addLayout(filter_row)
 
         self.result_model = ResultTableModel(self)
@@ -1606,13 +1619,49 @@ class MainWindow(QMainWindow):
             self._palette = apply_theme(app, self.settings)
         self._apply_density()
         self._set_analysis_theme(self._kind_for_tab(self.action_tabs.currentIndex()))
+        self._apply_table_font()
         self._apply_delegates()
         if self.current_raw_result is not None and self.current_kind == "dashboard":
             self.dashboard_view.set_result(self.current_raw_result, self.trn, self._palette)
 
     def _apply_density(self) -> None:
         density = self.settings.value("table_density", "comfortable", str)
-        self.results_table.verticalHeader().setDefaultSectionSize(32 if density == "compact" else 42)
+        base_height = 32 if density == "compact" else 42
+        self.results_table.verticalHeader().setDefaultSectionSize(
+            max(base_height, self.results_table.fontMetrics().height() + 18)
+        )
+
+    def _change_table_font_size(self, delta: int) -> None:
+        self.table_font_size = max(9, min(28, self.table_font_size + delta))
+        self.settings.setValue("table_font_size", self.table_font_size)
+        self._apply_table_font()
+
+    def _apply_table_font(self) -> None:
+        self.results_table.setStyleSheet(
+            f"QTableView {{ font-size: {self.table_font_size}px; }} "
+            f"QHeaderView::section {{ font-size: {self.table_font_size}px; }}"
+        )
+        self.results_table.ensurePolished()
+        self.table_font_size_label.setText(f"{self.table_font_size} px")
+        self.table_font_decrease_button.setEnabled(self.table_font_size > 9)
+        self.table_font_increase_button.setEnabled(self.table_font_size < 28)
+        self._apply_density()
+        self._resize_table_fixed_columns()
+        self.results_table.viewport().update()
+
+    def _resize_table_fixed_columns(self) -> None:
+        metrics = self.results_table.fontMetrics()
+        digits = max(5, len(str(max(1, self.result_model.rowCount()))))
+        digit_width = max(metrics.horizontalAdvance(str(digit)) for digit in range(10))
+        self.results_table.setColumnWidth(0, digit_width * digits + 32)
+        if self.current_kind == "pos":
+            self.results_table.setColumnWidth(
+                len(self.result_model.headers), max(104, metrics.horizontalAdvance("PropNoun") + 40)
+            )
+        elif self.current_kind in {"frequency", "ngrams"}:
+            self.results_table.setColumnWidth(2, max(116, digit_width * 7 + 64))
+        elif self.current_kind == "concordance":
+            self.results_table.setColumnWidth(2, max(160, metrics.horizontalAdvance("M" * 8) + 32))
 
     def _apply_delegates(self) -> None:
         self.results_table.setItemDelegate(QStyledItemDelegate(self.results_table))
@@ -1762,6 +1811,7 @@ class MainWindow(QMainWindow):
         self.result_model.set_result(result)
         self.proxy_model.invalidateFilter()
         self.filter_input.setVisible(result.kind != "dashboard")
+        self.table_font_controls.setVisible(result.kind != "dashboard")
         self.export_csv_button.setVisible(True)
         if result.kind == "dashboard":
             dashboard_source = self.current_raw_result or result
@@ -1776,21 +1826,18 @@ class MainWindow(QMainWindow):
             header.setMinimumSectionSize(44)
             header.setSectionResizeMode(QHeaderView.Stretch)
             header.setSectionResizeMode(0, QHeaderView.Fixed)
-            self.results_table.setColumnWidth(0, 48)
             if result.kind == "pos":
                 pos_column = len(result.headers)
                 header.setSectionResizeMode(pos_column, QHeaderView.Fixed)
-                self.results_table.setColumnWidth(pos_column, 104)
             elif result.kind in {"frequency", "ngrams"}:
                 header.setSectionResizeMode(2, QHeaderView.Fixed)
-                self.results_table.setColumnWidth(2, 116)
             elif result.kind == "concordance":
                 header.setSectionResizeMode(2, QHeaderView.Fixed)
-                self.results_table.setColumnWidth(2, 160)
             if result.kind in {"frequency", "ngrams"}:
                 self.results_table.sortByColumn(2, Qt.DescendingOrder)
             else:
                 self.proxy_model.sort(-1)
+            self._resize_table_fixed_columns()
         self._apply_delegates()
 
         label = self._kind_label(result)
@@ -1911,6 +1958,7 @@ class MainWindow(QMainWindow):
         self.result_model.set_result(None)
         self.filter_input.clear()
         self.filter_input.setVisible(True)
+        self.table_font_controls.setVisible(True)
         self.export_csv_button.setVisible(True)
         self.dashboard_view.set_result(None, self.trn, self._palette)
         self.table_stack.setCurrentWidget(self.empty_state)
@@ -2007,6 +2055,12 @@ class MainWindow(QMainWindow):
         self.filter_input.setPlaceholderText(self.trn.text("filter_results"))
         self.input_text.setAccessibleName(self.trn.text("input"))
         self.filter_input.setAccessibleName(self.trn.text("filter_results"))
+        for button, key in (
+            (self.table_font_decrease_button, "table_font_decrease"),
+            (self.table_font_increase_button, "table_font_increase"),
+        ):
+            button.setToolTip(self.trn.text(key))
+            button.setAccessibleName(self.trn.text(key))
         self.action_tabs.setAccessibleName(self.trn.text("actions"))
         self.app_menu_button.setToolTip(self.trn.text("application_menu"))
         self.settings_action.setText(self.trn.text("settings"))
@@ -2388,6 +2442,9 @@ class MainWindow(QMainWindow):
             "ngrams": "ngrams", "dashboard": "text_analysis",
         }[self._kind_for_tab(self.action_tabs.currentIndex())]
         self.active_function_label.setText(self.trn.text(key))
+        self.active_function_label.setMinimumWidth(
+            self.active_function_label.fontMetrics().averageCharWidth() * 45 + 28
+        )
 
     def _refresh_style(self, widget: QWidget) -> None:
         style = widget.style()

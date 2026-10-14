@@ -28,13 +28,14 @@ class TokenizerService:
 
     def __init__(self) -> None:
         try:
-            from ts_tokenizer import CharFix, tokenize
+            from ts_tokenizer import CharFix, tokenize, tr_lowercase
         except ImportError as exc:
             raise DependencyUnavailableError(
                 "`ts-tokenizer` kurulu değil. Geliştirme ortamında `pip install -r requirements.txt` çalıştırın."
             ) from exc
         self._tokenize = tokenize
         self._char_fix = CharFix
+        self._tr_lowercase = tr_lowercase
         # TS Tokenizer classifies whitespace-separated units independently.
         self._cached_unit = lru_cache(maxsize=65_536)(
             lambda unit: tuple(self._normalize_pairs(self._tokenize(unit, "tagged_lines")))
@@ -105,9 +106,9 @@ class TokenizerService:
         return [(row[0], row[1]) for row in tagged.rows if len(row) >= 2 and row[0].strip()]
 
     def frequency(self, text: str, case_mode: FrequencyCaseMode = "insensitive") -> TokenizerResult:
-        tokens = self.tokens_for_pos(text)
         if case_mode == "insensitive":
-            tokens = [self._char_fix.tr_lowercase(token) for token in tokens]
+            text = self._tr_lowercase(text)
+        tokens = self.tokens_for_pos(text)
         counts = Counter(tokens)
         rows = [
             (token, str(count))

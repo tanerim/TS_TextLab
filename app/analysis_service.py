@@ -7,7 +7,7 @@ from collections import Counter
 from dataclasses import dataclass
 
 from app.postagger_service import PosTaggerService
-from app.tokenizer_service import FrequencyCaseMode, TokenizerMode, TokenizerService
+from app.tokenizer_service import TokenizerMode, TokenizerService
 
 
 LEXICAL_TAGS = frozenset({"", "Valid_Word", "Apostrophed", "OOV", "One_Char_Fixed"})
@@ -123,28 +123,6 @@ def tokenization_rows(document: AnalysisDocument, mode: TokenizerMode) -> tuple[
         return ["Line", "Result"], rows, "\n".join(row[1] for row in rows)
     rows = [(token.surface,) for token in document.tokens]
     return ["Token"], rows, "\n".join(token.surface for token in document.tokens)
-
-
-def frequency_rows(
-    document: AnalysisDocument, case_mode: FrequencyCaseMode, lowercase_func=None
-) -> tuple[list[str], list[tuple[str, ...]], str]:
-    if case_mode == "insensitive":
-        lower = lowercase_func or str.casefold
-        sample = [token.surface for token in document.tokens[:2048]]
-        if len(set(sample)) < len(sample) / 2:
-            # Repeated inputs benefit from lowering distinct forms only. A small
-            # sample avoids the extra dictionary pass for mostly unique inputs.
-            counts = Counter(token.surface for token in document.tokens if is_lexical(token))
-            normalized = Counter()
-            for surface, count in counts.items():
-                normalized[lower(surface)] += count
-            counts = normalized
-        else:
-            counts = Counter(lower(token.surface) for token in document.tokens if is_lexical(token))
-    else:
-        counts = Counter(token.surface for token in document.tokens if is_lexical(token))
-    rows = [(token, str(count)) for token, count in _sorted_counts(counts)]
-    return ["Token", "Count"], rows, "\n".join("\t".join(row) for row in rows)
 
 
 def dashboard_rows(text: str, document: AnalysisDocument) -> tuple[list[str], list[tuple[str, ...]], str]:
