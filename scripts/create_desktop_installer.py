@@ -76,7 +76,7 @@ def windows(version: str, require_signing: bool = False) -> dict:
         finally:
             run(install_dir / "unins000.exe", "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART")
         assert not (install_dir / "TS TextLab.exe").exists(), "Uninstaller left the application installed"
-    return {"file": installer.name, "portable_file": portable.name, "checks": ["single-file portable application: 11 checks", "silent installation", "Start menu shortcut", "installed application: 11 checks", "uninstall"], "app_test": result, "portable_test": portable_result, "signed": signed}
+    return {"file": installer.name, "portable_file": portable.name, "checks": [f"single-file portable application: {len(portable_result['checks'])} checks", "silent installation", "Start menu shortcut", f"installed application: {len(result['checks'])} checks", "uninstall"], "app_test": result, "portable_test": portable_result, "signed": signed}
 
 
 def macos(version: str, require_signing: bool) -> dict:
@@ -118,7 +118,7 @@ def macos(version: str, require_signing: bool) -> dict:
             result = check_app(mount / bundle.name / "Contents/MacOS/TS TextLab", ROOT / "build" / "installed-test.json")
         finally:
             run("hdiutil", "detach", mount)
-    return {"file": image.name, "checks": ["disk image mount", "Applications link", "application launched from read-only image: 11 checks"], "app_test": result, "signed_and_notarized": signed}
+    return {"file": image.name, "checks": ["disk image mount", "Applications link", f"application launched from read-only image: {len(result['checks'])} checks"], "app_test": result, "signed_and_notarized": signed}
 
 
 def main() -> None:

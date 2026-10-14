@@ -8,6 +8,7 @@ import platform
 import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 
@@ -40,6 +41,27 @@ def main() -> None:
     archive_format = "gztar" if sys.platform.startswith("linux") else "zip"
     archive = shutil.make_archive(str(root / "dist" / name), archive_format,
                                   root_dir=bundle.parent, base_dir=bundle.name)
+    if sys.platform.startswith("linux"):
+        # Exercise the extracted download independently of the build directory.
+        with tempfile.TemporaryDirectory(prefix="textlab-download-") as folder:
+            extracted = Path(folder)
+            shutil.unpack_archive(archive, extracted)
+            installed = extracted / bundle.name
+            archive_report = root / "build" / "archive-test.json"
+            archive_report.unlink(missing_ok=True)
+            subprocess.run(
+                [str(installed / "TS TextLab"), "--self-test", str(archive_report)],
+                cwd=extracted, env=environment, check=True, timeout=300,
+            )
+            archive_result = json.loads(archive_report.read_text(encoding="utf-8"))
+            assert archive_result["passed"] and archive_result["version"] == version, archive_result
+            launcher_data = extracted / "user-data"
+            subprocess.run(
+                [str(installed / "install-linux.sh")], cwd=extracted,
+                env=dict(environment, XDG_DATA_HOME=str(launcher_data)), check=True, timeout=30,
+            )
+            launcher = launcher_data / "applications" / "com.tscorpus.textlab.desktop"
+            assert launcher.is_file() and str(installed / "TS TextLab") in launcher.read_text(), launcher
     print(f"Packaged tests passed: {len(result['checks'])} checks")
     print(f"Distribution: {archive}")
 

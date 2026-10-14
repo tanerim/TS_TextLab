@@ -11,8 +11,8 @@ import time
 import traceback
 from pathlib import Path
 
-from PySide6.QtCore import QSettings, QTimer
-from PySide6.QtWidgets import QApplication, QListWidget
+from PySide6.QtCore import QSettings, QTimer, Qt
+from PySide6.QtWidgets import QApplication, QListWidget, QToolButton
 
 from app.config import APP_VERSION
 from app.export_service import write_tab_csv
@@ -68,6 +68,38 @@ def run_self_test(app: QApplication, report_path: str) -> int:
                     assert window.tagged_note_label.isVisible(), "Tagged explanation is missing"
 
             window.action_tabs.setCurrentIndex(2)
+            sample = "Başlangıç iyi oldu umarım devamı gelir #millitakım\nBir kahve alayım tuzsuz olsun 😏"
+            window.input_text.setPlainText(sample)
+            from ts_tokenizer import tr_lowercase
+            for mode in ("sensitive", "insensitive"):
+                window.frequency_case_combo.setCurrentIndex(window.frequency_case_combo.findData(mode))
+                window._start_task("frequency")
+                wait_for_task("frequency")
+                expected_text = sample if mode == "sensitive" else tr_lowercase(sample)
+                assert dict(window.current_raw_result.rows) == {token: "1" for token in expected_text.split()}
+            report["checks"].append("frequency: all 13 tokens, Turkish lowercase before tokenization")
+
+            original_size = window.table_font_size
+            window.table_font_increase_button.click()
+            app.processEvents()
+            assert window.table_font_size == original_size + 1
+            assert window.settings.value("table_font_size", 0, int) == window.table_font_size
+            metrics = window.results_table.fontMetrics()
+            assert window.results_table.columnWidth(0) >= metrics.horizontalAdvance("99999") + 20
+            assert window.result_model.data(window.result_model.index(0, 2), Qt.TextAlignmentRole) == int(Qt.AlignLeft | Qt.AlignVCenter)
+            window.table_font_decrease_button.click()
+            assert window.table_font_size == original_size
+            assert window.active_function_label.alignment() == Qt.AlignCenter
+            assert window.active_function_label.width() >= window.active_function_label.minimumWidth()
+            window.filter_input.setText("bir")
+            app.processEvents()
+            clear_buttons = window.filter_input.findChildren(QToolButton)
+            assert clear_buttons, "Filter clear button is missing"
+            for button in clear_buttons:
+                assert abs(button.geometry().center().y() - window.filter_input.rect().center().y()) <= 1, "Filter clear button is not centered"
+            window.filter_input.clear()
+            report["checks"].append("table font controls, five-digit row numbers, numeric alignment, centered filter icon")
+
             window._start_task("frequency")
             wait_for_task("frequency")
             window.filter_input.setText("bir")

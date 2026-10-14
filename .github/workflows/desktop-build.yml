@@ -220,9 +220,14 @@ jobs:
 
           copy_one "TS-TextLab-$VERSION-windows-x86_64-Setup.exe" "TS-TextLab-windows-x86_64-Setup.exe"
           copy_one "TS-TextLab-$VERSION-windows-x86_64.exe" "TS-TextLab-windows-x86_64.exe"
-          copy_one "TS-TextLab-$VERSION-macos-arm64*.dmg" "TS-TextLab-macos-arm64-unsigned.dmg"
+          if [ -f "release-assets/TS-TextLab-macos-arm64/TS-TextLab-$VERSION-macos-arm64.dmg" ]; then
+            copy_one "TS-TextLab-$VERSION-macos-arm64.dmg" "TS-TextLab-macos-arm64.dmg"
+          else
+            copy_one "TS-TextLab-$VERSION-macos-arm64-unsigned.dmg" "TS-TextLab-macos-arm64-unsigned.dmg"
+          fi
           copy_one "TS-TextLab-$VERSION-linux-x86_64.tar.gz" "TS-TextLab-linux-x86_64.tar.gz"
 
+          (cd public-downloads && sha256sum *.exe *.dmg *.tar.gz > SHA256SUMS.txt)
           ls -lh public-downloads
 
       - name: Create GitHub Release
@@ -236,7 +241,7 @@ jobs:
           gh release create "$TAG" public-downloads/* \
             --target "$GITHUB_SHA" \
             --title "TS TextLab $VERSION" \
-            --generate-notes \
+            --notes-file packaging/RELEASE_NOTES.md \
             --latest
 
       - name: Release already exists

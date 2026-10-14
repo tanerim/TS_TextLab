@@ -8,14 +8,14 @@ Metinler bilgisayarınızda işlenir ve başka bir servise gönderilmez. Analizl
 
 ## İndir ve çalıştır
 
-**Güncel paket sürümü: 0.1.1.** GitHub hesabı veya Python kurulumu gerekmez. İşletim sisteminize uygun paketi doğrudan indirebilirsiniz:
+**Güncel paket sürümü: 0.1.3.** GitHub hesabı veya Python kurulumu gerekmez. İşletim sisteminize uygun paketi doğrudan indirebilirsiniz:
 
 | İşletim sistemi | İndirme bağlantısı | Paket |
 | --- | --- | --- |
-| Windows — Intel/AMD 64 bit | [Kurulum paketini indir](https://github.com/tanerim/TS_TextLab/releases/download/v0.1.1/TS-TextLab-windows-x86_64-Setup.exe) | Önerilen kurulum paketi |
-| Windows — Intel/AMD 64 bit | [Taşınabilir sürümü indir](https://github.com/tanerim/TS_TextLab/releases/download/v0.1.1/TS-TextLab-windows-x86_64.exe) | Kurulum gerektirmeyen taşınabilir sürüm |
-| macOS — Apple Silicon (M serisi) | [macOS paketini indir](https://github.com/tanerim/TS_TextLab/releases/download/v0.1.1/TS-TextLab-macos-arm64-unsigned.dmg) | DMG disk imajı |
-| Linux — Intel/AMD 64 bit | [Linux paketini indir](https://github.com/tanerim/TS_TextLab/releases/download/v0.1.1/TS-TextLab-linux-x86_64.tar.gz) | TAR.GZ uygulama arşivi |
+| Windows — Intel/AMD 64 bit | [Kurulum paketini indir](https://github.com/tanerim/TS_TextLab/releases/download/v0.1.3/TS-TextLab-windows-x86_64-Setup.exe) | Önerilen kurulum paketi |
+| Windows — Intel/AMD 64 bit | [Taşınabilir sürümü indir](https://github.com/tanerim/TS_TextLab/releases/download/v0.1.3/TS-TextLab-windows-x86_64.exe) | Kurulum gerektirmeyen taşınabilir sürüm |
+| macOS — Apple Silicon (M serisi) | [macOS paketini indir](https://github.com/tanerim/TS_TextLab/releases/download/v0.1.3/TS-TextLab-macos-arm64-unsigned.dmg) | DMG disk imajı |
+| Linux — Intel/AMD 64 bit | [Linux paketini indir](https://github.com/tanerim/TS_TextLab/releases/download/v0.1.3/TS-TextLab-linux-x86_64.tar.gz) | TAR.GZ uygulama arşivi |
 
 
 Tüm yayımlanmış sürümler [Releases](https://github.com/tanerim/TS_TextLab/releases) sayfasında yer alır. Yukarıdaki bağlantılar en güncel sürümün dosyalarına gider.
@@ -23,7 +23,7 @@ Tüm yayımlanmış sürümler [Releases](https://github.com/tanerim/TS_TextLab/
 
 ### Linux
 
-1. İndirilen ZIP dosyasını, ardından içindeki `.tar.gz` arşivini açın.
+1. İndirilen `.tar.gz` arşivini açın.
 2. Oluşan **TS TextLab** klasörünü kalıcı olarak tutacağınız bir yere taşıyın.
 3. Klasördeki **TS TextLab** çalıştırılabilir dosyasına çift tıklayın. `_internal` klasörü uygulamayla birlikte kalmalıdır.
 
@@ -31,21 +31,19 @@ Tüm yayımlanmış sürümler [Releases](https://github.com/tanerim/TS_TextLab/
 
 ### macOS
 
-1. İndirilen ZIP dosyasını açın.
-2. `.dmg` dosyasına çift tıklayın.
-3. **TS TextLab** uygulamasını **Applications / Uygulamalar** klasörüne sürükleyin.
-4. Uygulamayı bu klasörden açın.
+1. İndirilen `.dmg` dosyasına çift tıklayın.
+2. **TS TextLab** uygulamasını **Applications / Uygulamalar** klasörüne sürükleyin.
+3. Uygulamayı bu klasörden açın.
 
 Mevcut paket **Apple Silicon içindir; Intel Mac paketi yoktur**. Dosya adındaki `-unsigned`, paketin Apple geliştirici imzası ve noter onayı taşımadığını belirtir. macOS bu paketi engelleyebilir; mevcut sürüm her Mac'te uyarısız çift tıklamayla açılacak bir dağıtım değildir.
 
 
 ### Windows
 
-1. İndirilen ZIP dosyasını açın.
-2. Kurulum yapmadan kullanmak için `TS-TextLab-0.1.1-windows-x86_64.exe` dosyasına çift tıklayın.
-3. Kurulum ve kısayollar için `TS-TextLab-0.1.1-windows-x86_64-Setup.exe` dosyasını açıp adımları izleyin. Ardından uygulamayı Başlat menüsünden veya masaüstü kısayolundan açabilirsiniz.
+1. Kurulum yapmadan kullanmak için indirilen `TS-TextLab-windows-x86_64.exe` dosyasına çift tıklayın.
+2. Kurulum ve kısayollar için `TS-TextLab-windows-x86_64-Setup.exe` dosyasını açıp adımları izleyin. Ardından uygulamayı Başlat menüsünden veya masaüstü kısayolundan açabilirsiniz.
 
-Python kurulumu gerekmez. Taşınabilir uygulamanın ilk açılışı, içerdiği model hazırlanırken biraz uzun sürebilir. Mevcut v0.1.1 paketi imzasız olduğu için Windows SmartScreen uyarısı gösterebilir.
+Python kurulumu gerekmez. Taşınabilir uygulamanın ilk açılışı, içerdiği model hazırlanırken biraz uzun sürebilir. İmzasız Windows paketleri Windows SmartScreen uyarısı gösterebilir.
 
 Build envanteri, sertifika ayarları ve yeni sürümlerin imzalama akışı: [Windows signing pipeline](docs/windows-signing.md).
 
