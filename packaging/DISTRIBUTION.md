@@ -32,7 +32,7 @@ CI bu dosyayı klasör dağıtımından bağımsız olarak çalıştırıp test 
 `TS-TextLab-<sürüm>-windows-x86_64-Setup.exe` dosyasını dağıtın.
 Çift tıklama kurulum sihirbazını açar, uygulama kullanıcı hesabına kurulur.
 Masaüstü ve Başlat menüsü kısayolları eklenir. Python kurulumu gerekmez.
-CI, sessiz kurulumdan sonra kurulan uygulamayı 11 test grubuyla sınar,
+CI, sessiz kurulumdan sonra kurulan uygulamanın tüm kontrollerini çalıştırır,
 Başlat menüsü kısayolunu kontrol eder ve kaldırmayı doğrular.
 
 Mevcut Windows kurulum dosyası Authenticode imzası taşımaz. İnternetten
@@ -43,8 +43,9 @@ uygulama ve kurulum dosyası dağıtımdan önce imzalanmalıdır.
 ## macOS
 
 `TS-TextLab-<sürüm>-macos-arm64.dmg` imzalı dağıtım dosyasıdır.
-`-unsigned.dmg` dosyaları yalnızca test içindir ve son kullanıcı yayını için
-hazır değildir. CI, disk imajını salt okunur bağlar ve içindeki uygulamayı
+Sertifika ve notarization yapılandırılmamışsa onaylanan imzasız dağıtım
+`-unsigned.dmg` adıyla yayımlanır; macOS ilk açılışı engelleyebilir.
+CI, disk imajını salt okunur bağlar ve içindeki uygulamayı
 çalıştırarak tüm işlevleri sınar. Bu test Gatekeeper onayının yerine geçmez.
 
 Apple Developer Program hesabından Developer ID Application sertifikası

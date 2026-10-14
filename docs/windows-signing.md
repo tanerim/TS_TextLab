@@ -60,12 +60,12 @@ Yeni imzalarda SHA-256 ve RFC 3161 timestamp zorunludur. Doğrulama
 
 ## GitHub yapılandırması
 
-`master` push'ları imzalama gerektirir. Sertifika/provider eksikse Windows job'u
-başarısız olur ve **tüm public release engellenir**. PR'larda signing kurulumu
-çalışmaz; sertifika secrets kullanılmadan imzasız test ve envanter yapılır.
-Manuel workflow'da `require_windows_signing` varsayılan olarak açıktır; imzasız
-deneme için kapatılabilir. Yapılandırılmış signing'deki hatalar bu seçenek kapalı
-olsa bile build'i durdurur.
+`master` push'ları sertifika/provider bulunmadığında imzasız Windows paketi
+üretir. Sertifika/provider yapılandırılmışsa imzalama ve doğrulama yapılır;
+bu işlemlerdeki hata build'i ve public release'i durdurur. PR'larda signing
+kurulumu çalışmaz; sertifika secrets kullanılmadan imzasız test ve envanter yapılır.
+Manuel workflow'da `require_windows_signing` varsayılan olarak kapalıdır.
+Açılması sertifika/provider eksik olduğunda da Windows job'unu ve yayını engeller.
 
 Hazır bir PFX ve kullanılabilir özel anahtar varsa GitHub repository Actions
 secrets ekleyin:
