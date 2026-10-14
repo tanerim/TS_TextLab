@@ -221,7 +221,7 @@ jobs:
 
           copy_one "TS-TextLab-$VERSION-windows-x86_64-Setup.exe" "TS-TextLab-windows-x86_64-Setup.exe"
           copy_one "TS-TextLab-$VERSION-windows-x86_64.exe" "TS-TextLab-windows-x86_64.exe"
-          if [ -f "release-assets/TS-TextLab-macos-arm64/TS-TextLab-$VERSION-macos-arm64.dmg" ]; then
+          if [ -n "$(find release-assets -type f -name "TS-TextLab-$VERSION-macos-arm64.dmg" -print -quit)" ]; then
             copy_one "TS-TextLab-$VERSION-macos-arm64.dmg" "TS-TextLab-macos-arm64.dmg"
           else
             copy_one "TS-TextLab-$VERSION-macos-arm64-unsigned.dmg" "TS-TextLab-macos-arm64-unsigned.dmg"
