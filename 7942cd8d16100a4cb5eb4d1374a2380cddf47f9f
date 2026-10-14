@@ -1,0 +1,81 @@
+{
+  "commit": "7942cd8d16100a4cb5eb4d1374a2380cddf47f9f",
+  "platform": "windows-x86_64",
+  "status": "failure",
+  "url": "https://github.com/tanerim/TS_TextLab/actions/runs/38548332059",
+  "artifact": "TS-TextLab-windows-x86_64",
+  "steps": {
+    "dependencies": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "unit": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "source": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "windows_signing": {
+      "outputs": {},
+      "outcome": "failure",
+      "conclusion": "failure"
+    },
+    "build": {
+      "outputs": {},
+      "outcome": "skipped",
+      "conclusion": "skipped"
+    },
+    "windows_binaries": {
+      "outputs": {},
+      "outcome": "skipped",
+      "conclusion": "skipped"
+    },
+    "packaged": {
+      "outputs": {},
+      "outcome": "skipped",
+      "conclusion": "skipped"
+    },
+    "installer": {
+      "outputs": {},
+      "outcome": "skipped",
+      "conclusion": "skipped"
+    },
+    "upload": {
+      "outputs": {
+        "artifact-id": "11884944137",
+        "artifact-digest": "2e2bce18b4e13b50e49fab9a19ee291a42087d08c36c80efebc857028197b605",
+        "artifact-url": "https://github.com/tanerim/TS_TextLab/actions/runs/38548332059/artifacts/11884944137"
+      },
+      "outcome": "success",
+      "conclusion": "success"
+    }
+  },
+  "source-test": {
+    "version": "0.1.3",
+    "platform": "Windows-2022Server-10.0.20348-SP0",
+    "utf8_mode": 1,
+    "checks": [
+      "window, icon, logo, packaged assets",
+      "tokenize: 23 rows, CSV round trip",
+      "pos: 23 rows, CSV round trip",
+      "frequency: 18 rows, CSV round trip",
+      "ngrams: 19 rows, CSV round trip",
+      "dashboard: 16 rows, CSV round trip",
+      "frequency: 13 rows, CSV round trip",
+      "frequency: 13 rows, CSV round trip",
+      "frequency: all 13 tokens, Turkish lowercase before tokenization",
+      "table font controls, five-digit row numbers, numeric alignment, centered filter icon",
+      "frequency: 13 rows, CSV round trip",
+      "concordance: 1 rows, CSV round trip",
+      "filter, concordance and back",
+      "Turkish/English, two window sizes, settings and ten help pages",
+      "clear and error recovery"
+    ],
+    "passed": true
+  }
+}
