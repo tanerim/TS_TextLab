@@ -1,0 +1,104 @@
+{
+  "commit": "b01a02b39080df857c12ed5df07201ea36124b94",
+  "platform": "linux-x86_64",
+  "status": "cancelled",
+  "url": "https://github.com/tanerim/TS_TextLab/actions/runs/38548031167",
+  "artifact": "TS-TextLab-linux-x86_64",
+  "steps": {
+    "dependencies": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "unit": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "source": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "windows_signing": {
+      "outputs": {},
+      "outcome": "skipped",
+      "conclusion": "skipped"
+    },
+    "build": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "windows_binaries": {
+      "outputs": {},
+      "outcome": "skipped",
+      "conclusion": "skipped"
+    },
+    "packaged": {
+      "outputs": {},
+      "outcome": "cancelled",
+      "conclusion": "cancelled"
+    },
+    "installer": {
+      "outputs": {},
+      "outcome": "skipped",
+      "conclusion": "skipped"
+    },
+    "upload": {
+      "outputs": {
+        "artifact-id": "11884993585",
+        "artifact-digest": "af7be25680209825666485b1ff40347e8927b26828174c03e38c40d0279a715b",
+        "artifact-url": "https://github.com/tanerim/TS_TextLab/actions/runs/38548031167/artifacts/11884993585"
+      },
+      "outcome": "success",
+      "conclusion": "success"
+    }
+  },
+  "source-test": {
+    "version": "0.1.3",
+    "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+    "utf8_mode": 1,
+    "checks": [
+      "window, icon, logo, packaged assets",
+      "tokenize: 23 rows, CSV round trip",
+      "pos: 23 rows, CSV round trip",
+      "frequency: 18 rows, CSV round trip",
+      "ngrams: 19 rows, CSV round trip",
+      "dashboard: 16 rows, CSV round trip",
+      "frequency: 13 rows, CSV round trip",
+      "frequency: 13 rows, CSV round trip",
+      "frequency: all 13 tokens, Turkish lowercase before tokenization",
+      "table font controls, five-digit row numbers, numeric alignment, centered filter icon",
+      "frequency: 13 rows, CSV round trip",
+      "concordance: 1 rows, CSV round trip",
+      "filter, concordance and back",
+      "Turkish/English, two window sizes, settings and ten help pages",
+      "clear and error recovery"
+    ],
+    "passed": true
+  },
+  "packaged-test": {
+    "version": "0.1.3",
+    "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+    "utf8_mode": 1,
+    "checks": [
+      "window, icon, logo, packaged assets",
+      "tokenize: 23 rows, CSV round trip",
+      "pos: 23 rows, CSV round trip",
+      "frequency: 18 rows, CSV round trip",
+      "ngrams: 19 rows, CSV round trip",
+      "dashboard: 16 rows, CSV round trip",
+      "frequency: 13 rows, CSV round trip",
+      "frequency: 13 rows, CSV round trip",
+      "frequency: all 13 tokens, Turkish lowercase before tokenization",
+      "table font controls, five-digit row numbers, numeric alignment, centered filter icon",
+      "frequency: 13 rows, CSV round trip",
+      "concordance: 1 rows, CSV round trip",
+      "filter, concordance and back",
+      "Turkish/English, two window sizes, settings and ten help pages",
+      "clear and error recovery"
+    ],
+    "passed": true
+  }
+}
