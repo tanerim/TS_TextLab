@@ -1,0 +1,3954 @@
+{
+  "commit": "8ef443c5fad4293e02631e7f42c657960082d15d",
+  "platform": "windows-x86_64",
+  "status": "success",
+  "url": "https://github.com/tanerim/TS_TextLab/actions/runs/38557561439",
+  "artifact": "TS-TextLab-windows-x86_64",
+  "steps": {
+    "dependencies": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "unit": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "source": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "windows_signing": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "build": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "windows_binaries": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "packaged": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "installer": {
+      "outputs": {},
+      "outcome": "success",
+      "conclusion": "success"
+    },
+    "upload": {
+      "outputs": {
+        "artifact-id": "11891235630",
+        "artifact-digest": "37a9d4e5e26470d2e38e0f699173cba263bccdc5a7899c6f3e6b7aef6eabd926",
+        "artifact-url": "https://github.com/tanerim/TS_TextLab/actions/runs/38557561439/artifacts/11891235630"
+      },
+      "outcome": "success",
+      "conclusion": "success"
+    }
+  },
+  "source-test": {
+    "version": "0.1.3",
+    "platform": "Windows-2022Server-10.0.20348-SP0",
+    "utf8_mode": 1,
+    "checks": [
+      "window, icon, logo, packaged assets",
+      "tokenize: 23 rows, CSV round trip",
+      "pos: 23 rows, CSV round trip",
+      "frequency: 18 rows, CSV round trip",
+      "ngrams: 19 rows, CSV round trip",
+      "dashboard: 16 rows, CSV round trip",
+      "frequency: 13 rows, CSV round trip",
+      "frequency: 13 rows, CSV round trip",
+      "frequency: all 13 tokens, Turkish lowercase before tokenization",
+      "table font controls, five-digit row numbers, numeric alignment, centered filter icon",
+      "frequency: 13 rows, CSV round trip",
+      "concordance: 1 rows, CSV round trip",
+      "filter, concordance and back",
+      "Turkish/English, two window sizes, settings and ten help pages",
+      "clear and error recovery"
+    ],
+    "passed": true
+  },
+  "packaged-test": {
+    "version": "0.1.3",
+    "platform": "Windows-2022Server-10.0.20348-SP0",
+    "utf8_mode": 1,
+    "checks": [
+      "window, icon, logo, packaged assets",
+      "tokenize: 23 rows, CSV round trip",
+      "pos: 23 rows, CSV round trip",
+      "frequency: 18 rows, CSV round trip",
+      "ngrams: 19 rows, CSV round trip",
+      "dashboard: 16 rows, CSV round trip",
+      "frequency: 13 rows, CSV round trip",
+      "frequency: 13 rows, CSV round trip",
+      "frequency: all 13 tokens, Turkish lowercase before tokenization",
+      "table font controls, five-digit row numbers, numeric alignment, centered filter icon",
+      "frequency: 13 rows, CSV round trip",
+      "concordance: 1 rows, CSV round trip",
+      "filter, concordance and back",
+      "Turkish/English, two window sizes, settings and ten help pages",
+      "clear and error recovery"
+    ],
+    "passed": true
+  },
+  "installer-test": {
+    "version": "0.1.3",
+    "platform": "Windows-2022Server-10.0.20348-SP0",
+    "passed": true,
+    "file": "TS-TextLab-0.1.3-windows-x86_64-Setup.exe",
+    "portable_file": "TS-TextLab-0.1.3-windows-x86_64.exe",
+    "checks": [
+      "single-file portable application: 15 checks",
+      "silent installation",
+      "Start menu shortcut",
+      "installed application: 15 checks",
+      "uninstall"
+    ],
+    "app_test": {
+      "version": "0.1.3",
+      "platform": "Windows-2022Server-10.0.20348-SP0",
+      "utf8_mode": 1,
+      "checks": [
+        "window, icon, logo, packaged assets",
+        "tokenize: 23 rows, CSV round trip",
+        "pos: 23 rows, CSV round trip",
+        "frequency: 18 rows, CSV round trip",
+        "ngrams: 19 rows, CSV round trip",
+        "dashboard: 16 rows, CSV round trip",
+        "frequency: 13 rows, CSV round trip",
+        "frequency: 13 rows, CSV round trip",
+        "frequency: all 13 tokens, Turkish lowercase before tokenization",
+        "table font controls, five-digit row numbers, numeric alignment, centered filter icon",
+        "frequency: 13 rows, CSV round trip",
+        "concordance: 1 rows, CSV round trip",
+        "filter, concordance and back",
+        "Turkish/English, two window sizes, settings and ten help pages",
+        "clear and error recovery"
+      ],
+      "passed": true
+    },
+    "portable_test": {
+      "version": "0.1.3",
+      "platform": "Windows-2022Server-10.0.20348-SP0",
+      "utf8_mode": 1,
+      "checks": [
+        "window, icon, logo, packaged assets",
+        "tokenize: 23 rows, CSV round trip",
+        "pos: 23 rows, CSV round trip",
+        "frequency: 18 rows, CSV round trip",
+        "ngrams: 19 rows, CSV round trip",
+        "dashboard: 16 rows, CSV round trip",
+        "frequency: 13 rows, CSV round trip",
+        "frequency: 13 rows, CSV round trip",
+        "frequency: all 13 tokens, Turkish lowercase before tokenization",
+        "table font controls, five-digit row numbers, numeric alignment, centered filter icon",
+        "frequency: 13 rows, CSV round trip",
+        "concordance: 1 rows, CSV round trip",
+        "filter, concordance and back",
+        "Turkish/English, two window sizes, settings and ten help pages",
+        "clear and error recovery"
+      ],
+      "passed": true
+    },
+    "signed": false
+  },
+  "installed-test": {
+    "version": "0.1.3",
+    "platform": "Windows-2022Server-10.0.20348-SP0",
+    "utf8_mode": 1,
+    "checks": [
+      "window, icon, logo, packaged assets",
+      "tokenize: 23 rows, CSV round trip",
+      "pos: 23 rows, CSV round trip",
+      "frequency: 18 rows, CSV round trip",
+      "ngrams: 19 rows, CSV round trip",
+      "dashboard: 16 rows, CSV round trip",
+      "frequency: 13 rows, CSV round trip",
+      "frequency: 13 rows, CSV round trip",
+      "frequency: all 13 tokens, Turkish lowercase before tokenization",
+      "table font controls, five-digit row numbers, numeric alignment, centered filter icon",
+      "frequency: 13 rows, CSV round trip",
+      "concordance: 1 rows, CSV round trip",
+      "filter, concordance and back",
+      "Turkish/English, two window sizes, settings and ten help pages",
+      "clear and error recovery"
+    ],
+    "passed": true
+  },
+  "portable-test": {
+    "version": "0.1.3",
+    "platform": "Windows-2022Server-10.0.20348-SP0",
+    "utf8_mode": 1,
+    "checks": [
+      "window, icon, logo, packaged assets",
+      "tokenize: 23 rows, CSV round trip",
+      "pos: 23 rows, CSV round trip",
+      "frequency: 18 rows, CSV round trip",
+      "ngrams: 19 rows, CSV round trip",
+      "dashboard: 16 rows, CSV round trip",
+      "frequency: 13 rows, CSV round trip",
+      "frequency: 13 rows, CSV round trip",
+      "frequency: all 13 tokens, Turkish lowercase before tokenization",
+      "table font controls, five-digit row numbers, numeric alignment, centered filter icon",
+      "frequency: 13 rows, CSV round trip",
+      "concordance: 1 rows, CSV round trip",
+      "filter, concordance and back",
+      "Turkish/English, two window sizes, settings and ten help pages",
+      "clear and error recovery"
+    ],
+    "passed": true
+  },
+  "windows-bundle-signing": {
+    "mode": "Inventory",
+    "signing_enabled": false,
+    "counts": {
+      ".pyd": 102,
+      ".dll": 101,
+      ".exe": 1
+    },
+    "files": [
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\TS TextLab.exe",
+        "extension": ".exe",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "8A743CB0F3F5DD9C166C6C2C2082E215D56A6A415186573B1730A8FD3F0103A8"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\_asyncio.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "6654DFBF4CC92609801F35022ACADDD3FC19E6C777B7771B0F0A68F5813889A8"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\_bz2.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "6DA4D453852346299E983B458F3EC2F0DB3B5F765998BA3F45C91B4A1549037B"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\_ctypes.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "5BCDDF4C374C4D247E1E4A61F3347159C36C5785FE43BDAE11A4E6C9EA2C0166"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\_decimal.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "EEB278DFBDB305BB5AF916ED79E878943E25DC4BD6E99EC17ABB7B3FD9F935D5"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\_hashlib.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "4D3EB9D9492D626C7BB10CFE5AB233A9195EC7B27E92B465B287E7A24FC8266C"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\_lzma.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "2B4DCB12C0420FFCED4B91968AE4EFF6CB585F0F07490160C6DA47DA63064A99"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\_multiprocessing.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "5017BB9DD0D5AB6D7C0F007763D7906D33464F0B436AC6577F1F4FFFD5C98986"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\_overlapped.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "3F393B2CE1FE5973FC45E49DFFCF51405FA875CDB284CF96B2F0D4B93B08765C"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\_queue.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "79C196A0804B152FC48B4055387F4352838E41C28863A0C946E7A98137E681E1"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\_socket.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "C5936292083189E0675A96DDD0E38235726F1C58195CEC64EB0085B9C479DDCE"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\_ssl.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "30FF82A3EA0C675DDC99E6B14F71CA750F06E77D6653E2DA3D7D35B7EF0FC2ED"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\_uuid.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "0D6FCF704721D4BAE58CC754B15A3F8C36907B718874F6D7CBBAA363A14618B1"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\_wmi.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "F88C322F871AEF92DE562278BD25C34C6E758642669D5512A22ED972840317B1"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\_zoneinfo.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "B687DEBA154399BF6E44963E46ABFF518C3F987AE4FDE087A3C891A1A1F08FDD"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-core-console-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "88ACE577A9C51061CB7D1A36BABBBEFA48212FADC838FFDE98FDFFF60DE18386"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-core-datetime-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "1BD81DFD19204B44662510D9054852FB77C9F25C1088D647881C9B976CC16818"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-core-debug-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "591358EB4D1531E9563EE0813E4301C552CE364C912CE684D16576EABF195DC3"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-core-errorhandling-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "D56CE7B1CD76108AD6C137326EC694A14C99D48C3D7B0ACE8C3FF4D9BCEE3CE8"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-core-fibers-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "91D249D7BC0E38EF6BCB17158B1FDC6DD8888DC086615C9B8B750B87E52A5FB3"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-core-fibers-l1-1-1.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "FC9D86CEC621383EAB636EBC87DDD3F5C19A3CB2A33D97BE112C051D0B275429"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-core-file-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "1CA895ABA4E7435563A6B43E85EBA67A0F8C74AA6A6A94D0FC48FA35535E2585"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-core-file-l1-2-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "4CADBC0C39DA7C6722206FDCEBD670ABE5B8D261E7B041DD94F9397A89D1990D"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-core-file-l2-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "93C624B366BA16C643FC8933070A26F03B073AD0CF7F80173266D67536C61989"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-core-handle-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "39095F59C41D76EC81BB2723D646FDE4C148E7CC3402F4980D2ADE95CB9C84F9"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-core-heap-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "8F105771B236DBCB859DE271F0A6822CE1CB79C36988DD42C9E3F6F55C5F7EB9"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-core-interlocked-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "53B25E753CA785BF8B695D89DDE5818A318890211DC992A89146F16658F0B606"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-core-kernel32-legacy-l1-1-1.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "A9B13A1CD1B8C19B0C6B4AFCD5BB0DD29C0E2288231AC9E6DB8510094CE68BA6"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-core-libraryloader-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "7F39BA298B41E4963047341288CAB36B6A241835EE11BA4AD70F44DACD40906C"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-core-localization-l1-2-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "6EE44DD0D8510DC024C9F7C79B1B9FA88C987B26B6BEB6653DDD11751C34E5DC"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-core-memory-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "0512A35316EC9180437F86696A84C5C06A7E4E82E050055A656E5BF9FCA206F9"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-core-namedpipe-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "C05F1FFFE3B5A2738EA54CE9485CCA026FB9635F982626FBA1E1DCC531897273"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-core-processenvironment-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "C4ECA98C3C67B6395D5B005B00AC1EB0318B86B23AA71035A44C2B1602BEFBA9"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-core-processthreads-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "5CCB89E93D67BC3288D4E84649C5346E66E15E3D7CD65D989DAF3F4CB584BE9A"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-core-processthreads-l1-1-1.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "4AD565A8BA3EF0EA8AB87221AD11F83EE0BC844CE236607958406663B407333E"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-core-profile-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "7809160932F44E59B021699F5BC68799EB7293EE1FA926D6FCCA3C3445302E61"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-core-rtlsupport-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "9DC1E91E71C7C054854BD1487CB4E6946D82C9F463430F1C4E8D1471005172B1"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-core-string-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "60FC31D2A0C634412F529DBA76AF3B9BF991352877C6DAE528186D3935704CFD"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-core-synch-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "3A72B4F29F39A265D32AD12F0CE15DBF60129C840E10D84D427829EDE45E78AD"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-core-synch-l1-2-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "EFC1E4460984A73CF47A3DEF033AF1C8F3B1DBC1A56CD27781D3AACF3E3330CB"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-core-sysinfo-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "B203D862DDEF1DD62BF623FC866C7F7A9C317C1C2AE30D1F52CB41F955B5698E"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-core-sysinfo-l1-2-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "2703635D835396AFD0F138D7C73751AFE7E33A24F4225D08C1690B0A371932C0"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-core-timezone-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "33F4FDDC181066FCE06B2227BDED813F95E94ED1F3D785E982C6B6B56C510C57"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-core-util-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "6EDA016742A6171205A387A14B3C0B331841567740376F56768F8C151724207D"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-crt-conio-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "B762061B688AAE679AFE788904D2C9970F74A7DAC98F3B42463D08F25E483D3F"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-crt-convert-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "EBB2AE5535A64F65DAEAB8235585114FC9DD2CF1A49F5852D446250B998B6AE4"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-crt-environment-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "17D63275D00BDD8670422B95BD264C532998E0A1B041079E54FCE4B6B7A55819"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-crt-filesystem-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "9A9E2A65A281644E368D0F272B95BA5F6B445D1C35910D06056C5EBEB77402DB"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-crt-heap-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "BAB9AC3EC83E380AE51E4295EF3BF2C738627812D3A49D1E713661ABBC8DC57A"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-crt-locale-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "BD14C67EA28E21D6257AD780A37122C9B5773F69E693F5DB6BFFAEE4D839526E"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-crt-math-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "606D66D82DB562EA7979179D06486A0F94D079941D26B80A1E2C49D29959DF6F"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-crt-private-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "1BC82BED6143D2BF1B6B08A7809F4A5E29317D6FDDD338A7DA3C0223522E4BBF"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-crt-process-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "F6156B1020380EC4F0E48577EBEDAAEF5FB1AB1F337D8B4E72E6A33A7567A9CC"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-crt-runtime-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "C5902934D026D7E15FBE9917D474F3322846A41A25E66F4B2B1F758801879F4B"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-crt-stdio-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "A9C5A153D8C0286F9B41A2B1C65854AD9E6471B8755B7DE87BAE4470E60BCAB6"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-crt-string-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "25B8F83A7767211B11132775A0E27A45AA4EC8AB4E6572599F9C172AE3606B40"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-crt-time-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "7C7F6393F06DE11750ADB09CC5698AE55CD9FB27B2E51E207286FEB1B5B2B156"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\api-ms-win-crt-utility-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "D8BA5F17B9FFCBF3AEAF3FA1DA226832D2FA90F81ACCE0CD669464E76CE434AC"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\libcrypto-3-x64.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=\"Oracle America, Inc.\", O=\"Oracle America, Inc.\", L=Redwood City, S=California, C=US",
+        "timestamped": true,
+        "sha256": "CC15784F3AEA86A526FA3D74E1FE1DF94293E96D0888FBAACF4ED9F8E24EA2E0"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\libcrypto-3.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "75495FE0E079AB00D49BE740D3C710A0B94E3F74F9648CB7CC9F768FC7F52319"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\libffi-8.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "EFF52743773EB550FCC6CE3EFC37C85724502233B6B002A35496D828BD7B280A"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\libssl-3-x64.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=\"Oracle America, Inc.\", O=\"Oracle America, Inc.\", L=Redwood City, S=California, C=US",
+        "timestamped": true,
+        "sha256": "6DE9CA3242FB130EE489F22CDEF58F48B458AFDC9636CA9C9C6ED57A921408D9"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\libssl-3.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "8957182A9C385BFD9F3F790921DE2DDC614CF91F99EDBED4E9E5446A46504E32"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\pyexpat.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "3865FAE84FF0F274C049E737731CD8AA184FAE208AF5B4C0D0CFC42A38F79CEA"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\python3.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "A1A32B2475675E784D9B34D33D3A8F3E4AFAA563DA1FEB784B0DD69FC4D8F9DC"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\python313.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "3B29BF9FF39BED8F660F5B935F19657F7CE7F145009851741B11364F6EBCB862"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\select.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "17DF388A7AA42E7F066B80AA4F77CBBBA9286495E6F3508425806BE6766D122B"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\ucrtbase.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "2E5FB14B7BF8540278F3614A12F0226E56A7CC9E64B81CBD976C6FCF2F71CBFB"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\unicodedata.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "D113047658F92D893BF4EE2DA81FFBD624EC5C485733C02E116FAC1B9A1B964C"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\VCRUNTIME140_1.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Windows Software Compatibility Publisher, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "A7146C08F89FE5B04541AB507CDB59FF7B44534D4BA3C668A426C6450A03434E"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\VCRUNTIME140.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Windows Software Compatibility Publisher, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "D1F4225DF2CD877DBF130D5668A021DCE3F94118455FF5EC952061C30AFC9CE7"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\blis\\cy.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "0E43C33CC085999E3AEF70ACE323657255EF45A1960F4A91410FEB2CDE4213D5"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\blis\\py.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "3776F8F524B90B1B900C4809A7CF2A4D7CFBD9020313D76D019B2F67846B46A5"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\charset_normalizer\\cd.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "9CCCC0B9EB9F514F25CF21D9A8F09948506978FFA19D80CCD6BE8DF9A9890095"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\charset_normalizer\\md.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "B484D0FC3D09E52A4974F4AEBFC8F79CC5E4F38E375D76402B93905F03F803B1"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\cymem\\cymem.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "E15519B0064A1D162DB3894666B1395FA5B7F7FC190ED35C5298814A799870C9"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\markupsafe\\_speedups.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "BF15134D91924ABCBD58664D7AA2A33549E31BE7FF96D2397D9025737F6A7E26"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\murmurhash\\mrmr.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "96D78BB1363B0C4F80AA598D10B54DE65AA366DF36EC2A0659BE88E1D9140882"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\numpy\\fft\\_pocketfft_umath.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "5B497ECDAEA98528AD53BF22E09B49631BD3A963660514A236ECE6C82F46EFE5"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\numpy\\linalg\\_umath_linalg.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "2989647FD7DF9CE56A0709542F3578D0CA0A5E4F7D83F81B033506C9FEC6ADC5"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\numpy\\random\\_bounded_integers.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "A2FF00933E7A72477B6976D1629137C38B21C45571E678A4E10AC4284973873C"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\numpy\\random\\_common.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "8C7350E399C5A4F89A52F77B4DE6B591032573C4124A3397806B80626788BB96"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\numpy\\random\\_generator.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "811961D6020CA40C28BCD62F7E1C0A29D389B5E1198A9A8E5A83EBC16AABA2DD"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\numpy\\random\\_mt19937.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "EBC88F4759BD866E1C3832A73ADD6DD19FFD0714194AE2009611C20608CF9ECE"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\numpy\\random\\_pcg64.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "2E0B17DC778771432288CC92E260B066D0E96D2046C943CCFA10E73496C68E1E"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\numpy\\random\\_philox.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "CA5626CBCD0C705B9710896AC448C5AE807540F4FB4A66C31751CFF85776F641"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\numpy\\random\\_sfc64.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "33210752124C94BD8AAC7034C2CE417A1C80DE1BB7D33AA759432748FE7699D8"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\numpy\\random\\bit_generator.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "4CFF629B98560B121B68393016F2E5F2DE15C53A5EAC036CC262CB154F7AB168"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\numpy\\random\\mtrand.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "8055B3177E4A54DD08CB302FC7C600083B35934C0FA87002D5E3A2EA59E0CAAC"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\numpy\\_core\\_multiarray_tests.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "089784B9680BB015CC19072B0B685B84B5749F898C3AA9B8EC0838E28189E48C"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\numpy\\_core\\_multiarray_umath.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "F37332834048E3AEF93A33FF53F558A319CAD12009DEFB2231EE1BA4AA6105D8"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\numpy.libs\\libscipy_openblas64_-ed4f167a5330424524f45258e7ca2c8d.dll",
+        "extension": ".dll",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "ED4F167A5330424524F45258E7CA2C8D7F03C0CBA1F30EE4985553AC1F88ECF8"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\numpy.libs\\msvcp140-a4c2229bdc2a2a630acdc095b4d86008.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Windows Software Compatibility Publisher, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "A4C2229BDC2A2A630ACDC095B4D86008E5C3E3BC7773174354F3DA4F5BEB9CDE"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\preshed\\bloom.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "7D18036C8566A625B25E8484EA0970D6A5DB8E49FD6EB8CBD020095182CB43F2"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\preshed\\maps.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "79FAD3C3EE8EFCAAD1558A4DAB6DDA2613F3C0BFB29E622FD43CE4B9877AC5D8"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\pydantic_core\\_pydantic_core.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "6C320AA8F5A182D815AEEEF4332CD44A36CF1F3CA4A0653D33BC0079C4FB3F7C"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\MSVCP140_1.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "B2113956AA3FCB9DECFE65BE1EE7829F8E3AE0899633AE89FE04888ADA201594"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\MSVCP140_2.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "1B806B427FFB573DEFF8478CF6FE336465FE2C67E0919BB95F452B6F31D25736"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\MSVCP140.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "708DD7BBC7BD23BCE9E93F7837A70C2DD7AD55CFF43801E92C0F7FCD7DDA47CD"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\opengl32sw.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "4A7D90F91FDECB5DF7B426BC2D05974B8D7FFA450AF2D1F93F3ECA05800718DA"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\pyside6.abi3.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "D4072BE872B31F3748DE5E6C28CB2976DAFBF063D3CCFA38E5DABDA29BABCDAF"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\Qt6Core.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "65FE6224B6C47A15B058738031D31DCE9928C4D7A58E1B8DB6434F6F5CDDD702"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\Qt6Gui.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "CD071161AD325FF2DE92B0E33D71334EF20712544796949623CE92DFB3957E90"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\Qt6Network.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "DFD0DD852274A5FE9B3C7D2DD9FFFE7E2117D28C10FC862174D6675D42395177"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\Qt6OpenGL.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "B31D20DC5AB28731D43AC5312C46C8FE1C39EA3E9614C46E6419B4DEBC87C1EB"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\Qt6Pdf.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "CF8AE19CF5F98DB4A3AE332FBE6BD00BC4CDF5CA5779F88B2071CF8180610106"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\Qt6Qml.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "5DD60D8E2048557BC1B8A57F6BB44986F45D693C3B0930D1341B07089478F09D"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\Qt6QmlMeta.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "1AE5A50E8DEFA2B60518A2261A2472ECF4D3E3CA965780339953D658844D4AA0"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\Qt6QmlModels.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "1EC0D115747D65A994798064618FFD9E3E9EFA1548297E64E08C49C9A98F0FEB"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\Qt6QmlWorkerScript.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "3A764B6C2BC8CB21F009485E7410E6D29B9EDD5E0ADDBED8FB89292C0AB64C97"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\Qt6Quick.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "33BDDB006A99C82CE3BB677FD2535DFB651D4B2FB12AA13EADDE6DC442BF7F0D"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\Qt6Svg.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "A7352E8062D02E2108E37DB4050FB3315D3C03C7D36ACDC24B98B9A6C129C1DE"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\Qt6VirtualKeyboard.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "E8DB083111DC264C80C81920C882ED1C2C28043EDFFA988894E0A82723B2AA4B"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\Qt6Widgets.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "5A9F37DEDD3DC5BCC1A4BB8EA919C49FC62DF751A1450ACCC34379EB6710EAB6"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\QtCore.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "BE52341A5DF1F76ECCA2FB1E94EB429DFA46F0B659ED6536F25119B565B21EA8"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\QtGui.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "F0549716B10A8B4FBD5C6C041F36AF215223809F919F4C4722D44CC199D5C593"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\QtNetwork.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "3953A86C9545AD8FA1CF1DEC27085DD357838464CD6E2131C9963CAAD6234B67"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\QtWidgets.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "85CB6C2181B4B09887A7D8507DD950844D1B8F74A9C4002C7B71169F75BF6FDA"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\VCRUNTIME140_1.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "B322E382EA249B50009F14A9A71AD16729EB6E4B58A8D3B3BE6AC66EA6342A22"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\VCRUNTIME140.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "C6E841078CD352299A58925991E2552F7251B046253BA895B3AD50CD5CD32EC6"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\plugins\\generic\\qtuiotouchplugin.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "1EE2810EEF83DBB2740D4F796F8149DC5752FFD3DD60E39796A9A4D6A6A0AE38"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\plugins\\iconengines\\qsvgicon.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "DD60826F1959FAA7EA137E00959717450DA9F2E0C151054DAEFF1E9D1226FAB2"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\plugins\\imageformats\\qgif.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "8B8DEA2ABAED333F1FBBDF3C8867CEB6040722C88A1FB81EA451F8B8BC9E8EE0"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\plugins\\imageformats\\qicns.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "6A5AED435989D54234C16581E66F6A59137BFCCD180565A217A8676BCDA6DC8D"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\plugins\\imageformats\\qico.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "F81378DD51392FF0D3AE094D5E59DFC4FA664A0EF4D756D6ED40584F90AF2758"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\plugins\\imageformats\\qjpeg.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "97AF9CEAF3EBEFEFEB7AEDE27AE07B73AE1D2ED479427BEEBF61C58654361D43"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\plugins\\imageformats\\qpdf.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "273A1B6DAAF3C0DEF92902044CF35D0EC65E56F904ACB7FBF428D80DAE2BB9D5"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\plugins\\imageformats\\qsvg.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "D4100055C3A4D6C1BCA5E303E3D2049BDE54D4E916442EE0A3E9B4DFA7D416FC"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\plugins\\imageformats\\qtga.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "50F0E6FF9B7FCA9386CCAD52EB5E83466774E6282C9532B03B11E5A64951DFFB"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\plugins\\imageformats\\qtiff.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "087A3425962E838C35C9073BDF8DE13712466E9B9590717666AF7839DB068DBA"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\plugins\\imageformats\\qwbmp.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "28A6447D44169ACBF2EAB38C475DC0AA9E32ABB3F29F72257726497353B9BF63"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\plugins\\imageformats\\qwebp.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "3E2BF546A3885CBE3E2B64058B1C58377D3C8822F51B37BA967F61E8054D7719"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\plugins\\networkinformation\\qnetworklistmanager.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "AEEF84E74D3114F62F4650305B403EF9F81E8C05BC67C86683D999C5C1243926"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\plugins\\platforminputcontexts\\qtvirtualkeyboardplugin.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "D116B216A50037CBFA6EE9AFD94BEA357CDBEE263E0F9B8C6EF2E811DA29EB70"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\plugins\\platforms\\qdirect2d.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "F099AF483B0D71A6A028BC15AD98A407E4C820400E6626CDC8E66B5F5E4CFED2"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\plugins\\platforms\\qminimal.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "97D81B9EE7CBBEB68E46EEFCE24D4B929B7A24CC646CEBE3D4D03E2734F97935"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\plugins\\platforms\\qoffscreen.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "426266E8BA0EA07C416616AD9973702FE126D4559CB2EE11E1C9BDBAE85BA755"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\plugins\\platforms\\qwindows.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "54D736DE022F707E9F7F555E4C9F9E993253CD5B0EE2364E6A9458C180828C42"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\plugins\\styles\\qmodernwindowsstyle.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "9AF96B09EBAF7FF13E22C70BF69B9C3F226F069375D1A9F9EFD63E944E43F5FB"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\plugins\\tls\\qcertonlybackend.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "45B9F59593A1567F7D6725DDFA53F667F8F26B7795B1E2D0E1080A4025BAFC02"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\plugins\\tls\\qopensslbackend.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "C7222880A7DEFE7A5C84F5871CDC7E34DF22F3DE6646026683042FAB5C22B561"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\PySide6\\plugins\\tls\\qschannelbackend.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "D09487A64BE0E1D4545A8230E7FE05D163375610ADF175407A6742944F16DEB9"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\shiboken6\\MSVCP140.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "005F2324C7FF79BBE9A44992B0708ABB4C871BD24BCC7A34ACA5EAB4439C1F4A"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\shiboken6\\Shiboken.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "0E2C5318C5AC60A016A12230BBB1F6A9D990C45CBF4A7C4AF24AEFB5AB7DC40A"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\shiboken6\\shiboken6.abi3.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "47F4F9B44C95037565DD14F4BE04F350F20C53C05483B750E0BE867C39A7441E"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\shiboken6\\VCRUNTIME140_1.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "E4D7EA5F4F4FF6D0C208E693853617CDEF0AD71CFE5DD5C3AE16C8A6B64C18EA"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\shiboken6\\VCRUNTIME140.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "8D9C679C825C5FFF298D66C41AF30F35C289FC101868DFC9635547BADA0DABA6"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\attrs.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "60C386EB5538BF3EE25772FA90D45CC259CA8D782A81C62BC9BC9D4B27EAFE21"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\lexeme.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "DF5B9D077F9AE5FA29C0F4F434F7B534C02F06290B52C19A1E252F95CF53568D"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\morphology.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "D750B0AE8F575CC7AF1B629FF28E7046EF935944A077F668FC6BA46F17A73102"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\parts_of_speech.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "1412F9B43990AAE72FB5D97FFCB8119F61E2E199BCB46F2FCBEB3721A03CFF8A"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\strings.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "C40E8393EC532A9329661E25FD3A6848943FEFEA4B71EF6AF57AD1A44B43D273"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\symbols.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "9B04AD734D09C7DF626512D82D62CE03698C9CF3402FCE66231DCB65C6BAF909"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\tokenizer.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "11F74D95874C9BD0C1BDD9BD40E63D0B4EC8991E2C760F4567E70ECE75F18CA2"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\vectors.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "6D8F1354D674B4A37CF0D21A7E2099D50410B1C6C2C4698BC6212E7D4898E4D7"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\vocab.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "1E1B50AFE5E21BCBA77A90D38D508664F0F19B472C0D2E19729737A29E8E487B"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\kb\\candidate.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "96E664B72B493F485EDE27A4753101B0B71A186787FE838C13C36944DF196AC6"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\kb\\kb_in_memory.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "29C8F2D40996E4B01AC057BCE78372CCDB6FA3AA6B605A6CD1F05A93DCF52E47"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\kb\\kb.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "94CD99D7182DD0F17D41C7B667F138DE30577AE3F39FA3E1984058A8F084FCE1"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\matcher\\dependencymatcher.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "D537B4C6CB0383974AF14EF86504D23137B06F6C3FF2AA8B6157AD2DCB6544A3"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\matcher\\levenshtein.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "A31D238180F4DAF52B6E5BD4CFB1A2316826E01ED77B44F1C44516C4638351D1"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\matcher\\matcher.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "7F28A0B4F8A279236B9B5D5A345186C235583EBEC6C3AD01B1E8086721739D0C"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\matcher\\phrasematcher.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "E0CA8B895451FBFB4C0DD32CCA417697D23BDD58EA861A17EE3336FCE0740C43"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\ml\\parser_model.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "8F198E275BE5128A733118E2998A1AC5918A188DBDEA875BCDCD20A74116FA48"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\pipeline\\dep_parser.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "D113C77061BF5CE3B5112EADD23CAE7353A76CE5D2A2608CAD7F7202DE819691"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\pipeline\\morphologizer.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "8C4675CD6E146FF9E785F9E3CAF28BC1FA05CB93720C4AA55DF531F2DA82D60E"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\pipeline\\multitask.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "EA30805C8EE88E673018C07C8F3558C4B0C2EE53A46E57FCE15E3C7FFAFEFA71"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\pipeline\\ner.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "612EA28401C4603A779C8DB3B135FDBDFDDEB38BF6827B6C6732359827CF940A"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\pipeline\\pipe.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "0FF278D9B75BDF45FC402B7412AB49E4D4D3431FF3929189E3C7B72977A0DF3B"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\pipeline\\sentencizer.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "20D862DDB00151F48DC7799AF1E5313E85581A7E3430C70F384FACEF99E10290"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\pipeline\\senter.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "F889B419D6686402EDEDBE58F0A474A0E44D376131AE71EC79A9A677C965B3BF"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\pipeline\\tagger.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "28AA5927E11E144E022A5E849A32CE3F03F2A778DA1B47251DF04EA7B7B358F8"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\pipeline\\trainable_pipe.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "0320AC45F8AF3E0028769E645362018EDAB411ABB8FFFC6133AF4EFF45B3DCD5"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\pipeline\\transition_parser.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "16810F8DEA2D0E53F693987A3705AFEB680A355F01D6C6AA0E037E3FB8F94A92"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\pipeline\\_edit_tree_internals\\edit_trees.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "122C0B0DCDA50CBB02697B467E5309FC10554A5D0FA43736D3316C03ED8FEAB2"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\pipeline\\_parser_internals\\_beam_utils.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "E7B57DD541EAE472CD590F3D055B8930220BC44BD4F4723A5A267B703A3F4D7B"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\pipeline\\_parser_internals\\_state.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "5A34981316080D6A6B9F8B8CA38C620A048EF07C4C59FC2A1EFFB2925A278340"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\pipeline\\_parser_internals\\arc_eager.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "077F56DB73F8BC3C754E3E1ABB115E3716B7D1F807F64C675D8CB5989B00E4C2"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\pipeline\\_parser_internals\\ner.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "6098EDE7155FEF889F2F9D3B6351456DAB0A6C5B671C8B23F68081FDE35D2D80"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\pipeline\\_parser_internals\\nonproj.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "D7A824F3746D262F6FD3F1529F1D01401136153AE91B3E8ED598187CDFB7E969"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\pipeline\\_parser_internals\\stateclass.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "EBAF7116A39383FCAA15F6A314C7A7E86C7006E0027931A698F91649FDA0E470"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\pipeline\\_parser_internals\\transition_system.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "CBBE241A8D30032DB26F2F8FFBD8671098C2899153C9FC40F8ABA31D91BD7BDE"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\tokens\\_retokenize.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "12F26D13461C1F228C7D5F57D720164BBFA9ADCC672BEAD4D545FBB36155FA1F"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\tokens\\doc.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "E1DCFF6479E91A38BDD95621C4B7F115F61739AC15F372FBC198231702D1C44F"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\tokens\\graph.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "3532A1EA5944E596C2E78C5FDD2E765277BAE1400491CDA48887F5D5D5F58281"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\tokens\\morphanalysis.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "B49A258F691A69E99E65DAD276B36CB9E75D6B5FEF212340A75D608A5D8B975D"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\tokens\\span_group.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "97076F66850DA537840D8096C872A007D750727167542F1DD07856C2DFBEBDD7"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\tokens\\span.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "5086791F70A5AE316690453CF190300084D4446BED3F0E0D5AA3682CD780A1E3"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\tokens\\token.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "3316B6B8992D3320E8BEC1FB301F24F00A8B63EFF6700D701C5DAC35F77077B5"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\training\\align.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "EA47C02ABF440F606625F51CD270D74B79A5349C03A42049B15A8FF409683B68"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\training\\alignment_array.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "F1AD512324A41FF9B1D78894407BD1714DFC4E06FB31FB88C95CB3D90324F187"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\training\\example.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "B78AA8DA0D6272EC8943375FF0A156CA1A8019F47247EB0181B9E66545CCF264"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\spacy\\training\\gold_io.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "3B846ABEB8CD4138600EE5A62D767068A96E268C09E78BFCD733D3DB34C7AD2A"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\srsly\\msgpack\\_epoch.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "A342F6AE0DE5727948774F846424116FB16053BCC1FE2C223D8FDE5560D241AF"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\srsly\\msgpack\\_packer.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "D7E3D6971816BACFFAE5BB29F0BE245A632FAB81221F5235051826456EF87070"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\srsly\\msgpack\\_unpacker.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "AF448180A7BB724744E86AF79F596DBBE89130C91AEF97B1CF16DB104BA615C7"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\srsly\\ujson\\ujson.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "5D5B75272AD72970A11B7EB7FED9CE655BB3EAB78D303F1CB80892BEFDE833ED"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\thinc\\backends\\cblas.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "72E1949345420F14CFB94FF7AF6E49F3DDE022C8E47DE6448AAADA39DE59B7D4"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\thinc\\backends\\linalg.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "82DA6141E8D5C6F66026BCBEF2828529DBDB8BD358A53A0DD410DC19661EDE31"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\thinc\\backends\\numpy_ops.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "2BB018D19A6091F36E63C878FD4B457034283507366EA27C597EB1CEE5621728"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\thinc\\extra\\search.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "24CAD38AD866AA28036176D0EF0B3F2897D569970FC3EAB77C48A88894C73D4C"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\thinc\\layers\\premap_ids.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "B41642FCE0BF3E6DCE4807FEB9804E99323161F75CD4BF881C5E88C99BE38840"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\thinc\\layers\\sparselinear.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "DB28391CAC4A35384C43735B25BB7CA00AA45A33607C9FB142A5AB253D4DE730"
+      },
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS TextLab\\_internal\\wrapt\\_wrappers.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "A1FC1C3611CC971715C5622D957A1D5A339E27B92A02B73457A922F7C61A6C1E"
+      }
+    ]
+  },
+  "windows-portable-signing": {
+    "mode": "Inventory",
+    "signing_enabled": false,
+    "counts": {
+      ".pyd": 0,
+      ".dll": 0,
+      ".exe": 1
+    },
+    "files": [
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS-TextLab-0.1.3-windows-x86_64.exe",
+        "extension": ".exe",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "D77851250346EDCA181E6C0311A261D4D41F500EEECB5B286C433007FA0C39D4"
+      }
+    ]
+  },
+  "windows-installer-signing": {
+    "mode": "Inventory",
+    "signing_enabled": false,
+    "counts": {
+      ".pyd": 0,
+      ".dll": 0,
+      ".exe": 1
+    },
+    "files": [
+      {
+        "path": "D:\\a\\TS_TextLab\\TS_TextLab\\dist\\TS-TextLab-0.1.3-windows-x86_64-Setup.exe",
+        "extension": ".exe",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "AAE7FFD7D057FECF4426C3B513707D5171923D605C62A80DC76D676A65D6874A"
+      }
+    ]
+  },
+  "windows-installed-signing": {
+    "mode": "Inventory",
+    "signing_enabled": false,
+    "counts": {
+      ".pyd": 102,
+      ".dll": 101,
+      ".exe": 2
+    },
+    "files": [
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\TS TextLab.exe",
+        "extension": ".exe",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "8A743CB0F3F5DD9C166C6C2C2082E215D56A6A415186573B1730A8FD3F0103A8"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\unins000.exe",
+        "extension": ".exe",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "BBBCB5BEA7F6A8C390635E5EAC3074438BA414089262CAA302E235719C5B5529"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\_asyncio.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "6654DFBF4CC92609801F35022ACADDD3FC19E6C777B7771B0F0A68F5813889A8"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\_bz2.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "6DA4D453852346299E983B458F3EC2F0DB3B5F765998BA3F45C91B4A1549037B"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\_ctypes.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "5BCDDF4C374C4D247E1E4A61F3347159C36C5785FE43BDAE11A4E6C9EA2C0166"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\_decimal.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "EEB278DFBDB305BB5AF916ED79E878943E25DC4BD6E99EC17ABB7B3FD9F935D5"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\_hashlib.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "4D3EB9D9492D626C7BB10CFE5AB233A9195EC7B27E92B465B287E7A24FC8266C"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\_lzma.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "2B4DCB12C0420FFCED4B91968AE4EFF6CB585F0F07490160C6DA47DA63064A99"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\_multiprocessing.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "5017BB9DD0D5AB6D7C0F007763D7906D33464F0B436AC6577F1F4FFFD5C98986"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\_overlapped.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "3F393B2CE1FE5973FC45E49DFFCF51405FA875CDB284CF96B2F0D4B93B08765C"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\_queue.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "79C196A0804B152FC48B4055387F4352838E41C28863A0C946E7A98137E681E1"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\_socket.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "C5936292083189E0675A96DDD0E38235726F1C58195CEC64EB0085B9C479DDCE"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\_ssl.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "30FF82A3EA0C675DDC99E6B14F71CA750F06E77D6653E2DA3D7D35B7EF0FC2ED"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\_uuid.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "0D6FCF704721D4BAE58CC754B15A3F8C36907B718874F6D7CBBAA363A14618B1"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\_wmi.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "F88C322F871AEF92DE562278BD25C34C6E758642669D5512A22ED972840317B1"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\_zoneinfo.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "B687DEBA154399BF6E44963E46ABFF518C3F987AE4FDE087A3C891A1A1F08FDD"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-core-console-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "88ACE577A9C51061CB7D1A36BABBBEFA48212FADC838FFDE98FDFFF60DE18386"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-core-datetime-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "1BD81DFD19204B44662510D9054852FB77C9F25C1088D647881C9B976CC16818"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-core-debug-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "591358EB4D1531E9563EE0813E4301C552CE364C912CE684D16576EABF195DC3"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-core-errorhandling-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "D56CE7B1CD76108AD6C137326EC694A14C99D48C3D7B0ACE8C3FF4D9BCEE3CE8"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-core-fibers-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "91D249D7BC0E38EF6BCB17158B1FDC6DD8888DC086615C9B8B750B87E52A5FB3"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-core-fibers-l1-1-1.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "FC9D86CEC621383EAB636EBC87DDD3F5C19A3CB2A33D97BE112C051D0B275429"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-core-file-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "1CA895ABA4E7435563A6B43E85EBA67A0F8C74AA6A6A94D0FC48FA35535E2585"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-core-file-l1-2-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "4CADBC0C39DA7C6722206FDCEBD670ABE5B8D261E7B041DD94F9397A89D1990D"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-core-file-l2-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "93C624B366BA16C643FC8933070A26F03B073AD0CF7F80173266D67536C61989"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-core-handle-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "39095F59C41D76EC81BB2723D646FDE4C148E7CC3402F4980D2ADE95CB9C84F9"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-core-heap-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "8F105771B236DBCB859DE271F0A6822CE1CB79C36988DD42C9E3F6F55C5F7EB9"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-core-interlocked-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "53B25E753CA785BF8B695D89DDE5818A318890211DC992A89146F16658F0B606"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-core-kernel32-legacy-l1-1-1.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "A9B13A1CD1B8C19B0C6B4AFCD5BB0DD29C0E2288231AC9E6DB8510094CE68BA6"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-core-libraryloader-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "7F39BA298B41E4963047341288CAB36B6A241835EE11BA4AD70F44DACD40906C"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-core-localization-l1-2-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "6EE44DD0D8510DC024C9F7C79B1B9FA88C987B26B6BEB6653DDD11751C34E5DC"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-core-memory-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "0512A35316EC9180437F86696A84C5C06A7E4E82E050055A656E5BF9FCA206F9"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-core-namedpipe-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "C05F1FFFE3B5A2738EA54CE9485CCA026FB9635F982626FBA1E1DCC531897273"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-core-processenvironment-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "C4ECA98C3C67B6395D5B005B00AC1EB0318B86B23AA71035A44C2B1602BEFBA9"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-core-processthreads-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "5CCB89E93D67BC3288D4E84649C5346E66E15E3D7CD65D989DAF3F4CB584BE9A"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-core-processthreads-l1-1-1.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "4AD565A8BA3EF0EA8AB87221AD11F83EE0BC844CE236607958406663B407333E"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-core-profile-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "7809160932F44E59B021699F5BC68799EB7293EE1FA926D6FCCA3C3445302E61"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-core-rtlsupport-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "9DC1E91E71C7C054854BD1487CB4E6946D82C9F463430F1C4E8D1471005172B1"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-core-string-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "60FC31D2A0C634412F529DBA76AF3B9BF991352877C6DAE528186D3935704CFD"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-core-synch-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "3A72B4F29F39A265D32AD12F0CE15DBF60129C840E10D84D427829EDE45E78AD"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-core-synch-l1-2-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "EFC1E4460984A73CF47A3DEF033AF1C8F3B1DBC1A56CD27781D3AACF3E3330CB"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-core-sysinfo-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "B203D862DDEF1DD62BF623FC866C7F7A9C317C1C2AE30D1F52CB41F955B5698E"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-core-sysinfo-l1-2-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "2703635D835396AFD0F138D7C73751AFE7E33A24F4225D08C1690B0A371932C0"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-core-timezone-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "33F4FDDC181066FCE06B2227BDED813F95E94ED1F3D785E982C6B6B56C510C57"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-core-util-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "6EDA016742A6171205A387A14B3C0B331841567740376F56768F8C151724207D"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-crt-conio-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "B762061B688AAE679AFE788904D2C9970F74A7DAC98F3B42463D08F25E483D3F"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-crt-convert-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "EBB2AE5535A64F65DAEAB8235585114FC9DD2CF1A49F5852D446250B998B6AE4"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-crt-environment-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "17D63275D00BDD8670422B95BD264C532998E0A1B041079E54FCE4B6B7A55819"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-crt-filesystem-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "9A9E2A65A281644E368D0F272B95BA5F6B445D1C35910D06056C5EBEB77402DB"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-crt-heap-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "BAB9AC3EC83E380AE51E4295EF3BF2C738627812D3A49D1E713661ABBC8DC57A"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-crt-locale-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "BD14C67EA28E21D6257AD780A37122C9B5773F69E693F5DB6BFFAEE4D839526E"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-crt-math-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "606D66D82DB562EA7979179D06486A0F94D079941D26B80A1E2C49D29959DF6F"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-crt-private-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "1BC82BED6143D2BF1B6B08A7809F4A5E29317D6FDDD338A7DA3C0223522E4BBF"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-crt-process-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "F6156B1020380EC4F0E48577EBEDAAEF5FB1AB1F337D8B4E72E6A33A7567A9CC"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-crt-runtime-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "C5902934D026D7E15FBE9917D474F3322846A41A25E66F4B2B1F758801879F4B"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-crt-stdio-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "A9C5A153D8C0286F9B41A2B1C65854AD9E6471B8755B7DE87BAE4470E60BCAB6"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-crt-string-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "25B8F83A7767211B11132775A0E27A45AA4EC8AB4E6572599F9C172AE3606B40"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-crt-time-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "7C7F6393F06DE11750ADB09CC5698AE55CD9FB27B2E51E207286FEB1B5B2B156"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\api-ms-win-crt-utility-l1-1-0.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "D8BA5F17B9FFCBF3AEAF3FA1DA226832D2FA90F81ACCE0CD669464E76CE434AC"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\libcrypto-3-x64.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=\"Oracle America, Inc.\", O=\"Oracle America, Inc.\", L=Redwood City, S=California, C=US",
+        "timestamped": true,
+        "sha256": "CC15784F3AEA86A526FA3D74E1FE1DF94293E96D0888FBAACF4ED9F8E24EA2E0"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\libcrypto-3.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "75495FE0E079AB00D49BE740D3C710A0B94E3F74F9648CB7CC9F768FC7F52319"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\libffi-8.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "EFF52743773EB550FCC6CE3EFC37C85724502233B6B002A35496D828BD7B280A"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\libssl-3-x64.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=\"Oracle America, Inc.\", O=\"Oracle America, Inc.\", L=Redwood City, S=California, C=US",
+        "timestamped": true,
+        "sha256": "6DE9CA3242FB130EE489F22CDEF58F48B458AFDC9636CA9C9C6ED57A921408D9"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\libssl-3.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "8957182A9C385BFD9F3F790921DE2DDC614CF91F99EDBED4E9E5446A46504E32"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\pyexpat.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "3865FAE84FF0F274C049E737731CD8AA184FAE208AF5B4C0D0CFC42A38F79CEA"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\python3.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "A1A32B2475675E784D9B34D33D3A8F3E4AFAA563DA1FEB784B0DD69FC4D8F9DC"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\python313.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "3B29BF9FF39BED8F660F5B935F19657F7CE7F145009851741B11364F6EBCB862"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\select.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "17DF388A7AA42E7F066B80AA4F77CBBBA9286495E6F3508425806BE6766D122B"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\ucrtbase.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "2E5FB14B7BF8540278F3614A12F0226E56A7CC9E64B81CBD976C6FCF2F71CBFB"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\unicodedata.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Python Software Foundation, O=Python Software Foundation, L=Beaverton, S=Oregon, C=US",
+        "timestamped": true,
+        "sha256": "D113047658F92D893BF4EE2DA81FFBD624EC5C485733C02E116FAC1B9A1B964C"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\VCRUNTIME140_1.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Windows Software Compatibility Publisher, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "A7146C08F89FE5B04541AB507CDB59FF7B44534D4BA3C668A426C6450A03434E"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\VCRUNTIME140.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Windows Software Compatibility Publisher, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "D1F4225DF2CD877DBF130D5668A021DCE3F94118455FF5EC952061C30AFC9CE7"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\blis\\cy.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "0E43C33CC085999E3AEF70ACE323657255EF45A1960F4A91410FEB2CDE4213D5"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\blis\\py.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "3776F8F524B90B1B900C4809A7CF2A4D7CFBD9020313D76D019B2F67846B46A5"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\charset_normalizer\\cd.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "9CCCC0B9EB9F514F25CF21D9A8F09948506978FFA19D80CCD6BE8DF9A9890095"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\charset_normalizer\\md.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "B484D0FC3D09E52A4974F4AEBFC8F79CC5E4F38E375D76402B93905F03F803B1"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\cymem\\cymem.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "E15519B0064A1D162DB3894666B1395FA5B7F7FC190ED35C5298814A799870C9"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\markupsafe\\_speedups.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "BF15134D91924ABCBD58664D7AA2A33549E31BE7FF96D2397D9025737F6A7E26"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\murmurhash\\mrmr.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "96D78BB1363B0C4F80AA598D10B54DE65AA366DF36EC2A0659BE88E1D9140882"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\numpy\\fft\\_pocketfft_umath.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "5B497ECDAEA98528AD53BF22E09B49631BD3A963660514A236ECE6C82F46EFE5"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\numpy\\linalg\\_umath_linalg.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "2989647FD7DF9CE56A0709542F3578D0CA0A5E4F7D83F81B033506C9FEC6ADC5"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\numpy\\random\\_bounded_integers.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "A2FF00933E7A72477B6976D1629137C38B21C45571E678A4E10AC4284973873C"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\numpy\\random\\_common.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "8C7350E399C5A4F89A52F77B4DE6B591032573C4124A3397806B80626788BB96"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\numpy\\random\\_generator.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "811961D6020CA40C28BCD62F7E1C0A29D389B5E1198A9A8E5A83EBC16AABA2DD"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\numpy\\random\\_mt19937.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "EBC88F4759BD866E1C3832A73ADD6DD19FFD0714194AE2009611C20608CF9ECE"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\numpy\\random\\_pcg64.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "2E0B17DC778771432288CC92E260B066D0E96D2046C943CCFA10E73496C68E1E"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\numpy\\random\\_philox.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "CA5626CBCD0C705B9710896AC448C5AE807540F4FB4A66C31751CFF85776F641"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\numpy\\random\\_sfc64.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "33210752124C94BD8AAC7034C2CE417A1C80DE1BB7D33AA759432748FE7699D8"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\numpy\\random\\bit_generator.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "4CFF629B98560B121B68393016F2E5F2DE15C53A5EAC036CC262CB154F7AB168"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\numpy\\random\\mtrand.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "8055B3177E4A54DD08CB302FC7C600083B35934C0FA87002D5E3A2EA59E0CAAC"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\numpy\\_core\\_multiarray_tests.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "089784B9680BB015CC19072B0B685B84B5749F898C3AA9B8EC0838E28189E48C"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\numpy\\_core\\_multiarray_umath.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "F37332834048E3AEF93A33FF53F558A319CAD12009DEFB2231EE1BA4AA6105D8"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\numpy.libs\\libscipy_openblas64_-ed4f167a5330424524f45258e7ca2c8d.dll",
+        "extension": ".dll",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "ED4F167A5330424524F45258E7CA2C8D7F03C0CBA1F30EE4985553AC1F88ECF8"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\numpy.libs\\msvcp140-a4c2229bdc2a2a630acdc095b4d86008.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=Microsoft Windows Software Compatibility Publisher, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+        "timestamped": true,
+        "sha256": "A4C2229BDC2A2A630ACDC095B4D86008E5C3E3BC7773174354F3DA4F5BEB9CDE"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\preshed\\bloom.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "7D18036C8566A625B25E8484EA0970D6A5DB8E49FD6EB8CBD020095182CB43F2"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\preshed\\maps.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "79FAD3C3EE8EFCAAD1558A4DAB6DDA2613F3C0BFB29E622FD43CE4B9877AC5D8"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\pydantic_core\\_pydantic_core.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "6C320AA8F5A182D815AEEEF4332CD44A36CF1F3CA4A0653D33BC0079C4FB3F7C"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\MSVCP140_1.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "B2113956AA3FCB9DECFE65BE1EE7829F8E3AE0899633AE89FE04888ADA201594"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\MSVCP140_2.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "1B806B427FFB573DEFF8478CF6FE336465FE2C67E0919BB95F452B6F31D25736"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\MSVCP140.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "708DD7BBC7BD23BCE9E93F7837A70C2DD7AD55CFF43801E92C0F7FCD7DDA47CD"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\opengl32sw.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "4A7D90F91FDECB5DF7B426BC2D05974B8D7FFA450AF2D1F93F3ECA05800718DA"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\pyside6.abi3.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "D4072BE872B31F3748DE5E6C28CB2976DAFBF063D3CCFA38E5DABDA29BABCDAF"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\Qt6Core.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "65FE6224B6C47A15B058738031D31DCE9928C4D7A58E1B8DB6434F6F5CDDD702"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\Qt6Gui.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "CD071161AD325FF2DE92B0E33D71334EF20712544796949623CE92DFB3957E90"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\Qt6Network.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "DFD0DD852274A5FE9B3C7D2DD9FFFE7E2117D28C10FC862174D6675D42395177"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\Qt6OpenGL.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "B31D20DC5AB28731D43AC5312C46C8FE1C39EA3E9614C46E6419B4DEBC87C1EB"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\Qt6Pdf.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "CF8AE19CF5F98DB4A3AE332FBE6BD00BC4CDF5CA5779F88B2071CF8180610106"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\Qt6Qml.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "5DD60D8E2048557BC1B8A57F6BB44986F45D693C3B0930D1341B07089478F09D"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\Qt6QmlMeta.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "1AE5A50E8DEFA2B60518A2261A2472ECF4D3E3CA965780339953D658844D4AA0"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\Qt6QmlModels.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "1EC0D115747D65A994798064618FFD9E3E9EFA1548297E64E08C49C9A98F0FEB"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\Qt6QmlWorkerScript.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "3A764B6C2BC8CB21F009485E7410E6D29B9EDD5E0ADDBED8FB89292C0AB64C97"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\Qt6Quick.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "33BDDB006A99C82CE3BB677FD2535DFB651D4B2FB12AA13EADDE6DC442BF7F0D"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\Qt6Svg.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "A7352E8062D02E2108E37DB4050FB3315D3C03C7D36ACDC24B98B9A6C129C1DE"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\Qt6VirtualKeyboard.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "E8DB083111DC264C80C81920C882ED1C2C28043EDFFA988894E0A82723B2AA4B"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\Qt6Widgets.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "5A9F37DEDD3DC5BCC1A4BB8EA919C49FC62DF751A1450ACCC34379EB6710EAB6"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\QtCore.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "BE52341A5DF1F76ECCA2FB1E94EB429DFA46F0B659ED6536F25119B565B21EA8"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\QtGui.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "F0549716B10A8B4FBD5C6C041F36AF215223809F919F4C4722D44CC199D5C593"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\QtNetwork.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "3953A86C9545AD8FA1CF1DEC27085DD357838464CD6E2131C9963CAAD6234B67"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\QtWidgets.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "85CB6C2181B4B09887A7D8507DD950844D1B8F74A9C4002C7B71169F75BF6FDA"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\VCRUNTIME140_1.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "B322E382EA249B50009F14A9A71AD16729EB6E4B58A8D3B3BE6AC66EA6342A22"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\VCRUNTIME140.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "C6E841078CD352299A58925991E2552F7251B046253BA895B3AD50CD5CD32EC6"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\plugins\\generic\\qtuiotouchplugin.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "1EE2810EEF83DBB2740D4F796F8149DC5752FFD3DD60E39796A9A4D6A6A0AE38"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\plugins\\iconengines\\qsvgicon.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "DD60826F1959FAA7EA137E00959717450DA9F2E0C151054DAEFF1E9D1226FAB2"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\plugins\\imageformats\\qgif.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "8B8DEA2ABAED333F1FBBDF3C8867CEB6040722C88A1FB81EA451F8B8BC9E8EE0"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\plugins\\imageformats\\qicns.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "6A5AED435989D54234C16581E66F6A59137BFCCD180565A217A8676BCDA6DC8D"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\plugins\\imageformats\\qico.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "F81378DD51392FF0D3AE094D5E59DFC4FA664A0EF4D756D6ED40584F90AF2758"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\plugins\\imageformats\\qjpeg.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "97AF9CEAF3EBEFEFEB7AEDE27AE07B73AE1D2ED479427BEEBF61C58654361D43"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\plugins\\imageformats\\qpdf.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "273A1B6DAAF3C0DEF92902044CF35D0EC65E56F904ACB7FBF428D80DAE2BB9D5"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\plugins\\imageformats\\qsvg.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "D4100055C3A4D6C1BCA5E303E3D2049BDE54D4E916442EE0A3E9B4DFA7D416FC"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\plugins\\imageformats\\qtga.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "50F0E6FF9B7FCA9386CCAD52EB5E83466774E6282C9532B03B11E5A64951DFFB"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\plugins\\imageformats\\qtiff.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "087A3425962E838C35C9073BDF8DE13712466E9B9590717666AF7839DB068DBA"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\plugins\\imageformats\\qwbmp.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "28A6447D44169ACBF2EAB38C475DC0AA9E32ABB3F29F72257726497353B9BF63"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\plugins\\imageformats\\qwebp.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "3E2BF546A3885CBE3E2B64058B1C58377D3C8822F51B37BA967F61E8054D7719"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\plugins\\networkinformation\\qnetworklistmanager.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "AEEF84E74D3114F62F4650305B403EF9F81E8C05BC67C86683D999C5C1243926"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\plugins\\platforminputcontexts\\qtvirtualkeyboardplugin.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "D116B216A50037CBFA6EE9AFD94BEA357CDBEE263E0F9B8C6EF2E811DA29EB70"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\plugins\\platforms\\qdirect2d.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "F099AF483B0D71A6A028BC15AD98A407E4C820400E6626CDC8E66B5F5E4CFED2"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\plugins\\platforms\\qminimal.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "97D81B9EE7CBBEB68E46EEFCE24D4B929B7A24CC646CEBE3D4D03E2734F97935"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\plugins\\platforms\\qoffscreen.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "426266E8BA0EA07C416616AD9973702FE126D4559CB2EE11E1C9BDBAE85BA755"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\plugins\\platforms\\qwindows.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "54D736DE022F707E9F7F555E4C9F9E993253CD5B0EE2364E6A9458C180828C42"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\plugins\\styles\\qmodernwindowsstyle.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "9AF96B09EBAF7FF13E22C70BF69B9C3F226F069375D1A9F9EFD63E944E43F5FB"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\plugins\\tls\\qcertonlybackend.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "45B9F59593A1567F7D6725DDFA53F667F8F26B7795B1E2D0E1080A4025BAFC02"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\plugins\\tls\\qopensslbackend.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "C7222880A7DEFE7A5C84F5871CDC7E34DF22F3DE6646026683042FAB5C22B561"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\PySide6\\plugins\\tls\\qschannelbackend.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "D09487A64BE0E1D4545A8230E7FE05D163375610ADF175407A6742944F16DEB9"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\shiboken6\\MSVCP140.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "005F2324C7FF79BBE9A44992B0708ABB4C871BD24BCC7A34ACA5EAB4439C1F4A"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\shiboken6\\Shiboken.pyd",
+        "extension": ".pyd",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "0E2C5318C5AC60A016A12230BBB1F6A9D990C45CBF4A7C4AF24AEFB5AB7DC40A"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\shiboken6\\shiboken6.abi3.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "47F4F9B44C95037565DD14F4BE04F350F20C53C05483B750E0BE867C39A7441E"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\shiboken6\\VCRUNTIME140_1.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "E4D7EA5F4F4FF6D0C208E693853617CDEF0AD71CFE5DD5C3AE16C8A6B64C18EA"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\shiboken6\\VCRUNTIME140.dll",
+        "extension": ".dll",
+        "before": "Valid",
+        "status": "Valid",
+        "signer": "CN=The QT Company Oy, O=The QT Company Oy, L=Espoo, S=Uusimaa, C=FI, SERIALNUMBER=2637805-2, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=FI",
+        "timestamped": true,
+        "sha256": "8D9C679C825C5FFF298D66C41AF30F35C289FC101868DFC9635547BADA0DABA6"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\attrs.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "60C386EB5538BF3EE25772FA90D45CC259CA8D782A81C62BC9BC9D4B27EAFE21"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\lexeme.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "DF5B9D077F9AE5FA29C0F4F434F7B534C02F06290B52C19A1E252F95CF53568D"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\morphology.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "D750B0AE8F575CC7AF1B629FF28E7046EF935944A077F668FC6BA46F17A73102"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\parts_of_speech.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "1412F9B43990AAE72FB5D97FFCB8119F61E2E199BCB46F2FCBEB3721A03CFF8A"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\strings.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "C40E8393EC532A9329661E25FD3A6848943FEFEA4B71EF6AF57AD1A44B43D273"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\symbols.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "9B04AD734D09C7DF626512D82D62CE03698C9CF3402FCE66231DCB65C6BAF909"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\tokenizer.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "11F74D95874C9BD0C1BDD9BD40E63D0B4EC8991E2C760F4567E70ECE75F18CA2"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\vectors.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "6D8F1354D674B4A37CF0D21A7E2099D50410B1C6C2C4698BC6212E7D4898E4D7"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\vocab.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "1E1B50AFE5E21BCBA77A90D38D508664F0F19B472C0D2E19729737A29E8E487B"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\kb\\candidate.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "96E664B72B493F485EDE27A4753101B0B71A186787FE838C13C36944DF196AC6"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\kb\\kb_in_memory.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "29C8F2D40996E4B01AC057BCE78372CCDB6FA3AA6B605A6CD1F05A93DCF52E47"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\kb\\kb.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "94CD99D7182DD0F17D41C7B667F138DE30577AE3F39FA3E1984058A8F084FCE1"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\matcher\\dependencymatcher.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "D537B4C6CB0383974AF14EF86504D23137B06F6C3FF2AA8B6157AD2DCB6544A3"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\matcher\\levenshtein.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "A31D238180F4DAF52B6E5BD4CFB1A2316826E01ED77B44F1C44516C4638351D1"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\matcher\\matcher.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "7F28A0B4F8A279236B9B5D5A345186C235583EBEC6C3AD01B1E8086721739D0C"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\matcher\\phrasematcher.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "E0CA8B895451FBFB4C0DD32CCA417697D23BDD58EA861A17EE3336FCE0740C43"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\ml\\parser_model.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "8F198E275BE5128A733118E2998A1AC5918A188DBDEA875BCDCD20A74116FA48"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\pipeline\\dep_parser.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "D113C77061BF5CE3B5112EADD23CAE7353A76CE5D2A2608CAD7F7202DE819691"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\pipeline\\morphologizer.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "8C4675CD6E146FF9E785F9E3CAF28BC1FA05CB93720C4AA55DF531F2DA82D60E"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\pipeline\\multitask.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "EA30805C8EE88E673018C07C8F3558C4B0C2EE53A46E57FCE15E3C7FFAFEFA71"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\pipeline\\ner.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "612EA28401C4603A779C8DB3B135FDBDFDDEB38BF6827B6C6732359827CF940A"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\pipeline\\pipe.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "0FF278D9B75BDF45FC402B7412AB49E4D4D3431FF3929189E3C7B72977A0DF3B"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\pipeline\\sentencizer.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "20D862DDB00151F48DC7799AF1E5313E85581A7E3430C70F384FACEF99E10290"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\pipeline\\senter.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "F889B419D6686402EDEDBE58F0A474A0E44D376131AE71EC79A9A677C965B3BF"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\pipeline\\tagger.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "28AA5927E11E144E022A5E849A32CE3F03F2A778DA1B47251DF04EA7B7B358F8"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\pipeline\\trainable_pipe.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "0320AC45F8AF3E0028769E645362018EDAB411ABB8FFFC6133AF4EFF45B3DCD5"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\pipeline\\transition_parser.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "16810F8DEA2D0E53F693987A3705AFEB680A355F01D6C6AA0E037E3FB8F94A92"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\pipeline\\_edit_tree_internals\\edit_trees.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "122C0B0DCDA50CBB02697B467E5309FC10554A5D0FA43736D3316C03ED8FEAB2"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\pipeline\\_parser_internals\\_beam_utils.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "E7B57DD541EAE472CD590F3D055B8930220BC44BD4F4723A5A267B703A3F4D7B"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\pipeline\\_parser_internals\\_state.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "5A34981316080D6A6B9F8B8CA38C620A048EF07C4C59FC2A1EFFB2925A278340"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\pipeline\\_parser_internals\\arc_eager.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "077F56DB73F8BC3C754E3E1ABB115E3716B7D1F807F64C675D8CB5989B00E4C2"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\pipeline\\_parser_internals\\ner.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "6098EDE7155FEF889F2F9D3B6351456DAB0A6C5B671C8B23F68081FDE35D2D80"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\pipeline\\_parser_internals\\nonproj.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "D7A824F3746D262F6FD3F1529F1D01401136153AE91B3E8ED598187CDFB7E969"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\pipeline\\_parser_internals\\stateclass.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "EBAF7116A39383FCAA15F6A314C7A7E86C7006E0027931A698F91649FDA0E470"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\pipeline\\_parser_internals\\transition_system.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "CBBE241A8D30032DB26F2F8FFBD8671098C2899153C9FC40F8ABA31D91BD7BDE"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\tokens\\_retokenize.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "12F26D13461C1F228C7D5F57D720164BBFA9ADCC672BEAD4D545FBB36155FA1F"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\tokens\\doc.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "E1DCFF6479E91A38BDD95621C4B7F115F61739AC15F372FBC198231702D1C44F"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\tokens\\graph.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "3532A1EA5944E596C2E78C5FDD2E765277BAE1400491CDA48887F5D5D5F58281"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\tokens\\morphanalysis.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "B49A258F691A69E99E65DAD276B36CB9E75D6B5FEF212340A75D608A5D8B975D"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\tokens\\span_group.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "97076F66850DA537840D8096C872A007D750727167542F1DD07856C2DFBEBDD7"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\tokens\\span.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "5086791F70A5AE316690453CF190300084D4446BED3F0E0D5AA3682CD780A1E3"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\tokens\\token.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "3316B6B8992D3320E8BEC1FB301F24F00A8B63EFF6700D701C5DAC35F77077B5"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\training\\align.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "EA47C02ABF440F606625F51CD270D74B79A5349C03A42049B15A8FF409683B68"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\training\\alignment_array.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "F1AD512324A41FF9B1D78894407BD1714DFC4E06FB31FB88C95CB3D90324F187"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\training\\example.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "B78AA8DA0D6272EC8943375FF0A156CA1A8019F47247EB0181B9E66545CCF264"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\spacy\\training\\gold_io.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "3B846ABEB8CD4138600EE5A62D767068A96E268C09E78BFCD733D3DB34C7AD2A"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\srsly\\msgpack\\_epoch.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "A342F6AE0DE5727948774F846424116FB16053BCC1FE2C223D8FDE5560D241AF"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\srsly\\msgpack\\_packer.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "D7E3D6971816BACFFAE5BB29F0BE245A632FAB81221F5235051826456EF87070"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\srsly\\msgpack\\_unpacker.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "AF448180A7BB724744E86AF79F596DBBE89130C91AEF97B1CF16DB104BA615C7"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\srsly\\ujson\\ujson.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "5D5B75272AD72970A11B7EB7FED9CE655BB3EAB78D303F1CB80892BEFDE833ED"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\thinc\\backends\\cblas.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "72E1949345420F14CFB94FF7AF6E49F3DDE022C8E47DE6448AAADA39DE59B7D4"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\thinc\\backends\\linalg.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "82DA6141E8D5C6F66026BCBEF2828529DBDB8BD358A53A0DD410DC19661EDE31"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\thinc\\backends\\numpy_ops.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "2BB018D19A6091F36E63C878FD4B457034283507366EA27C597EB1CEE5621728"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\thinc\\extra\\search.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "24CAD38AD866AA28036176D0EF0B3F2897D569970FC3EAB77C48A88894C73D4C"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\thinc\\layers\\premap_ids.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "B41642FCE0BF3E6DCE4807FEB9804E99323161F75CD4BF881C5E88C99BE38840"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\thinc\\layers\\sparselinear.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "DB28391CAC4A35384C43735B25BB7CA00AA45A33607C9FB142A5AB253D4DE730"
+      },
+      {
+        "path": "C:\\Users\\runneradmin\\AppData\\Local\\Temp\\textlab-install-nbrkrvjd\\TS TextLab\\_internal\\wrapt\\_wrappers.cp313-win_amd64.pyd",
+        "extension": ".pyd",
+        "before": "NotSigned",
+        "status": "NotSigned",
+        "signer": null,
+        "timestamped": false,
+        "sha256": "A1FC1C3611CC971715C5622D957A1D5A339E27B92A02B73457A922F7C61A6C1E"
+      }
+    ]
+  }
+}
