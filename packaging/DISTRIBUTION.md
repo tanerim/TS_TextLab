@@ -1,9 +1,26 @@
 # Son kullanıcıya dağıtım
 
-Repo private kalır ve yalnızca master branch kullanılır. GitHub Actions
-geliştiricinin derleme alanıdır; son kullanıcı indirme adresi değildir.
-Başarılı `.exe` ve `.dmg` paketleri ayrı bir herkese açık sunucuda yayımlanır.
-Sunucu adresi ve erişimi henüz yapılandırılmadığı için otomatik yayın yapılmaz.
+Windows, macOS ve Linux paketleri GitHub Actions'ın kendi işletim sistemi
+runner'larında derlenir. Üç platformun testleri başarılı olduğunda master
+branch'teki `version.txt` sürümü için GitHub Releases yayını oluşturulur.
+Son kullanıcılar Releases dosyalarını doğrudan indirir; GitHub hesabı veya
+Python kurulumu gerekmez. Actions artifact ZIP dosyaları geliştirici içindir.
+Yayınlanmış bir sürüm otomatik olarak değiştirilmez.
+
+Release dosyaları sabit adlarla yayımlanır: Windows kurulum ve taşınabilir
+EXE'leri, Apple Silicon DMG'si, Linux x86_64 TAR.GZ arşivi ve
+`SHA256SUMS.txt`. İmzasız DMG'nin dosya adında `-unsigned` bulunur.
+
+## Linux
+
+`TS-TextLab-linux-x86_64.tar.gz` arşivini açıp içindeki **TS TextLab**
+uygulamasını çalıştırın. `_internal` klasörü yanında kalmalıdır. Aynı
+klasördeki `install-linux.sh` uygulama menüsüne kullanıcıya ait bir
+kısayol ekler. CI hem derleme klasöründeki uygulamayı hem de arşivden
+çıkarılmış uygulamayı ve kısayol kurulumunu sınar.
+
+Paket Ubuntu 24.04 üzerinde üretilir; daha eski glibc sürümleriyle veya
+tüm Linux dağıtımlarıyla uyumluluk garanti edilmez.
 
 ## Windows
 

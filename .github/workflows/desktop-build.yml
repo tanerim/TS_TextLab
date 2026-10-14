@@ -38,6 +38,7 @@ jobs:
     timeout-minutes: 60
     env:
       QT_QPA_PLATFORM: offscreen
+      PYTHONUTF8: "1"
       REQUIRE_WINDOWS_SIGNING: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/master') || inputs.require_windows_signing }}
       TEXTLAB_WINDOWS_TIMESTAMP_URL: ${{ vars.TEXTLAB_WINDOWS_TIMESTAMP_URL || 'http://timestamp.digicert.com' }}
       TEXTLAB_WINDOWS_SIGN_ARGS_JSON: ${{ vars.TEXTLAB_WINDOWS_SIGN_ARGS_JSON }}
